@@ -1,0 +1,299 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
+import { Login, Signup } from "../Controllers/AuthControllers.js"
+import { Router } from "express"
+import express from "express";
+import dotenv from "dotenv";
+import { userVerification } from "../Middlewares/AuthMiddleware.js";
+import { FacultyuserVerification } from "../Middlewares/AuthMiddleware.js";
+import { FacultySignup } from "../Controllers/AuthControllers.js";
+import { UserModel } from "../Models/UserModel.js";
+import { FacultyModel } from "../Models/FacultyUsers.js";
+import multer from "multer";
+
+import { CloudinaryStorage } from "multer-storage-cloudinary";
+import path from "path";
+import { ProductModel } from "../Models/Products.js";
+dotenv.config()
+const router = express.Router();
+
+router.post("/signup", Signup);
+router.post("/facultysignup", FacultySignup);
+router.post("/login", Login);
+router.post("/userspost", userVerification);
+router.post("/facultypost", FacultyuserVerification);
+
+
+import {v2 as cloudinary} from 'cloudinary';       
+import { PurchasedModel } from "../Models/Purchased.js";
+cloudinary.config({ 
+  cloud_name: 'dxruxxfoa', 
+  api_key: '559133875522998', 
+  api_secret: 'RcXpXCPa6WJsTZmKxr8zN9Pzlwo' 
+});
+// Multer configuration for file upload
+const cloudstorage = multer.memoryStorage();
+const cloudupload = multer({ cloudstorage });
+
+// Cloudinary configuration
+
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'images/'); // Define the destination folder for uploaded files
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ storage: storage });
+
+
+// Add Products //
+router.post('/api/products', upload.array("image", 5), async (req, res) => {
+ try {
+  const { 
+    sellerId,
+    sellerName,
+    sellerEmail,
+    prodName,
+    description,
+    price,
+    categories,
+    accountType,
+  } = req.body;
+  const imageUrls = [];
+  for(const file of req.files){
+    const result = await cloudinary.uploader.upload(file.path);
+    imageUrls.push(result.secure_url);
+  }
+  const newImages = new ProductModel({
+    sellerId,
+    sellerName,
+    sellerEmail,
+    prodName,
+    description,
+    price,
+    categories,
+    accountType,
+    image: imageUrls,
+  });
+  await newImages.save();
+ } catch (error) {
+  console.log("Error uploading images", error);
+  res.status(500).json({success: false, error: "Failed to upload"});
+ }
+});
+router.get("/api/products", (req, res) => {
+  ProductModel.find().then((result) => {
+    res.json(result);
+  }).catch((err) => {
+    res.status(404).json(err);
+  });
+});
+router.get("/api/inventory/:sellerId", (req, res) => {
+  ProductModel.find({sellerId: req.params.sellerId}).then((result) => {
+    res.json(result);
+  }).catch((err) => {
+    res.status(404).json(err);
+  });
+});
+
+router.get("/api/products/:id", (req, res) => {
+  ProductModel.findById(req.params.id, req.body, req.file).then((result) => {
+    res.json(result);
+  }).catch((err) => {
+    console.log("Error");
+  });
+});
+
+router.post("/api/comments/:id", async (req, res) => {
+  const product = await ProductModel.findById(req.params.id);
+  const newComment = {
+    comment: req.body.comment,
+    commenterName: req.body.commenterName,
+    createdAt: new Date()
+  };
+  product.comments.push(newComment);
+  await product.save();
+  res.json(newComment);
+});
+router.delete("/api/commentDelete/:id", (req, res) => {
+  ProductModel.findByIdAndDelete(req.params.id).then((result) => {
+    res.json(result);
+  }).catch((err) => {
+    console.log("Error to delete", err);
+  });
+});
+// Add Products //
+
+
+
+
+// item purchased add to cart //
+router.post("/api/purchasedItem", (req,res) => {
+  PurchasedModel.create(req.body).then((result) => {
+    res.json(result)
+  }).catch((err) => {
+    console.log("error", err)
+  });
+});
+router.put("/api/purchasedItem/:id", (req, res) => {
+  PurchasedModel.findByIdAndUpdate(req.params.id, req.body, {new:true})
+  .then((result) => {
+    res.json(result);
+  }).catch((err) => {
+    res.status(400).json({error: "Unable to update"});
+  });
+});
+router.get("/api/transactions/:sellerId", (req, res) => {
+  PurchasedModel.find({sellerId: req.params.sellerId}).then((result) => {
+    res.json(result);
+  }).catch((err) => {
+    res.status(404).json(err);
+  });
+});
+router.get("/api/orders/:userId", (req, res) => {
+  PurchasedModel.find({ userId: req.params.userId}).then((result) => {
+    res.json(result);
+  }).catch((err) => {
+    console.log("Error to get orders", err);
+  });
+});
+router.delete("/api/orders/:id", (req, res) => {
+  PurchasedModel.findByIdAndDelete(req.params.id).then((result) => {
+    res.json(result);
+  }).catch((err) => {
+    console.log("Error to delete", err);
+  });
+});
+// item purchased add to cart //
+
+
+
+
+// Users model //
+router.get("/api/users", (req, res) => {
+    UserModel.find()
+    .then((result) => {
+      res.json(result)
+    }).catch((err) => {
+      res.status(404).json(err);
+    });
+});
+router.put("/api/usersSellerUpdate/:id", (req, res) => {
+  UserModel.findByIdAndUpdate(req.params.id, req.body).then((result) => {
+      res.json("Student user has been a seller successfully,");
+  }).catch((err) => {
+    console.log("Cannot be a seller.");
+  });
+});
+router.delete("/api/users/:id", (req, res) => {
+  UserModel.findByIdAndDelete(req.params.id, req.body).then((result) => {
+    res.json({mgs: "User Deleted"});
+  }).catch((err) => {
+    console.log("Error to delete this user", err);
+  });
+});
+router.get("/api/users/:id", (req, res) => {
+  UserModel.findById(req.params.id, req.body, req.file).then((result) => {
+    res.json(result);
+  }).catch((err) => {
+    console.log("Error");
+  });
+});
+
+router.put('/api/users/:id', upload.fields([
+  { name: 'validId', maxCount: 1 },
+  { name: 'image', maxCount: 1 },
+  { name: 'shopImage', maxCount: 1 }
+]), (req, res) => {
+  const { email, username, fullname, address, gender, department, facebook, course, phoneNumber, shopDescription, gcashNumber, isSeller } = req.body;
+  const { image, validId, shopImage } = req.files;
+
+  // Extract file paths from file objects
+  const imagePath = image ? image[0].path : null;
+  const validIdPath = validId ? validId[0].path : null;
+  const shopImagePath = shopImage ? shopImage[0].path : null;
+
+  // Update user data with file paths as strings
+  UserModel.findByIdAndUpdate(req.params.id, { email, username, fullname, address, gender, department, facebook, course, phoneNumber, shopDescription, gcashNumber, isSeller, image: imagePath, validId: validIdPath, shopImage: shopImagePath }, { new: true })
+    .then((result) => {
+      if (!result) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      res.json({ msg: "User data updated successfully" });
+    })
+    .catch((err) => {
+      console.log('Error updating user:', err);
+      res.status(400).json({ message: "Cannot update user data" });
+    });
+});
+
+
+// Users model //
+
+
+// Faculty users model //
+router.get("/api/faculty",(req, res) => {
+    FacultyModel.find()
+    .then((result) => {
+      res.json(result)
+    }).catch((err) => {
+      res.status(404).json(err);
+    });
+});
+
+
+
+router.put("/api/facultySellerUpdate/:id", (req, res) => {
+  FacultyModel.findByIdAndUpdate(req.params.id, req.body).then((result) => {
+      res.json("Faculty member has been a seller successfully,");
+  }).catch((err) => {
+    console.log("Cannot be a seller.");
+  });
+});
+router.get("/api/faculty/:id", (req, res) => {
+  FacultyModel.findById(req.params.id, req.body).then((result) => {
+    res.json(result);
+  }).catch((err) => {
+    console.log("Error");
+  });
+});
+router.delete("/api/faculty/:id", (req, res) => {
+  FacultyModel.findByIdAndDelete(req.params.id, req.body).then((result) => {
+    res.json({mgs: "Faculty user deleted"});
+  }).catch((err) => {
+    console.log("Error to delete faculty user", err);
+  });
+});
+router.put("/api/faculty/:id", upload.fields([
+  { name: 'validId', maxCount: 1 },
+  { name: 'image', maxCount: 1 },
+  { name: 'shopImage', maxCount: 1 }
+]), (req, res) => {
+  const { email, username, fullname, address, gender,  facebook,  phoneNumber, shopDescription, gcashNumber, isSeller } = req.body;
+  const { image, validId, shopImage } = req.files;
+
+  // Extract file paths from file objects
+  const imagePath = image ? image[0].path : null;
+  const validIdPath = validId ? validId[0].path : null;
+  const shopImagePath = shopImage ? shopImage[0].path : null;
+
+  // Update user data with file paths as strings
+    FacultyModel.findByIdAndUpdate(req.params.id, { email, username, fullname, address, gender, facebook,  phoneNumber, shopDescription, gcashNumber, isSeller, image: imagePath, validId: validIdPath, shopImage: shopImagePath }, { new: true }).then((result) => {
+      if(!result){
+        return res.status(404).json({message: "Faculty not found"});
+      }
+      res.json({ msg: "Become seller successfully"});
+    }).catch((err) => {
+       console.log('Error updating user:', err);
+      res.status(400).json({message: "Cannot become seller."});
+    });
+});
+
+// Faculty users Model //
+
+
+export default router;
