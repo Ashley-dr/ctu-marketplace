@@ -52,8 +52,7 @@ types: {
 },
 chat: [
     {
-      chats: { type: String, required: true },
-      senderId: {type: String, required: true},
+      chats: { type: String },
       senderName: { type: String, required: true },
       createdAt: { type: Date, default: Date.now }
     }

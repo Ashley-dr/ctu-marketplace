@@ -22,9 +22,57 @@ import {
 } from "@chakra-ui/react";
 function Orders() {
   const [orders, setOrders] = useState([]);
+  const [cookies, removeCookies] = useCookies([]);
   const { id } = useParams();
+  const [isUsers, setisUser] = useState("");
+  const [isFaculty, setisFaculty] = useState("");
+  const navigate = useNavigate();
+  const [newChats, setNewChats] = useState("");
+  const [chatMessages, setChatMessages] = useState([]);
   const [statusData, setStatusData] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenSecond,
+    onOpen: onOpenSecond,
+    onClose: onClosedSecond,
+  } = useDisclosure();
+  const size = ["xl"];
+  useEffect(() => {
+    const verifyCookie = async () => {
+      if (!cookies.token) {
+        navigate("/");
+      }
+      const { data } = await axios.post(
+        "http://localhost:4000/facultypost",
+        {},
+        { withCredentials: true }
+      );
+      const { status, user } = data;
+      setisFaculty(user);
+
+      return status;
+    };
+    verifyCookie();
+  }, [cookies, navigate, removeCookies]);
+
+  useEffect(() => {
+    const verifyCookie = async () => {
+      if (!cookies.token) {
+        navigate("/");
+      }
+      const { data } = await axios.post(
+        "http://localhost:4000/userspost",
+        {},
+        { withCredentials: true }
+      );
+      const { status, user } = data;
+      setisUser(user);
+
+      return status;
+    };
+    verifyCookie();
+  }, [cookies, navigate, removeCookies]);
+
   const [purchasedSchema, setPurchasedSchema] = useState({
     sellerId: "",
     userId: "",
@@ -41,7 +89,7 @@ function Orders() {
     types: "",
     image: "",
   });
-  const navigate = useNavigate();
+
   useEffect(() => {
     axios
       .get(`http://localhost:4000/api/orders/${id}`)
@@ -68,6 +116,32 @@ function Orders() {
       ...purchasedSchema,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const chatForm = (e) => {
+    e.preventDefault();
+    let commenterName = "";
+    if (isUsers) {
+      commenterName = isUsers.fullname;
+    } else if (isFaculty) {
+      commenterName = isFaculty.fullname;
+    }
+    axios
+      .post(`http://localhost:4000/api/chats/${statusData._id}`, {
+        chats: newChats,
+        senderName: commenterName,
+      })
+      .then((result) => {
+        setChatMessages([...chatMessages, result.data]);
+        setNewChats("");
+      })
+      .catch((err) => {
+        console.log("Error to send message", err);
+      });
+  };
+  const chatButton = (id) => {
+    setStatusData(id);
+    onOpenSecond();
   };
   const buttonStatus = (newStatus) => {
     setPurchasedSchema((prevSchema) => ({
@@ -163,7 +237,10 @@ function Orders() {
                       <button className="px-4 p-3 mx-2 rounded-lg bg-teal-400">
                         <FaFacebookSquare className="text-2xl" />
                       </button>
-                      <button className="px-4 p-3 mx-2 rounded-lg bg-teal-400">
+                      <button
+                        className="px-4 p-3 mx-2 rounded-lg bg-teal-400"
+                        onClick={() => chatButton(order)}
+                      >
                         <FaRegMessage className="text-2xl" />
                       </button>
                     </div>
@@ -295,6 +372,64 @@ function Orders() {
                 </form>
               </ModalBody>
 
+              <ModalFooter></ModalFooter>
+            </ModalContent>
+          </Modal>
+        )}
+        {statusData && (
+          <Modal onClose={onClosedSecond} size={size} isOpen={isOpenSecond}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>
+                <p>Item: {statusData.prodName}</p>
+              </ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                {statusData.chat && statusData.chat.length > 0 && (
+                  <div className="border px-2 rounded-md text-right h-80 overflow-y-auto overflow-hidden ">
+                    {statusData.chat.map((chat) => (
+                      <ul key={chat._id}>
+                        <p className="pb-2 mb-2">
+                          <p className=" text-sm ">{chat.senderName}</p>
+                          <p className=" text-base"> {chat.chats}</p>
+                        </p>
+                      </ul>
+                    ))}
+                  </div>
+                )}
+                {isUsers && (
+                  <div>
+                    <form onSubmit={chatForm}>
+                      <input
+                        type="text"
+                        value={newChats}
+                        placeholder="Message to seller."
+                        onChange={(e) => setNewChats(e.target.value)}
+                      />
+                      <button type="submit"></button>
+                    </form>
+                  </div>
+                )}
+                {isFaculty && (
+                  <div>
+                    <form onSubmit={chatForm}>
+                      <input
+                        className="border bg-transparent mt-2 rounded-md px-2 p-2 w-4/5"
+                        type="text"
+                        value={newChats}
+                        placeholder="Message to seller."
+                        onChange={(e) => setNewChats(e.target.value)}
+                      />
+                      <button
+                        type="submit"
+                        className="px-3 ml-5 rounded-md  bg-teal-950 border p-2 hover:bg-teal-600"
+                      >
+                        Submit
+                      </button>
+                    </form>
+                  </div>
+                )}
+              </ModalBody>
               <ModalFooter></ModalFooter>
             </ModalContent>
           </Modal>

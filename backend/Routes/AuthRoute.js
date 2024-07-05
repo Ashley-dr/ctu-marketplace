@@ -119,6 +119,23 @@ router.post("/api/comments/:id", async (req, res) => {
   await product.save();
   res.json(newComment);
 });
+
+
+router.post("/api/chats/:id", async (req, res) => {
+  const chatsvar = await PurchasedModel.findById(req.params.id);
+  const newChat = {
+    chats: req.body.chats,
+    senderName: req.body.senderName,
+    createdAt: new Date()
+  };
+  chatsvar.chat.push(newChat);
+  await chatsvar.save();
+  res.json(newChat);
+});
+
+
+
+
 router.delete("/api/commentDelete/:id", (req, res) => {
   ProductModel.findByIdAndDelete(req.params.id).then((result) => {
     res.json(result);
