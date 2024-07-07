@@ -121,18 +121,6 @@ router.post("/api/comments/:id", async (req, res) => {
 });
 
 
-router.post("/api/chats/:id", async (req, res) => {
-  const chatsvar = await PurchasedModel.findById(req.params.id);
-  const newChat = {
-    chats: req.body.chats,
-    senderName: req.body.senderName,
-    createdAt: new Date()
-  };
-  chatsvar.chat.push(newChat);
-  await chatsvar.save();
-  res.json(newChat);
-});
-
 
 
 
@@ -149,6 +137,21 @@ router.delete("/api/commentDelete/:id", (req, res) => {
 
 
 // item purchased add to cart //
+
+router.post("/api/chats/:id", async (req, res) => {
+  const chatsvar = await PurchasedModel.findById(req.params.id);
+  const newChat = {
+    chats: req.body.chats,
+    chats2: req.body.chats2,
+    senderName: req.body.senderName,
+     senderName2: req.body.senderName2,
+    createdAt: new Date()
+  };
+  chatsvar.chat.push(newChat);
+  await chatsvar.save();
+  res.json(newChat);
+});
+
 router.post("/api/purchasedItem", (req,res) => {
   PurchasedModel.create(req.body).then((result) => {
     res.json(result)

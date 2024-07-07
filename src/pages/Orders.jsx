@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
@@ -90,17 +91,23 @@ function Orders() {
     image: "",
   });
 
-  useEffect(() => {
+  const fetchTransactions = () => {
     axios
       .get(`http://localhost:4000/api/orders/${id}`)
       .then((result) => {
         setOrders(result.data);
-        console.log(result.data);
       })
       .catch((err) => {
         console.log("Error fetching:", err);
       });
+  };
+
+  useEffect(() => {
+    fetchTransactions();
+    const interval = setInterval(fetchTransactions, 1000);
+    return () => clearInterval(interval);
   }, [id]);
+
   const removeItemClick = (id) => {
     axios
       .delete(`http://localhost:4000/api/orders/${id}`)
@@ -134,6 +141,7 @@ function Orders() {
       .then((result) => {
         setChatMessages([...chatMessages, result.data]);
         setNewChats("");
+        onClosedSecond();
       })
       .catch((err) => {
         console.log("Error to send message", err);
@@ -207,14 +215,14 @@ function Orders() {
           {orders.map((order) => (
             <div
               key={order._id}
-              className="border-solid border-2 border-black px-2 rounded-2xl p-2 max-w-4/6 w-4/6 mb-5 bg-slate-400"
+              className="border-solid border-2 border-black px-2 rounded-2xl p-2  max-w-full  mb-5 bg-slate-400"
             >
               <div className="">
                 <img
-                  className=" block ml-auto mr-auto rounded-2xl max-w-full max-h-full w-52 h-32"
+                  className=" block ml-auto mr-auto rounded-2xl max-w-full max-h-full w-full h-56 object-cover bg-fixed"
                   src={order.image}
                 />
-                <article className=" bg-slate-500 rounded-2xl px-4 p-3 mt-2 ">
+                <article className=" bg-slate-500 rounded-2xl px-5 p-1 mt-2 ">
                   <p>Product: {order.prodName}</p>
                   <p>Seller Name: {order.sellerName}</p>
                   <p>Seller Email: {order.sellerEmail}</p>
@@ -224,7 +232,7 @@ function Orders() {
                     Payment Method:{" "}
                     {order.status ? <>{order.status}</> : <>None</>}
                   </p>
-                  <p className="h-32 px-2 mt-1 mb-2 border-solid border-2 rounded-lg">
+                  <p className=" h-20 overflow-y-auto px-2 mt-1 mb-2 border-solid border-2 rounded-lg">
                     <label className=" font-semibold">Message: </label>
                     {order.message}
                   </p>
@@ -386,14 +394,28 @@ function Orders() {
               <ModalCloseButton />
               <ModalBody>
                 {statusData.chat && statusData.chat.length > 0 && (
-                  <div className="border px-2 rounded-md text-right h-80 overflow-y-auto overflow-hidden ">
-                    {statusData.chat.map((chat) => (
-                      <ul key={chat._id}>
-                        <p className="pb-2 mb-2">
-                          <p className=" text-sm ">{chat.senderName}</p>
-                          <p className=" text-base"> {chat.chats}</p>
-                        </p>
-                      </ul>
+                  <div className="border px-2 rounded-md  h-80 overflow-y-auto overflow-hidden ">
+                    {statusData.chat.map((chat, index) => (
+                      <div key={index._id}>
+                        {chat.chats2 && (
+                          <div
+                            className="bg-gray-200 text-gray-700 rounded-lg py-2 px-4 inline-block mb-2 mt-2"
+                            style={{ textAlign: "left" }}
+                          >
+                            <strong className="text-xs font-quicksand">
+                              {chat.senderName2}
+                            </strong>
+                            <p className="font-quicksand">{chat.chats2}</p>
+                          </div>
+                        )}
+                        {chat.chats && (
+                          <div style={{ textAlign: "right" }}>
+                            <p className="bg-blue-500 text-white rounded-lg py-2 px-4 inline-block mt-2 mb-2 font-quicksand">
+                              <p>{chat.chats}</p>
+                            </p>
+                          </div>
+                        )}
+                      </div>
                     ))}
                   </div>
                 )}

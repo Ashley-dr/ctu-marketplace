@@ -53,7 +53,9 @@ types: {
 chat: [
     {
       chats: { type: String },
-      senderName: { type: String, required: true },
+      chats2: {type: String},
+      senderName: { type: String },
+         senderName2: { type: String },
       createdAt: { type: Date, default: Date.now }
     }
   ],
