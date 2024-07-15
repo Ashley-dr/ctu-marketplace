@@ -3,13 +3,14 @@
 import mongoose from "mongoose";
 
 
-const purchasedSchema = new mongoose.Schema({
+const DonepurchasedSchema = new mongoose.Schema({
 //  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
  userId: { type: String },
  sellerId: {
     type: String,
  },
-  productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+  productId: {
+     type: String},
 prodName: {
     type: String,
 },
@@ -56,15 +57,9 @@ sellerFacebook: {
 buyerFacebook: {
     type: String,
 },
-chat: [
-    {
-      chats: { type: String },
-      chats2: {type: String},
-      senderName: { type: String },
-         senderName2: { type: String },
-      createdAt: { type: Date, default: Date.now }
-    }
-  ],
+picture : {
+    type: [String],
+},
 });
 
-export const PurchasedModel = mongoose.model("Purchased", purchasedSchema);
+export const DonePurchasedModel = mongoose.model("DonePurchased", DonepurchasedSchema);

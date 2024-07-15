@@ -52,6 +52,8 @@ function ProductId() {
     total: "",
     types: "",
     image: "",
+    sellerFacebook: "",
+    buyerFacebook: "",
   });
   useEffect(() => {
     const verifyCookie = async () => {
@@ -135,6 +137,8 @@ function ProductId() {
           total: "",
           types: "",
           image: "",
+          sellerFacebook: "",
+          buyerFacebook: "",
         });
         navigate("/");
       })
@@ -217,6 +221,7 @@ function ProductId() {
                     <p className="mx-1">Seller Name: </p>
                     {productData.sellerName}
                   </p>
+
                   <p className="flex mb-2">
                     <p className="mx-1">Product Name: </p>
                     {productData.prodName}
@@ -408,6 +413,21 @@ function ProductId() {
                     onChange={purchasedOnChange}
                   />
                   <input
+                    name="buyerFacebook"
+                    className="bg-gray-200"
+                    value={(purchasedSchema.buyerFacebook = isUsers.facebook)}
+                    onChange={purchasedOnChange}
+                  />
+                  <input
+                    name="sellerFacebook"
+                    className="bg-gray-200"
+                    value={
+                      (purchasedSchema.sellerFacebook =
+                        UserSelectedProduct.facebook)
+                    }
+                    onChange={purchasedOnChange}
+                  />
+                  <input
                     type="text"
                     name="buyerEmail"
                     value={(purchasedSchema.buyerEmail = isUsers.email)}
@@ -542,6 +562,7 @@ function ProductId() {
                     }
                     onChange={purchasedOnChange}
                   />
+
                   <input
                     name="sellerId"
                     value={
@@ -584,6 +605,21 @@ function ProductId() {
                     type="text"
                     name="buyerName"
                     value={(purchasedSchema.buyerName = isFaculty.fullname)}
+                    onChange={purchasedOnChange}
+                  />
+                  <input
+                    name="buyerFacebook"
+                    className="bg-gray-200"
+                    value={(purchasedSchema.buyerFacebook = isFaculty.facebook)}
+                    onChange={purchasedOnChange}
+                  />
+                  <input
+                    name="sellerFacebook"
+                    className="bg-gray-200"
+                    value={
+                      (purchasedSchema.sellerFacebook =
+                        FacultySelectedProduct.facebook)
+                    }
                     onChange={purchasedOnChange}
                   />
                   <input

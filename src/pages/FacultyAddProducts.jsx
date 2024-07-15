@@ -5,7 +5,15 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
 import { ToastContainer, toast } from "react-toastify";
 import { useCookies } from "react-cookie";
-
+import Select from "react-select";
+import {
+  Input,
+  InputGroup,
+  InputLeftElement,
+  InputRightElement,
+  Textarea,
+} from "@chakra-ui/react";
+import { AddIcon } from "@chakra-ui/icons";
 function FacultyAddProducts() {
   const [cookies, removeCookies] = useCookies([]);
 
@@ -17,11 +25,13 @@ function FacultyAddProducts() {
     sellerName: "",
     prodName: "",
     description: "",
+    stocks: "",
     sellerEmail: "",
     price: "",
     sellerId: "",
-    categories: "",
+    categories: [],
     accountType: "",
+    facebook: "",
   });
 
   useEffect(() => {
@@ -55,12 +65,14 @@ function FacultyAddProducts() {
     const formData = new FormData();
     formData.append("sellerName", products.sellerName);
     formData.append("sellerEmail", products.sellerEmail);
+    formData.append("stocks", products.stocks);
     formData.append("sellerId", products.sellerId);
     formData.append("prodName", products.prodName);
     formData.append("description", products.description);
     formData.append("price", products.price);
     formData.append("categories", products.categories);
     formData.append("accountType", products.accountType);
+    formData.append("facebook", products.facebook);
     productImage.forEach((image) => {
       formData.append("image", image);
     });
@@ -77,89 +89,206 @@ function FacultyAddProducts() {
         sellerName: "",
         sellerEmail: "",
         sellerId: "",
+        stocks: "",
         prodName: "",
         description: "",
         price: "",
-        categories: "",
+        categories: [],
         accountType: "",
+        facebook: "",
       });
       setProductImage([]);
+      navigate("/");
     } catch (error) {
       console.log("Error uploading images", error);
     }
-    navigate("/");
+  };
+  const categoriesOption = [
+    { value: "Fashion", label: "Fashion" },
+    { value: "Furnitures", label: "Furnitures" },
+    { value: "Health & Beauty", label: "Health & Beauty" },
+    { value: "Books & Media", label: "Books & Media" },
+    { value: "Art & Collectibles", label: "Art & Collectibles" },
+    { value: "Mobiles & Gadgets", label: "Mobiles & Gadgets" },
+    { value: "Laptops & Computers", label: "Laptops & Computers" },
+    { value: "Camera & Photo", label: "Camera & Photo" },
+    { value: "Electronic Parts", label: "Electronic Parts" },
+    { value: "Crafts & DIY", label: "Crafts & DIY" },
+    { value: "Pet Supplies", label: "Pet Supplies" },
+    { value: "Jewelry & Accessories", label: "Jewelry & Accessories" },
+    { value: "Clothings", label: "Clothings" },
+    { value: "Men's Apparel", label: "Men's Apparel" },
+    { value: "Men's Shoes", label: "Men's Shoes" },
+    { value: "Women's Apparel", label: "Women's Apparel" },
+    { value: "Women's Shoes", label: "Women's Shoes" },
+    { value: "School Uniforms", label: "School Uniforms" },
+    { value: "Lanyards", label: "Lanyards" },
+    { value: "School Supplies", label: "School Supplies" },
+    { value: "Foods", label: "Foods" },
+  ];
+  const categoriesOnChange = (select) => {
+    const categoriesVar = select.map((option) => option.value);
+    setProducts({ ...products, categories: categoriesVar });
   };
   return (
-    <div>
-      <figure>
-        <article>
+    <div className="rounded-md  pb-4 max-w-full max-h-full justify-items-center grid ">
+      <figure className="max-w-full w-full ">
+        <article className="border bg-[#807ee631] px-9 pt-5 mt-2 rounded-lg pb-5 lg:mx-9">
           <form onSubmit={productSubmit}>
-            <input
-              type="text"
-              value={(products.sellerName = isFaculty.fullname)}
-              name="sellerName"
-              onChange={productHandler}
-              hidden
-            />
-            <input
-              type="text"
-              value={(products.sellerEmail = isFaculty.email)}
-              name="sellerEmail"
-              onChange={productHandler}
-              hidden
-            />
-            <input
-              type="text"
-              value={(products.sellerId = isFaculty.id)}
-              name="sellerId"
-              onChange={productHandler}
-              hidden
-            />
-            <input
-              type="text"
-              value={(products.accountType = isFaculty.isFaculty)}
-              name="accountType"
-              onChange={productHandler}
-              hidden
-            />
-            <input
-              type="text"
-              value={products.prodName}
-              name="prodName"
-              placeholder="Product Name"
-              onChange={productHandler}
-            />
-            <input
-              type="text"
-              value={products.description}
-              name="description"
-              placeholder="Add Description"
-              onChange={productHandler}
-            />
-            <input
-              type="number"
-              value={products.price}
-              name="price"
-              placeholder="Price"
-              onChange={productHandler}
-            />
-            <input
-              type="text"
-              value={products.categories}
-              name="categories"
-              placeholder="Categories"
-              onChange={productHandler}
-            />
-            <input
-              type="file"
-              value={productImage.image}
-              accept="image/"
-              name="image"
-              placeholder="image"
-              multiple
-              onChange={productHandlerFile}
-            />
-            <button type="submit">Post</button>
+            <p className=" text-lg font-bebas">Add a new Product</p>
+            <div>
+              <input
+                type="text"
+                value={(products.sellerName = isFaculty.fullname)}
+                name="sellerName"
+                onChange={productHandler}
+                hidden
+              />
+              <input
+                type="text"
+                value={(products.sellerEmail = isFaculty.email)}
+                name="sellerEmail"
+                onChange={productHandler}
+                hidden
+              />
+              <input
+                type="text"
+                value={(products.sellerId = isFaculty.id)}
+                name="sellerId"
+                onChange={productHandler}
+                hidden
+              />
+              <input
+                type="text"
+                value={(products.accountType = isFaculty.isFaculty)}
+                name="accountType"
+                onChange={productHandler}
+                hidden
+              />
+              <input
+                type="text"
+                value={(products.facebook = isFaculty.facebook)}
+                name="facebook"
+                onChange={productHandler}
+                hidden
+              />
+            </div>
+            <div className="grid mb-3 ">
+              <label className="mb-1 mt-3 font-montserrat text-sm">
+                Product Name:{" "}
+              </label>
+              <Input
+                bg={"slate"}
+                border="1px"
+                borderColor="slate"
+                className=" border-slate-400 border-t border-e border-x border-y px-3 rounded-md p-2 text-black bg-[#eceeee]"
+                type="text"
+                value={products.prodName}
+                name="prodName"
+                placeholder="Product Name"
+                onChange={productHandler}
+              />
+            </div>
+            <div className="grid grid-cols-2 items-start">
+              <label className="mb-3 mt-3 font-montserrat text-sm grid">
+                Stocks:{" "}
+                <Input
+                  bg={"slate"}
+                  border="1px"
+                  borderColor="slate"
+                  className=" border-slate-400 border-t border-e border-x border-y px-3 rounded-md p-2  text-black bg-[#eceeee] mr-2"
+                  type="number"
+                  value={products.stocks}
+                  name="stocks"
+                  placeholder="stocks"
+                  onChange={productHandler}
+                />
+              </label>
+              <label className="mb-3 ml-3  mt-3 font-montserrat text-sm grid">
+                <p className="px-2">Price: </p>
+                <InputGroup>
+                  <InputLeftElement
+                    pointerEvents="none"
+                    color="gray.900"
+                    fontSize="1.2em"
+                  >
+                    ₱
+                  </InputLeftElement>
+
+                  <Input
+                    bg={"slate"}
+                    border="1px"
+                    borderColor="slate"
+                    ml={2}
+                    className=" border-slate-400 border-t border-e border-x border-y px-3 rounded-md p-2 text-black bg-[#eceeee] "
+                    type="number"
+                    value={products.price}
+                    name="price"
+                    placeholder="Price"
+                    onChange={productHandler}
+                  />
+
+                  <InputRightElement></InputRightElement>
+                </InputGroup>
+              </label>
+              <label className="mb-3  mt-3 font-montserrat text-sm grid">
+                Product Name:{" "}
+                <Select
+                  isMulti={true}
+                  options={categoriesOption}
+                  type="text"
+                  name="categories"
+                  className=" border-slate-400 border-t border-e border-x border-y  rounded-md text-black bg-[#eceeee] "
+                  value={categoriesOption.filter((option) =>
+                    products.categories.includes(option.value)
+                  )}
+                  placeholder="Categories"
+                  onChange={categoriesOnChange}
+                />
+              </label>
+              <label className="mb-3 ml-3 mr-2 mt-3 font-montserrat text-sm grid">
+                <p className="px-2">Item Image: Up 5 files. </p>
+                <Input
+                  pl={0}
+                  p="6px"
+                  mx={2}
+                  bg={"slate"}
+                  border="1px"
+                  borderColor="slate"
+                  type="file"
+                  className=" border-slate-400 border-t border-e border-x border-y  rounded-md text-black bg-[#e1e4e4]"
+                  value={productImage.image}
+                  accept="image/"
+                  name="image"
+                  placeholder="image"
+                  multiple
+                  onChange={productHandlerFile}
+                />
+              </label>
+            </div>
+            <label className="mb-3 mt-3 font-montserrat text-sm grid">
+              Description:{" "}
+              <Textarea
+                bg={"slate"}
+                border="1px"
+                borderColor="slate"
+                className=" border-slate-400 border-t border-e border-x border-y px-3 rounded-md p-2 text-black bg-[#eceeee] "
+                type="text"
+                value={products.description}
+                name="description"
+                placeholder="Add Description"
+                onChange={productHandler}
+              />{" "}
+            </label>
+            <center>
+              {" "}
+              <button
+                type="submit"
+                className="bg-gray-800 p-2 px-4 rounded-lg text-white font-quicksand font-semibold flex items-center hover:bg-gray-600"
+              >
+                Add Item <AddIcon className="ml-2 text-xs" />
+              </button>
+            </center>
           </form>
         </article>
       </figure>

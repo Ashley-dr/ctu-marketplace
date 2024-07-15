@@ -33,6 +33,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { useCookies } from "react-cookie";
 import { UserContext } from "../../backend/Context/userContext";
+import { CiLogout } from "react-icons/ci";
 function Navigation() {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -230,8 +231,8 @@ function Navigation() {
 
   const logout = () => {
     removeCookies("token");
-    window.location.reload();
     navigate("/");
+    window.location.reload();
   };
   return (
     <div className="max-w-full">
@@ -340,9 +341,10 @@ function Navigation() {
                     ) : (
                       <></>
                     )}
-
                     <MenuItem>
-                      <Button onClick={logout}>Log out</Button>
+                      <Button onClick={logout}>
+                        <CiLogout />
+                      </Button>
                     </MenuItem>
                   </MenuList>
                 </Menu>
@@ -400,6 +402,11 @@ function Navigation() {
                         <Link to={`/Transactions/${isFaculty.id}`}>
                           <MenuItem>Transactions</MenuItem>
                         </Link>
+                        <MenuItem>
+                          <Button onClick={logout}>
+                            <CiLogout />
+                          </Button>
+                        </MenuItem>
                       </div>
                     ) : (
                       <MenuItem>
@@ -409,10 +416,6 @@ function Navigation() {
                         </Link>
                       </MenuItem>
                     )}
-
-                    <MenuItem>
-                      <Button onClick={logout}>Log out</Button>
-                    </MenuItem>
                   </MenuList>
                 </Menu>
               ) : (

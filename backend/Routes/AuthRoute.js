@@ -10,7 +10,7 @@ import { FacultySignup } from "../Controllers/AuthControllers.js";
 import { UserModel } from "../Models/UserModel.js";
 import { FacultyModel } from "../Models/FacultyUsers.js";
 import multer from "multer";
-
+import { DonePurchasedModel } from "../Models/DonePurchased.js";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import path from "path";
 import { ProductModel } from "../Models/Products.js";
@@ -56,12 +56,14 @@ router.post('/api/products', upload.array("image", 5), async (req, res) => {
   const { 
     sellerId,
     sellerName,
+    stocks,
     sellerEmail,
     prodName,
     description,
     price,
     categories,
     accountType,
+    facebook,
   } = req.body;
   const imageUrls = [];
   for(const file of req.files){
@@ -71,12 +73,14 @@ router.post('/api/products', upload.array("image", 5), async (req, res) => {
   const newImages = new ProductModel({
     sellerId,
     sellerName,
+    stocks,
     sellerEmail,
     prodName,
     description,
     price,
     categories,
     accountType,
+    facebook,
     image: imageUrls,
   });
   await newImages.save();
@@ -85,6 +89,13 @@ router.post('/api/products', upload.array("image", 5), async (req, res) => {
   res.status(500).json({success: false, error: "Failed to upload"});
  }
 });
+
+
+
+
+
+
+
 router.get("/api/products", (req, res) => {
   ProductModel.find().then((result) => {
     res.json(result);
@@ -133,11 +144,64 @@ router.delete("/api/commentDelete/:id", (req, res) => {
 });
 // Add Products //
 
-
+router.post('/api/DonePurchased', upload.array("picture", 5), async (req, res) => {
+ try {
+  const { 
+    userId,
+    sellerId,
+    sellerName,
+    productId,
+    sellerEmail,
+    prodName,
+    message,
+    quantity,
+    buyerName,
+    buyerEmail,
+    image,
+    status,
+    total,
+    types,
+    sellerFacebook,
+    buyerFacebook,
+    picture,
+    price,
+    accountType,
+  } = req.body;
+  const imageUrls = [];
+  for(const file of req.files){
+    const result = await cloudinary.uploader.upload(file.path);
+    imageUrls.push(result.secure_url);
+  }
+  const newImages = new DonePurchasedModel({
+    userId,
+    sellerId,
+    sellerName,
+    productId,
+    sellerEmail,
+    prodName,
+    message,
+    quantity,
+    buyerName,
+    buyerEmail,
+    status,
+    total,
+    types,
+    sellerFacebook,
+    buyerFacebook,
+    picture: imageUrls,
+    price,
+    accountType,
+    image,
+  });
+  await newImages.save();
+ } catch (error) {
+  console.log("Error uploading images", error);
+  res.status(500).json({success: false, error: "Failed to upload"});
+ }
+});
 
 
 // item purchased add to cart //
-
 router.post("/api/chats/:id", async (req, res) => {
   const chatsvar = await PurchasedModel.findById(req.params.id);
   const newChat = {
@@ -159,7 +223,7 @@ router.post("/api/purchasedItem", (req,res) => {
     console.log("error", err)
   });
 });
-router.put("/api/purchasedItem/:id", (req, res) => {
+router.put("/api/purchasedItem/:id", upload.single('image'), (req, res) => {
   PurchasedModel.findByIdAndUpdate(req.params.id, req.body, {new:true})
   .then((result) => {
     res.json(result);

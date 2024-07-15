@@ -37,6 +37,7 @@ function Orders() {
     onOpen: onOpenSecond,
     onClose: onClosedSecond,
   } = useDisclosure();
+
   const size = ["xl"];
   useEffect(() => {
     const verifyCookie = async () => {

@@ -23,11 +23,18 @@ const productSchema = new mongoose.Schema({
     type: String,
    
   },
+    stocks: {
+    type: Number,
+   
+  },
 prodName: {
     type: String,
   },
 
   sellerEmail: {
+    type: String,
+  },
+    facebook: {
     type: String,
   },
 
@@ -48,9 +55,9 @@ price: {
     type: Number,
 
   },
-categories: {
+categories: [{
     type: String,
-  },
+  }],
   accountType: {
     type: String,
   },
