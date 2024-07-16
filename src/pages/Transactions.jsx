@@ -22,7 +22,7 @@ import {
   visuallyHiddenStyle,
   Input,
 } from "@chakra-ui/react";
-import { AddIcon } from "@chakra-ui/icons";
+import { AddIcon, CloseIcon, CheckIcon } from "@chakra-ui/icons";
 function Transactions() {
   const [orders, setOrders] = useState([]);
   const [cookies, removeCookies] = useCookies([]);
@@ -54,6 +54,7 @@ function Transactions() {
     picture: "",
     price: "",
     accountType: "",
+    tax: "",
   });
   const [imageSubmit, setImageSubmit] = useState([]);
   const [purchasedSchema, setPurchasedSchema] = useState({
@@ -247,6 +248,7 @@ function Transactions() {
     formData.append("status", doneTransactSchema.status);
     formData.append("total", doneTransactSchema.total);
     formData.append("types", doneTransactSchema.types);
+    formData.append("tax", doneTransactSchema.tax);
     formData.append("sellerFacebook", doneTransactSchema.sellerFacebook);
     formData.append("buyerFacebook", doneTransactSchema.buyerFacebook);
     formData.append("price", doneTransactSchema.price);
@@ -282,6 +284,7 @@ function Transactions() {
         buyerFacebook: "",
         picture: "",
         price: "",
+        tax: "",
         accountType: "",
       });
       setImageSubmit([]);
@@ -289,6 +292,11 @@ function Transactions() {
       console.log("Error uploading file", error);
     }
   };
+  const price = statusData.price;
+  const quantity = statusData.quantity;
+  const total = price * quantity;
+  const tax = total * 0.01;
+  const totalWithTax = total + tax;
   return (
     <div className="mx-2 px-4 rounded-md pt-3 pb-4 max-w-full  max-h-full bg-slate-700">
       <div className=" md:shrink-0 grid grid-cols-1 ssm:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 ">
@@ -303,20 +311,20 @@ function Transactions() {
                 src={item.image}
                 alt=""
               />
-              <div className="flex">
+              <div className="flex  justify-center ">
                 <button
-                  className=" p-1 rounded-md mt-2 float-right mr-2"
+                  className=" p-1 bg-[#b40e0e9d] rounded-md  float-right mr-2"
                   onClick={() => {
                     removeItemClick(item._id);
                   }}
                 >
-                  Cancel Transaction
+                  Cancel Transaction <CloseIcon />
                 </button>
                 <button
                   onClick={() => markTransactions(item)}
-                  className=" p-1 rounded-md mt-2 float-right mr-2"
+                  className=" p-1 bg-[#4dbe86] rounded-md  float-right mr-2"
                 >
-                  Mark Done Transaction
+                  Mark Done Transaction <CheckIcon />
                 </button>
               </div>
               <figure className=" bg-slate-500 rounded-2xl  p-1 mt-2 ">
@@ -455,7 +463,7 @@ function Transactions() {
       {statusData && (
         <Modal onClose={onClosedMark} size={size} isOpen={isOpenMark}>
           <ModalOverlay />
-          <ModalContent>
+          <ModalContent border={"dashed"} borderColor={"GrayText"}>
             <ModalHeader>
               <p className="text-center font-quicksand">
                 Payment Slip of Transactions
@@ -507,6 +515,20 @@ function Transactions() {
                 <li>
                   2. Select your method of payment ( Meet up Pay or Gcash
                   Payment ).
+                </li>
+                <li>
+                  {" "}
+                  <label className="flex mt-5 text-lg font-montserrat">
+                    <p className="pr-1">3. With a tax fee of: ₱</p>
+                    <input
+                      type="number"
+                      name="tax"
+                      className="text-xl border px-2 w-32 rounded-md underline"
+                      disabled
+                      value={(doneTransactSchema.tax = totalWithTax)}
+                      onChange={imageHandler}
+                    />
+                  </label>
                 </li>
               </ul>
               <br />

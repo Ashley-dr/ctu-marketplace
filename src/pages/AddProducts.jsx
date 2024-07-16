@@ -12,6 +12,8 @@ import {
   InputLeftElement,
   InputRightElement,
   Textarea,
+  Checkbox,
+  CheckboxGroup,
 } from "@chakra-ui/react";
 import { AddIcon, CheckIcon } from "@chakra-ui/icons";
 function AddProducts() {
@@ -31,6 +33,7 @@ function AddProducts() {
     categories: [],
     accountType: "",
     facebook: "",
+    marketType: "",
   });
   const [productImage, setProductImage] = useState([]);
 
@@ -74,6 +77,7 @@ function AddProducts() {
     formData.append("categories", products.categories);
     formData.append("accountType", products.accountType);
     formData.append("facebook", products.facebook);
+    formData.append("marketType", products.marketType);
     productImage.forEach((image) => {
       formData.append("image", image);
     });
@@ -97,6 +101,7 @@ function AddProducts() {
         categories: [],
         accountType: "",
         facebook: "",
+        marketType: "",
       });
       setProductImage([]);
       navigate("/");
@@ -131,7 +136,13 @@ function AddProducts() {
     { value: "Lanyards", label: "Lanyards" },
     { value: "School Supplies", label: "School Supplies" },
     { value: "Foods", label: "Foods" },
+    { value: "Second Hand Items", label: "Second Hand Items" },
+    { value: "Valuable Items", label: "Valuable Items" },
+    { value: "Mens Shoes", label: "Men's Shoes" },
+    { value: "Womens Shoes", label: "Women's Shoes" },
+    { value: "Other Items", label: "Other Items" },
   ];
+
   const categoriesOnChange = (select) => {
     const categoriesVar = select.map((option) => option.value);
     setProducts({ ...products, categories: categoriesVar });
@@ -195,8 +206,10 @@ function AddProducts() {
                   name="prodName"
                   placeholder="Product Name"
                   onChange={productHandler}
+                  required
                 />
               </div>
+
               <div className="grid grid-cols-2 items-start">
                 <label className="mb-3 mt-3 font-montserrat text-sm grid">
                   Stocks:{" "}
@@ -210,6 +223,7 @@ function AddProducts() {
                     name="stocks"
                     placeholder="stocks"
                     onChange={productHandler}
+                    required
                   />
                 </label>
                 <label className="mb-3 ml-3  mt-3 font-montserrat text-sm grid">
@@ -234,13 +248,14 @@ function AddProducts() {
                       name="price"
                       placeholder="Price"
                       onChange={productHandler}
+                      required
                     />
 
                     <InputRightElement></InputRightElement>
                   </InputGroup>
                 </label>
                 <label className="mb-3  mt-3 font-montserrat text-sm grid">
-                  Product Name:{" "}
+                  Categories:{" "}
                   <Select
                     isMulti={true}
                     options={categoriesOption}
@@ -252,6 +267,7 @@ function AddProducts() {
                     )}
                     placeholder="Categories"
                     onChange={categoriesOnChange}
+                    required
                   />
                 </label>
                 <label className="mb-3 ml-3 mr-2 mt-3 font-montserrat text-sm grid">
@@ -270,10 +286,27 @@ function AddProducts() {
                     name="image"
                     placeholder="image"
                     multiple
+                    required
                     onChange={productHandlerFile}
                   />
                 </label>
+                <div className="grid mb-3 ">
+                  <label className="mb-1  font-montserrat text-sm">
+                    Select Option Market Type of:{" "}
+                  </label>
+                  <select
+                    className="w-56 border-slate-400 border-t border-e border-x border-y px-3 rounded-md p-2 text-black bg-[#eceeee]"
+                    name="marketType"
+                    value={products.marketType}
+                    onChange={productHandler}
+                    required
+                  >
+                    <option value="Trading">Trading</option>
+                    <option value="Selling">Selling</option>
+                  </select>
+                </div>
               </div>
+
               <label className="mb-3 mt-3 font-montserrat text-sm grid">
                 Description:{" "}
                 <Textarea
@@ -284,6 +317,7 @@ function AddProducts() {
                   type="text"
                   value={products.description}
                   name="description"
+                  required
                   placeholder="Add Description"
                   onChange={productHandler}
                 />{" "}

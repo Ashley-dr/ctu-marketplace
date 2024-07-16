@@ -55,6 +55,9 @@ price: {
     type: Number,
 
   },
+marketType : {
+  type: String,
+},
 categories: [{
     type: String,
   }],

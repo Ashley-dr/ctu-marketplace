@@ -32,6 +32,7 @@ function FacultyAddProducts() {
     categories: [],
     accountType: "",
     facebook: "",
+    marketType: "",
   });
 
   useEffect(() => {
@@ -73,6 +74,7 @@ function FacultyAddProducts() {
     formData.append("categories", products.categories);
     formData.append("accountType", products.accountType);
     formData.append("facebook", products.facebook);
+    formData.append("marketType", products.marketType);
     productImage.forEach((image) => {
       formData.append("image", image);
     });
@@ -96,6 +98,7 @@ function FacultyAddProducts() {
         categories: [],
         accountType: "",
         facebook: "",
+        marketType: "",
       });
       setProductImage([]);
       navigate("/");
@@ -125,6 +128,11 @@ function FacultyAddProducts() {
     { value: "Lanyards", label: "Lanyards" },
     { value: "School Supplies", label: "School Supplies" },
     { value: "Foods", label: "Foods" },
+    { value: "Second Hand Items", label: "Second Hand Items" },
+    { value: "Valuable Items", label: "Valuable Items" },
+    { value: "Mens Shoes", label: "Men's Shoes" },
+    { value: "Womens Shoes", label: "Women's Shoes" },
+    { value: "Other Items", label: "Other Items" },
   ];
   const categoriesOnChange = (select) => {
     const categoriesVar = select.map((option) => option.value);
@@ -232,7 +240,7 @@ function FacultyAddProducts() {
                 </InputGroup>
               </label>
               <label className="mb-3  mt-3 font-montserrat text-sm grid">
-                Product Name:{" "}
+                Categories:{" "}
                 <Select
                   isMulti={true}
                   options={categoriesOption}
@@ -265,6 +273,21 @@ function FacultyAddProducts() {
                   onChange={productHandlerFile}
                 />
               </label>
+              <div className="grid mb-3 ">
+                <label className="mb-1  font-montserrat text-sm">
+                  Select Option Market Type of:{" "}
+                </label>
+                <select
+                  className="w-56 border-slate-400 border-t border-e border-x border-y px-3 rounded-md p-2 text-black bg-[#eceeee]"
+                  name="marketType"
+                  value={products.marketType}
+                  onChange={productHandler}
+                  required
+                >
+                  <option value="Trading">Trading</option>
+                  <option value="Selling">Selling</option>
+                </select>
+              </div>
             </div>
             <label className="mb-3 mt-3 font-montserrat text-sm grid">
               Description:{" "}

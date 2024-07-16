@@ -62,6 +62,7 @@ router.post('/api/products', upload.array("image", 5), async (req, res) => {
     description,
     price,
     categories,
+  marketType,
     accountType,
     facebook,
   } = req.body;
@@ -79,6 +80,7 @@ router.post('/api/products', upload.array("image", 5), async (req, res) => {
     description,
     price,
     categories,
+    marketType,
     accountType,
     facebook,
     image: imageUrls,
@@ -166,6 +168,7 @@ router.post('/api/DonePurchased', upload.array("picture", 5), async (req, res) =
     picture,
     price,
     accountType,
+    tax,
   } = req.body;
   const imageUrls = [];
   for(const file of req.files){
@@ -192,6 +195,7 @@ router.post('/api/DonePurchased', upload.array("picture", 5), async (req, res) =
     price,
     accountType,
     image,
+    tax,
   });
   await newImages.save();
  } catch (error) {

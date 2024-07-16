@@ -60,6 +60,9 @@ buyerFacebook: {
 picture : {
     type: [String],
 },
+tax: {
+    type: Number,
+},
 });
 
 export const DonePurchasedModel = mongoose.model("DonePurchased", DonepurchasedSchema);
