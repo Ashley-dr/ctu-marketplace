@@ -1,9 +1,11 @@
+/* eslint-disable react-refresh/only-export-components */
 /* eslint-disable no-unused-vars */
 import { React, useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { BiSearchAlt } from "react-icons/bi";
-import { Checkbox, CheckboxGroup, Stack } from "@chakra-ui/react";
+import { Checkbox, CheckboxGroup, Input, Radio, Stack } from "@chakra-ui/react";
+import { BsBox2 } from "react-icons/bs";
 import {
   Drawer,
   DrawerBody,
@@ -14,7 +16,22 @@ import {
   DrawerCloseButton,
   useDisclosure,
   Button,
+  RadioGroup,
 } from "@chakra-ui/react";
+import {
+  ArrowDownIcon,
+  ArrowRightIcon,
+  CalendarIcon,
+  AtSignIcon,
+  ExternalLinkIcon,
+} from "@chakra-ui/icons";
+import { formatDistanceToNow } from "date-fns";
+import { TbSquareLetterS } from "react-icons/tb";
+import { TbLetterT } from "react-icons/tb";
+import { RiAccountPinCircleLine } from "react-icons/ri";
+export const formatDateToNow = (date) => {
+  return formatDistanceToNow(new Date(date), { addSuffix: true });
+};
 function Products() {
   const [search, setSearch] = useState("");
   const [productsData, setProductsData] = useState([]);
@@ -30,53 +47,63 @@ function Products() {
         console.log("Error fetching products data", err);
       });
   }, []);
-  const categoriesButton = [
-    { value: "Fashion", label: "Fashion" },
-    { value: "Furnitures", label: "Furnitures" },
-    { value: "Health & Beauty", label: "Health & Beauty" },
-    { value: "Books & Media", label: "Books & Media" },
-    { value: "Art & Collectibles", label: "Art & Collectibles" },
-    {
-      value: "Mobiles CellPhone & Gadgets",
-      label: "Mobiles CellPhone & Gadgets",
-    },
-    { value: "Laptops & Computers", label: "Laptops & Computers" },
-    { value: "Camera & Photo", label: "Camera & Photo" },
-    { value: "Electronic Parts", label: "Electronic Parts" },
-    { value: "Crafts & DIY", label: "Crafts & DIY" },
-    { value: "Pet Supplies", label: "Pet Supplies" },
-    { value: "Jewelry & Accessories", label: "Jewelry & Accessories" },
-    { value: "Clothings", label: "Clothings" },
-    { value: "Men's Apparel", label: "Men's Apparel" },
-    { value: "Men's Shoes", label: "Men's Shoes" },
-    { value: "Women's Apparel", label: "Women's Apparel" },
-    { value: "Women's Shoes", label: "Women's Shoes" },
-    { value: "School Uniforms", label: "School Uniforms" },
-    { value: "Lanyards", label: "Lanyards" },
-    { value: "School Supplies", label: "School Supplies" },
-    { value: "Foods", label: "Foods" },
-  ];
+  const [value, setValue] = useState("1");
   const [checkedItems, setCheckedItems] = useState([false, false]);
   return (
     <div className="rounded-md  pb-4 max-w-full max-h-full justify-items-center grid ">
-      <div className="bg-gray-300 justify-items-center grid max-w-full w-full  pr-5">
-        <form>
-          <figure className="grid">
-            <input
-              className="pl-5 w-96 mt-5 mb-5 pt-2 pb-2 rounded-md bg-gray-200 border-2 border-black"
-              placeholder=" Search items here 🔍 "
+      <div className="bg-[#79787809] justify-items-center grid max-w-full w-full  pr-5">
+        <form className="">
+          <figure className="grid ">
+            <Input
+              ml={5}
+              w={96}
+              bg={"#ffff"}
+              borderColor={"teal.900"}
+              className="pl-5 w-96 mt-5 pt-1 rounded-md  border-2 "
+              placeholder="Search items here"
               type="text"
               onChange={(e) => setSearch(e.target.value)}
             />
           </figure>
+          <div className="flex mb-2 mt-2 font-quicksand justify-center">
+            {" "}
+            <RadioGroup onChange={setValue} value={value}>
+              <Radio
+                className=" pr-5"
+                value={""}
+                colorScheme="purple"
+                onChange={(e) => setSearch(e.target.value)}
+              >
+                <p className="text-sm font-extralight mr-3">All</p>
+              </Radio>
+              <Radio
+                className="mx-1 pr-5"
+                value={"Trading"}
+                colorScheme="orange"
+                onChange={(e) => setSearch(e.target.value)}
+              >
+                <p className="text-sm font-extralight mr-3">Trading</p>
+              </Radio>
+              <Radio
+                className="mx-1 pr-5"
+                value={"Selling"}
+                colorScheme="green"
+                onChange={(e) => setSearch(e.target.value)}
+              >
+                <p className="text-sm font-extralight">Selling</p>
+              </Radio>
+            </RadioGroup>
+          </div>
         </form>
       </div>
       <button
-        className="sm:grid lg:hidden p-2 border mb-5 rounded-br-2xl rounded-bl-2xl bg-[#039978] font-poppins"
+        className="sm:grid lg:hidden p-2 border mb-5 rounded-br-2xl rounded-bl-2xl bg-[#039978] font-poppins flex justify-items-center hover:bg-[#0ccea4]"
         onClick={onOpen}
       >
-        Open Categories
+        <p className="text-xs">Open Categories</p>{" "}
+        <ArrowRightIcon className="transform rotate-90  ml-3" />
       </button>
+
       <div className=" shrink grid md:shrink-0   ssm:hidden lg:grid lg:grid-cols-8  mb-5">
         <Checkbox
           className="p-4 inline-flex justify-center items-center h-32 w-40 bg-cover bg-no-repeat  bg-center font-quicksand transition ease-in-out hover:translate-x-y-1 hover:scale-105 relative"
@@ -429,7 +456,7 @@ function Products() {
           </div>
         </Checkbox>
       </div>
-      <div className=" md:shrink-0 grid grid-cols-1 ssm:grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ">
+      <div className=" md:shrink-0 grid  ssm:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 ">
         {productsData
           .filter((item) => {
             if (search.toLowerCase() === "") {
@@ -448,52 +475,100 @@ function Products() {
               item.prodName &&
               item.prodName.toLowerCase().includes(search.toLowerCase());
 
+            const marketType =
+              item.marketType &&
+              item.marketType.toLowerCase().includes(search.toLowerCase());
             // Return true if either categories or prodName match the search term
-            return categoryMatch || nameMatch;
+            return categoryMatch || nameMatch || marketType;
           })
           .map((item) => {
             return (
               <div
                 key={item._id}
-                className=" rounded-2xl p-1 mx-6 w-96 mb-5 bg-slate-400"
+                className="   mx-6 ssm:w-48 md:w-56 lg:w-80 shadow-inner hover:shadow-2xl mb-5 bg-[#8583830a] hover:bg-[#ffffff28]"
               >
-                <div className="relative isolate flex flex-col justify-end overflow-hidden rounded-2xl  max-w-sm ">
+                <div className="relative isolate flex flex-col justify-end overflow-hidden   max-w-sm ">
+                  <div className="grid grid-cols-2 mt-1 font-quicksand">
+                    <label className="">
+                      <p className="truncate text-base ml-2 ">
+                        <AtSignIcon className="mr-1" />
+                        {item.sellerName}
+                      </p>
+                    </label>
+                    <label className="flex justify-end mt-1 mr-5 ml-5">
+                      {" "}
+                      {item.marketType == "Selling" ? (
+                        <>
+                          <p className=" ssm:text-sm ssm:ml-14 md:text-base lg:text-base pl-1 pr-1 rounded-md bg-[#53c07d] flex">
+                            <TbSquareLetterS className="mt-1 mr-2" />
+                            {item.marketType}
+                          </p>
+                        </>
+                      ) : (
+                        <></>
+                      )}
+                      {item.marketType == "Trading" ? (
+                        <>
+                          <p className="  pl-1 pr-1 rounded-md bg-[#ff7b0f] ssm:text-sm ssm:ml-14 md:text-base lg:text-base flex">
+                            <TbLetterT className="mt-1 mr-1" />
+                            {item.marketType}
+                          </p>
+                        </>
+                      ) : (
+                        <></>
+                      )}
+                    </label>
+                  </div>
+                  <label className="flex mb-1">
+                    {" "}
+                    <p className="ml-2 ssm:text-sm lg:text-sm opacity-90  ">
+                      <CalendarIcon className="mb-1" />{" "}
+                      {formatDateToNow(item.createdAt)}
+                    </p>
+                  </label>
                   {item.image.slice(0, 1).map((image, index) => (
                     <a key={index} target="_blank" href={image}>
                       <img
-                        className=" h-72 w-full object-cover rounded-md"
+                        className="rounded-md p-1 ssm:h-48 md:h-56 lg:h-72 bg-no-repeat bg-fixed w-full object-cover"
                         key={index}
                         src={image}
                         alt={`Image ${index + 1}`}
                       />
                       <div className="absolute inset-0 opacity-40 rounded-md"></div>
-                      <div className="absolute inset-0 mt-60  bg-gradient-to-t from-gray-900 via-gray-900/60">
-                        <h2 className="z-10 text-2xl px-4  font-orbitron text-white">
+                      <div className="absolute  inset-0 ssm:mt-52 sm:mt-52 md:mt-60 lg:mt-72  bg-gradient-to-t from-gray-900 via-gray-500/30">
+                        <h2 className="z-10 relative lg:top-6 text-2xl px-4  font-orbitron text-white">
                           <p>₱.{item.price}</p>
                         </h2>
                       </div>
                     </a>
                   ))}
                 </div>
-                <div className="mt-4 mb-4 grid grid-cols-2 px-1 font-quicksand text-white">
-                  <label className="bg-gray-800 pt-1 pb-1 text-gray-300 text-sm pl-1 mr-2 rounded-sm">
-                    Product:
-                    <p className="text-white  text-base  ">{item.prodName}</p>
+                <div className="font-quicksand ">
+                  <label className="">
+                    <p className="truncate mb-1 mt-1 text-lg ml-3  font-extralight ">
+                      {item.prodName}
+                    </p>
                   </label>
-                  <label className="bg-gray-800 pt-1 pb-1 text-gray-300 text-sm pl-1  rounded-sm">
-                    Seller:
-                    <p className="text-white  text-base  ">{item.sellerName}</p>
-                  </label>
-                  <label className="bg-gray-800 mt-2 pt-1 pb-1 text-gray-300 text-sm pl-1 mr-2 rounded-sm">
-                    Stocks:
-                    <p className="text-white  text-base  ">{item.stocks}</p>
-                  </label>
+                  <div className="flex justify-between px-2">
+                    <label className="flex mx-2">
+                      <BsBox2 className="mt-1 text-base" />
+                      <p className="pl-1  text-base underline">{item.stocks}</p>
+                    </label>
+                    <label className="flex mx-2">
+                      <RiAccountPinCircleLine className="mt-1 text-base" />
 
+                      <p className="pl-1  text-base underline">
+                        {item.accountType}
+                      </p>
+                    </label>
+                  </div>
                   <Link
                     to={`/ProductId/${item._id}`}
-                    className="bg-gray-900 mt-2 pt-1 pb-1 text-white text-center text-sm  rounded-sm hover:bg-gray-950"
+                    className="bg-gray-900 mt-2 pt-1 pb-1 text-white text-center text-sm  rounded-sm p-2 grid hover:bg-gray-950"
                   >
-                    <button className="mt-3 ">See More</button>
+                    <button className="m-1 font-quicksand">
+                      See more <ExternalLinkIcon />
+                    </button>
                   </Link>
                 </div>
               </div>

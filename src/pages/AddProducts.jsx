@@ -301,6 +301,7 @@ function AddProducts() {
                     onChange={productHandler}
                     required
                   >
+                    <option value="">Select</option>
                     <option value="Trading">Trading</option>
                     <option value="Selling">Selling</option>
                   </select>
