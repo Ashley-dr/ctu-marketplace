@@ -205,7 +205,7 @@ function Navigation() {
       );
       const { status, user } = data;
       setisFaculty(user);
-      console.log(user);
+
       return status;
     };
     verifyCookie();
@@ -223,7 +223,7 @@ function Navigation() {
       );
       const { status, user } = data;
       setisUser(user);
-      console.log(user);
+
       return status;
     };
     verifyCookie();

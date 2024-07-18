@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
@@ -20,8 +21,31 @@ import {
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Heading,
+  Stack,
+  StackDivider,
+  Box,
+  Text,
 } from "@chakra-ui/react";
 import { FaFacebookSquare } from "react-icons/fa";
+import { formatDistanceToNow } from "date-fns";
+import { AtSignIcon, CalendarIcon, LinkIcon } from "@chakra-ui/icons";
+import { RiAccountCircleLine } from "react-icons/ri";
+import { IoPricetagOutline } from "react-icons/io5";
+import { TbLetterT, TbSquareLetterS } from "react-icons/tb";
+import { CiShoppingCart } from "react-icons/ci";
+import { BsBox2 } from "react-icons/bs";
+export const formatDateToNow = (date) => {
+  const validDate = new Date(date);
+  if (isNaN(validDate)) {
+    return "Invalid date";
+  }
+  return formatDistanceToNow(validDate, { addSuffix: true });
+};
 function ProductId() {
   const [cookies, removeCookies] = useCookies([]);
   const [productData, setProductData] = useState([]);
@@ -196,18 +220,18 @@ function ProductId() {
     }
   };
   return (
-    <div>
-      <figure>
+    <div className="rounded-md  pb-4 max-w-full max-h-full justify-items-center grid ">
+      <figure className=" justify-items-center grid max-w-full w-full">
         <article>
           {productData ? (
             <div>
-              <div className="md:shrink-0 grid grid-cols-1 ssm:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 ">
+              <div className="mt-5  grid  ssm:grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 justify-items-center ">
                 {productData.image && productData.image.length > 0 && (
-                  <div className="flex ">
+                  <div className=" px-10">
                     {productData.image.slice(0, 1).map((image, index) => (
-                      <a key={index} target="_blank" href={image}>
+                      <a key={index} className="" target="_blank" href={image}>
                         <img
-                          className=" h-96 w-11/12 mx-16 mt-5 rounded-md"
+                          className="shadow-inner  hover:shadow-xl size-96 mt-5 mb-5 rounded-md"
                           key={index}
                           src={image}
                           alt={`Image ${index + 1}`}
@@ -216,33 +240,158 @@ function ProductId() {
                     ))}
                   </div>
                 )}
-                <div className="grid mx-2  px-5  justify-start content-center">
-                  <p className="flex mb-2">
-                    <p className="mx-1">Seller Name: </p>
-                    {productData.sellerName}
-                  </p>
+                <Card mt={5} shadow={"xl"}>
+                  <CardHeader>
+                    <Heading size="md">
+                      <p className="w-96">{productData.prodName}</p>
+                    </Heading>
+                  </CardHeader>
+                  <CardBody>
+                    <Stack divider={<StackDivider />} spacing="4">
+                      <Box>
+                        <Heading size="xs">
+                          <p className="truncate  w-96">
+                            {" "}
+                            <LinkIcon className="mr-1" />
+                            {productData.sellerName}
+                          </p>
+                          <p className="truncate w-96">
+                            <AtSignIcon className="" />{" "}
+                            {productData.sellerEmail}
+                          </p>
+                          <div className="mt-3 grid grid-cols-2">
+                            <p className="flex  mr-5">
+                              <p className="mb-1 text-xs">PHP: </p>{" "}
+                              {productData.price}
+                            </p>
+                            <p className="flex justify-self-center mr-4">
+                              <RiAccountCircleLine className="mr-1" />{" "}
+                              {productData.accountType}
+                            </p>
 
+                            {productData.marketType == "Selling" ? (
+                              <>
+                                {" "}
+                                <p className="flex">
+                                  {" "}
+                                  <TbSquareLetterS className="mb-1 text-base mr-2" />{" "}
+                                  {productData.marketType}
+                                </p>
+                              </>
+                            ) : (
+                              <></>
+                            )}
+                            {productData.marketType == "Trading" ? (
+                              <>
+                                {" "}
+                                <p className="flex">
+                                  {" "}
+                                  <TbLetterT className="mb-1 text-base mr-2" />{" "}
+                                  {productData.marketType}
+                                </p>
+                              </>
+                            ) : (
+                              <></>
+                            )}
+
+                            <p className="justify-self-center">
+                              {" "}
+                              <CalendarIcon className="mb-1" />{" "}
+                              {formatDateToNow(productData.createdAt)}
+                            </p>
+                            <p className="flex">
+                              <BsBox2 className="mr-3" /> {productData.stocks}
+                            </p>
+                          </div>
+                        </Heading>
+                        <Text pt="2" fontSize="sm"></Text>
+                      </Box>
+                      <Box>
+                        <Heading size="xs" textTransform="uppercase">
+                          Categories
+                        </Heading>
+                        <Text pt="2" fontSize="sm">
+                          <p className=" w-96">{productData.categories}</p>
+                        </Text>
+                      </Box>
+                      <Box>
+                        <Heading size="xs" textTransform="uppercase">
+                          Description
+                        </Heading>
+                        <Text pt="2" fontSize="sm">
+                          <p className=" w-96">{productData.description}</p>
+                        </Text>
+                      </Box>
+                      <Box>
+                        {" "}
+                        {isUsers ? (
+                          <>
+                            <div className="bg-gray-900  text-white text-center text-sm  rounded-sm p-2 grid hover:bg-gray-950">
+                              <button
+                                className="flex w-full justify-center"
+                                onClick={() => handleUserModal(productData)}
+                              >
+                                Add to orders{" "}
+                                <CiShoppingCart className="text-xl ml-2" />
+                              </button>
+                            </div>
+                          </>
+                        ) : (
+                          <></>
+                        )}
+                        <div>
+                          {isFaculty ? (
+                            <>
+                              <div className="bg-gray-900  text-white text-center text-sm  rounded-sm p-2 grid hover:bg-gray-950">
+                                <button
+                                  className="flex w-full justify-center"
+                                  onClick={() =>
+                                    handleFacultyModal(productData)
+                                  }
+                                >
+                                  Add to orders{" "}
+                                  <CiShoppingCart className="text-xl ml-2" />
+                                </button>
+                              </div>
+                            </>
+                          ) : (
+                            <></>
+                          )}
+                        </div>
+                      </Box>
+                    </Stack>
+                  </CardBody>
+                </Card>
+                {/* <div className="grid bg-[#6d6868] w-full p-2 px-2 border justify-start ">
+                  <div className="grid grid-cols-2">
+                    <p className="flex mb-2">
+                      <p className="mx-1">Seller Name: </p>
+                      {productData.sellerName}
+                    </p>
+
+                    <p className="flex mb-2">
+                      <p className="mx-1">Product Name: </p>
+                      {productData.prodName}
+                    </p>
+
+                    <p className="flex mb-2">
+                      <p className="mx-1">Price: </p>
+                      {productData.price}
+                    </p>
+
+                    <p className="flex mb-2">
+                      <p className="mx-1">Post Date: </p>
+                      {formatDateToNow(productData.createdAt)}
+                    </p>
+                  </div>
                   <p className="flex mb-2">
-                    <p className="mx-1">Product Name: </p>
-                    {productData.prodName}
+                    <p className="mx-1 truncate">Category:</p>
+                    {productData.categories}
                   </p>
                   <p className="flex mb-10">
                     <p className="mx-1">Description: </p>
                     {productData.description}
                   </p>
-                  <p className="flex mb-2">
-                    <p className="mx-1">Price: </p>
-                    {productData.price}
-                  </p>
-                  <p className="flex mb-2">
-                    <p className="mx-1">Category:</p>
-                    {productData.categories}
-                  </p>
-                  <p className="flex mb-2">
-                    <p className="mx-1">Post Date: </p>
-                    {productData.createdAt}
-                  </p>
-
                   <div className="">
                     {isUsers ? (
                       <>
@@ -269,7 +418,7 @@ function ProductId() {
                   ) : (
                     <></>
                   )}
-                </div>
+                </div> */}
               </div>
               <div className=" max-w-full w-full">
                 {productData.image && productData.image.length > 0 && (
@@ -356,8 +505,7 @@ function ProductId() {
           <ModalOverlay />
           <ModalContent>
             <ModalHeader>
-              Item name: {UserSelectedProduct.prodName} <br />s
-              {UserSelectedProduct.sellerEmail}
+              Item name: {UserSelectedProduct.prodName} <br />
               Price: {UserSelectedProduct.price}
             </ModalHeader>
             <ModalCloseButton />
@@ -500,7 +648,7 @@ function ProductId() {
                   <NumberInput
                     type="number"
                     min={1}
-                    max={10}
+                    max={productData.stocks}
                     name="quantity"
                     value={(purchasedSchema.quantity = quantity)}
                     onChange={purchasedOnChange}
@@ -697,7 +845,7 @@ function ProductId() {
                   <NumberInput
                     type="number"
                     min={1}
-                    max={10}
+                    max={productData.stocks}
                     name="quantity"
                     value={(purchasedSchema.quantity = quantity)}
                     onChange={purchasedOnChange}
