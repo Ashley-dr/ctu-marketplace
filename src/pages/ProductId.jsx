@@ -39,6 +39,12 @@ import { IoPricetagOutline } from "react-icons/io5";
 import { TbLetterT, TbSquareLetterS } from "react-icons/tb";
 import { CiShoppingCart } from "react-icons/ci";
 import { BsBox2 } from "react-icons/bs";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Slider from "react-slick";
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+// import { Carousel } from "flowbite-react";
 export const formatDateToNow = (date) => {
   const validDate = new Date(date);
   if (isNaN(validDate)) {
@@ -46,6 +52,7 @@ export const formatDateToNow = (date) => {
   }
   return formatDistanceToNow(validDate, { addSuffix: true });
 };
+
 function ProductId() {
   const [cookies, removeCookies] = useCookies([]);
   const [productData, setProductData] = useState([]);
@@ -219,27 +226,61 @@ function ProductId() {
       setQuantity(quantity - 1);
     }
   };
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1, // Number of slides to show at once
+    slidesToScroll: 1,
+    responsive: [
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 1, // Number of slides to show at once on small screens
+        },
+      },
+    ],
+  };
   return (
     <div className="rounded-md  pb-4 max-w-full max-h-full justify-items-center grid ">
       <figure className=" justify-items-center grid max-w-full w-full">
         <article>
           {productData ? (
             <div>
-              <div className="mt-5  grid  ssm:grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 justify-items-center ">
-                {productData.image && productData.image.length > 0 && (
-                  <div className=" px-10">
-                    {productData.image.slice(0, 1).map((image, index) => (
-                      <a key={index} className="" target="_blank" href={image}>
-                        <img
-                          className="shadow-inner  hover:shadow-xl size-96 mt-5 mb-5 rounded-md"
-                          key={index}
-                          src={image}
-                          alt={`Image ${index + 1}`}
-                        />
-                      </a>
-                    ))}
-                  </div>
-                )}
+              <div className="mt-5   grid  ssm:grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 justify-items-center ">
+                <div className="max-w-96 max-h-96 lg:mr-16 ssm:mb-20 lg:mb-0 mt-5 rounded-lg">
+                  {productData.image && productData.image.length > 0 && (
+                    <Carousel
+                      infiniteLoop
+                      stopOnHover
+                      swipeable={true}
+                      autoPlay
+                      emulateTouch={true}
+                      className="bg-[#111827] relative rounded-lg"
+                      showArrows={true}
+                      slideInterval={5000}
+                    >
+                      {productData.image.map((image, index) => (
+                        <div key={index} className="">
+                          <a
+                            target="_blank"
+                            href={image}
+                            rel="noopener noreferrer"
+                          >
+                            <img
+                              className="shadow-inner hover:shadow-xl size-96  rounded-md"
+                              src={image}
+                              alt={`Image ${index + 1}`}
+                            />
+                            <button className="relative bg-[#0c0a0a54] bottom-20 font-poppins p-1.5 text-white rounded-lg font-bold hover:bg-[#000000c4]">
+                              Show Image ( {`${index + 1}`} )
+                            </button>
+                          </a>
+                        </div>
+                      ))}
+                    </Carousel>
+                  )}
+                </div>
                 <Card mt={5} shadow={"xl"}>
                   <CardHeader>
                     <Heading size="md">
@@ -355,6 +396,18 @@ function ProductId() {
                               </div>
                             </>
                           ) : (
+                            <> </>
+                          )}
+                          {!isFaculty && !isUsers ? (
+                            <>
+                              {" "}
+                              <div className="bg-gray-900  text-white text-center text-sm  rounded-sm p-2 grid hover:bg-gray-950">
+                                <button className="flex w-full justify-center">
+                                  Login first
+                                </button>
+                              </div>
+                            </>
+                          ) : (
                             <></>
                           )}
                         </div>
@@ -362,102 +415,30 @@ function ProductId() {
                     </Stack>
                   </CardBody>
                 </Card>
-                {/* <div className="grid bg-[#6d6868] w-full p-2 px-2 border justify-start ">
-                  <div className="grid grid-cols-2">
-                    <p className="flex mb-2">
-                      <p className="mx-1">Seller Name: </p>
-                      {productData.sellerName}
-                    </p>
-
-                    <p className="flex mb-2">
-                      <p className="mx-1">Product Name: </p>
-                      {productData.prodName}
-                    </p>
-
-                    <p className="flex mb-2">
-                      <p className="mx-1">Price: </p>
-                      {productData.price}
-                    </p>
-
-                    <p className="flex mb-2">
-                      <p className="mx-1">Post Date: </p>
-                      {formatDateToNow(productData.createdAt)}
-                    </p>
-                  </div>
-                  <p className="flex mb-2">
-                    <p className="mx-1 truncate">Category:</p>
-                    {productData.categories}
-                  </p>
-                  <p className="flex mb-10">
-                    <p className="mx-1">Description: </p>
-                    {productData.description}
-                  </p>
+              </div>
+              <div className="bg-gray-900  text-white text-center text-sm  rounded-sm p-2 grid hover:bg-gray-950">
+                {productData.comments && productData.comments.length > 0 && (
                   <div className="">
-                    {isUsers ? (
-                      <>
-                        <button
-                          className="mt-10 bg-teal-500 rounded-md w-40  h-10 "
-                          onClick={() => handleUserModal(productData)}
-                        >
-                          Add to Orders +
-                        </button>
-                      </>
-                    ) : (
-                      <></>
-                    )}
-                  </div>
-                  {isFaculty ? (
-                    <>
-                      <button
-                        className="mt-10 bg-teal-500 rounded-md w-40  h-10 "
-                        onClick={() => handleFacultyModal(productData)}
-                      >
-                        Add to Orders +
-                      </button>
-                    </>
-                  ) : (
-                    <></>
-                  )}
-                </div> */}
-              </div>
-              <div className=" max-w-full w-full">
-                {productData.image && productData.image.length > 0 && (
-                  <div className="flex relative left-16 gap-3 mt-4 mb-6 ">
-                    {productData.image.map((image, index) => (
-                      <a key={index} target="_blank" href={image}>
-                        <img
-                          className="rounded-md h-64  w-96 "
-                          key={index}
-                          src={image}
-                          alt={`Image ${index + 1}`}
-                        />
-                      </a>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {productData.comments && productData.comments.length > 0 && (
-                <div className="">
-                  {productData.comments.map((comment) => (
-                    <p key={comment._id}>
-                      <article className="flex bg-slate-400 mx-5 px-4 mb-1">
-                        <strong>{comment.commenterName}</strong>
-                        <p>{comment.comment}</p>
-                      </article>
-                      {/* <button
+                    {productData.comments.map((comment) => (
+                      <p key={comment._id}>
+                        <article className="flex bg-slate-400 mx-5 px-4 mb-1">
+                          <strong>{comment.commenterName}</strong>
+                          <p>{comment.comment}</p>
+                        </article>
+                        {/* <button
                         onClick={() => {
                           commentDelete(comment._id);
                         }}
                       >
                         Delete
                       </button> */}
-                    </p>
-                  ))}
-                </div>
-              )}
+                      </p>
+                    ))}
+                  </div>
+                )}
+              </div>
               {isUsers && (
-                <div className="">
+                <div className="bg-gray-900  text-white text-sm  rounded-sm p-2 grid hover:bg-gray-950">
                   <form onSubmit={commentHandler}>
                     <input
                       type="text"
@@ -476,7 +457,7 @@ function ProductId() {
                 </div>
               )}
               {isFaculty && (
-                <div className="">
+                <div className="bg-gray-900  text-white  text-sm  rounded-sm p-2 grid hover:bg-gray-950">
                   <form onSubmit={commentHandler}>
                     <input
                       type="text"
@@ -677,12 +658,11 @@ function ProductId() {
                     }
                   </p>
                 </div>
-                <button
-                  type="submit"
-                  className="mr-5 bg-teal-500 mx-2 m-3 p-2 rounded-md"
-                >
-                  Add to cart +
-                </button>
+                <div className="bg-gray-900  text-white text-center text-sm  rounded-sm p-2 grid hover:bg-gray-950">
+                  <button type="submit" className="flex w-full justify-center">
+                    Add to orders <CiShoppingCart className="text-xl ml-2" />
+                  </button>
+                </div>
               </form>
             </ModalBody>
 
@@ -874,12 +854,11 @@ function ProductId() {
                     }
                   </p>
                 </div>
-                <button
-                  type="submit"
-                  className="mr-5 bg-teal-500 mx-2 m-3 p-2 rounded-md"
-                >
-                  Add to cart +
-                </button>
+                <div className="bg-gray-900  text-white text-center text-sm  rounded-sm p-2 grid hover:bg-gray-950">
+                  <button type="submit" className="flex w-full justify-center">
+                    Add to orders <CiShoppingCart className="text-xl ml-2" />
+                  </button>
+                </div>
               </form>
             </ModalBody>
 
