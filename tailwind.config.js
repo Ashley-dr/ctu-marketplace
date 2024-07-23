@@ -7,6 +7,12 @@ export const content = [
   "path-to-your-node_modules/@material-tailwind/react/theme/components/**/*.{js,ts,jsx,tsx}",
 ];
 export const theme = {
+     extend: {
+      width: {
+        '128': '50rem',
+        '100': '30rem',
+      }
+    },
   screens: {
     'ssm': '300px',
     'sm': '640px',
@@ -20,6 +26,7 @@ export const theme = {
     '2xl': '1536px',
     // => @media (min-width: 1536px) { ... }
   },
+
   fontFamily: {
     'sans': ['ui-sans-serif', 'system-ui'],
     'serif': ['ui-serif', 'Georgia'],

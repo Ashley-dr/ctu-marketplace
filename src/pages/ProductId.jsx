@@ -31,8 +31,10 @@ import {
   Box,
   Text,
 } from "@chakra-ui/react";
+import { RiSendPlane2Fill } from "react-icons/ri";
+import { CgNametag } from "react-icons/cg";
 import { FaFacebookSquare } from "react-icons/fa";
-import { formatDistanceToNow } from "date-fns";
+import { formatDate, formatDistanceToNow } from "date-fns";
 import { AtSignIcon, CalendarIcon, LinkIcon } from "@chakra-ui/icons";
 import { RiAccountCircleLine } from "react-icons/ri";
 import { IoPricetagOutline } from "react-icons/io5";
@@ -52,7 +54,7 @@ export const formatDateToNow = (date) => {
   }
   return formatDistanceToNow(validDate, { addSuffix: true });
 };
-
+import { LuDot } from "react-icons/lu";
 function ProductId() {
   const [cookies, removeCookies] = useCookies([]);
   const [productData, setProductData] = useState([]);
@@ -360,7 +362,9 @@ function ProductId() {
                           Description
                         </Heading>
                         <Text pt="2" fontSize="sm">
-                          <p className=" w-96">{productData.description}</p>
+                          <p className="ssm:w-96 lg:w-100">
+                            {productData.description}
+                          </p>
                         </Text>
                       </Box>
                       <Box>
@@ -416,14 +420,26 @@ function ProductId() {
                   </CardBody>
                 </Card>
               </div>
-              <div className="bg-gray-900  text-white text-center text-sm  rounded-sm p-2 grid hover:bg-gray-950">
+              <div className="bg-[#27262615] mt-10 rounded-lg  text-sm   p-1 grid ">
                 {productData.comments && productData.comments.length > 0 && (
                   <div className="">
+                    <p className="ml-5">Comments</p>
                     {productData.comments.map((comment) => (
                       <p key={comment._id}>
-                        <article className="flex bg-slate-400 mx-5 px-4 mb-1">
-                          <strong>{comment.commenterName}</strong>
-                          <p>{comment.comment}</p>
+                        <article className="grid  mt-2 mx-3 px-3 mb-4 bg-[#554f4f33] rounded-md font-poppins">
+                          <p className="flex">
+                            <p className="flex underline font-extralight pt-1 mb-1">
+                              <CgNametag className="mt-0.5 mr-1 text-base" />{" "}
+                              {comment.commenterName}
+                            </p>
+                            <p className="ml-2 text-xs mt-1 flex">
+                              <LuDot className=" mr-1 text-base" />{" "}
+                              {formatDateToNow(comment.createdAt)}
+                            </p>
+                          </p>
+                          <p className="font-quicksand mb-2 pl-1 ssm:w-96 md:w-100 lg:w-128">
+                            {comment.comment}
+                          </p>
                         </article>
                         {/* <button
                         onClick={() => {
@@ -438,40 +454,44 @@ function ProductId() {
                 )}
               </div>
               {isUsers && (
-                <div className="bg-gray-900  text-white text-sm  rounded-sm p-2 grid hover:bg-gray-950">
-                  <form onSubmit={commentHandler}>
-                    <input
+                <div className="bg-gray-900  text-white  text-sm  rounded-sm p-2 grid ">
+                  <form onSubmit={commentHandler} className="flex">
+                    <textarea
+                      className="text-black w-full rounded-sm px-2  font-quicksand bg-[#e4eaec]"
                       type="text"
                       value={newComment}
                       onChange={(event) => setNewComments(event.target.value)}
                       placeholder="Add a comment"
                     />
-                    {/* <input
-                    type="text"
-                    name="comment"
-                    value={newComment.comment}
-                    onChange={commentOnChange}
-                  /> */}
-                    <button type="submit">Comment</button>
+
+                    <button
+                      className="flex float-right px-2 border rounded-md p-1 pl-4 pt-2 hover:bg-[#c1cec633] pr-3 h-10"
+                      type="submit"
+                    >
+                      Comment{" "}
+                      <RiSendPlane2Fill className="mt-0.5 ml-2 text-base" />
+                    </button>
                   </form>
                 </div>
               )}
               {isFaculty && (
-                <div className="bg-gray-900  text-white  text-sm  rounded-sm p-2 grid hover:bg-gray-950">
-                  <form onSubmit={commentHandler}>
-                    <input
+                <div className="bg-gray-900  text-white  text-sm  rounded-sm p-2 grid ">
+                  <form onSubmit={commentHandler} className="flex">
+                    <textarea
+                      className="text-black w-full rounded-sm px-2  font-quicksand bg-[#e4eaec]"
                       type="text"
                       value={newComment}
                       onChange={(event) => setNewComments(event.target.value)}
                       placeholder="Add a comment"
                     />
-                    {/* <input
-                    type="text"
-                    name="comment"
-                    value={newComment.comment}
-                    onChange={commentOnChange}
-                  /> */}
-                    <button type="submit">Comment</button>
+
+                    <button
+                      className="flex float-right px-2 border rounded-md p-1 pl-4 pt-2 hover:bg-[#c1cec633] pr-3 h-10"
+                      type="submit"
+                    >
+                      Comment{" "}
+                      <RiSendPlane2Fill className="mt-0.5 ml-2 text-base" />
+                    </button>
                   </form>
                 </div>
               )}

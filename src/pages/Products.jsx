@@ -58,6 +58,7 @@ function Products() {
               ml={5}
               w={96}
               bg={"#ffff"}
+              textColor={"black"}
               borderColor={"teal.900"}
               className="pl-5 w-96 mt-5 pt-1 rounded-md  border-2 "
               placeholder="Search items here"
