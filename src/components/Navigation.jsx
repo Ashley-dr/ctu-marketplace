@@ -26,14 +26,18 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Alert,
 } from "@chakra-ui/react";
+import { FaSignInAlt } from "react-icons/fa";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { useCookies } from "react-cookie";
+import { MdOutlineAlternateEmail } from "react-icons/md";
 import { UserContext } from "../../backend/Context/userContext";
 import { CiLogout } from "react-icons/ci";
+import { PiPasswordBold } from "react-icons/pi";
 function Navigation() {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -118,6 +122,7 @@ function Navigation() {
           setTimeout(() => {}, 2000);
         } else {
           handleError(message);
+          alert("Account already Exist.");
         }
         window.location.reload();
         navigate("/");
@@ -153,6 +158,7 @@ function Navigation() {
           setTimeout(() => {}, 2000);
         } else {
           handleError(message);
+          alert("Account already Exist.");
         }
         window.location.reload();
         navigate("/");
@@ -619,16 +625,25 @@ function Navigation() {
         blockScrollOnMount={false}
         isOpen={loginModal.isOpen}
         onClose={loginModal.onClose}
+        size={"lg"}
       >
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Sign in</ModalHeader>
+        <ModalContent className="border-r-8  border-[#111827]">
+          <p className="mt-10 w-80 uppercase px-7 mb-3 text-xl font-poppins font-bold">
+            Sign in with CTU - Danao Marketplace
+          </p>
+
           <ModalCloseButton />
-          <ModalBody pb={6}>
+          <ModalBody pb={7}>
             <form onSubmit={loginInput}>
-              <FormControl>
-                <FormLabel>Email:</FormLabel>
-                <Input
+              <FormControl className="flex mb-8 mt-4">
+                <FormLabel className="pt-1.5 border bg-[#142138] rounded-md">
+                  <p className="text-xl mr-1 mb-2 pt-0.5 pl-2 text-white pr-1">
+                    <MdOutlineAlternateEmail />
+                  </p>
+                </FormLabel>
+                <input
+                  className="mb-2  w-full bg-transparent pt-1 pl-1 border-b-4 border-gray-900"
                   placeholder="email@"
                   type="email"
                   name="email"
@@ -641,9 +656,14 @@ function Navigation() {
                   }}
                 />
               </FormControl>
-              <FormControl>
-                <FormLabel>Password:</FormLabel>
-                <Input
+              <FormControl className="flex mb-10 mt-10">
+                <FormLabel className="pt-1.5 border bg-[#142138] rounded-md">
+                  <p className="text-xl mr-1 mb-2 pt-0.5 pl-2 text-white pr-1">
+                    <PiPasswordBold />
+                  </p>
+                </FormLabel>
+                <input
+                  className="mb-2  w-full bg-transparent pt-1 pl-1 border-b-4 border-gray-900"
                   placeholder="Password"
                   type="password"
                   name="password"
@@ -657,11 +677,11 @@ function Navigation() {
                 />
               </FormControl>
 
-              <ModalFooter>
-                <Button type="submit" colorScheme="blue" mr={3}>
-                  Save
-                </Button>
-              </ModalFooter>
+              <div className="bg-gray-900 mt-5 rounded-lg text-white text-center text-sm  p-3 font-quicksand grid hover:bg-gray-950">
+                <button type="submit" className="flex w-full justify-center">
+                  Sign in <FaSignInAlt className="text-lg mt-0.5 ml-2" />
+                </button>
+              </div>
             </form>
           </ModalBody>
         </ModalContent>
@@ -673,21 +693,53 @@ function Navigation() {
         blockScrollOnMount={false}
         isOpen={selectModal.isOpen}
         onClose={selectModal.onClose}
+        size={"lg"}
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Category</ModalHeader>
+          <ModalHeader>
+            <p className="font-poppins">Create Account</p>
+          </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Text fontWeight="bold" mb="1rem">
+            <Text className="text-center font-poppins font-thin" mb="1rem">
               Are you a Student or Faculty Member
             </Text>
-            <Button onClick={facultysignupModal.onOpen}>
-              <Avatar>Fac</Avatar>
-            </Button>
-            <Button onClick={signupModal.onOpen}>
-              <Avatar>Stu</Avatar>
-            </Button>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="h-72 rounded-lg bg-gradient-to-tl from-[#213261fb] via-[#2f617e] to-[#3f35cc] grid items-center justify-items-center content-center justify-center">
+                <button
+                  className="h-72 ssm:w-52 sm:w-56 md:w-56 lg:w-56 z-10 hover:bg-[#ffffff09]"
+                  onClick={signupModal.onOpen}
+                ></button>
+                <p className="text-xs w-56  font-poppins text-[#d5f4f5] absolute bottom-72 text-center uppercase">
+                  Click here
+                </p>
+                <p className="text-2xl w-56 font-extrabold font-poppins text-[#dcf9fa] absolute bottom-32 px-2 justify-self-start">
+                  Student Registration
+                </p>
+                <p className="ssm:text-xs lg:text-sm w-56 font-poppins text-[#a5e9fa] absolute bottom-14 px-2 justify-self-start">
+                  Create account as a Student Member here. <br />
+                  You can sell, trade, buy items.
+                </p>
+              </div>
+
+              <div className="h-72 rounded-lg bg-gradient-to-tr from-[#0d889efb] via-[#4260c4] to-[#be4daf] grid items-center justify-items-center content-center justify-center">
+                <button
+                  className="h-72 ssm:w-52 sm:w-56 md:w-56 lg:w-56 z-10 hover:bg-[#ffffff09]"
+                  onClick={facultysignupModal.onOpen}
+                ></button>
+                <p className="text-xs w-56  font-poppins text-[#d5f4f5] absolute bottom-72 text-center uppercase">
+                  Click here
+                </p>
+                <p className="text-2xl w-56 font-extrabold font-poppins text-[#dcf9fa] absolute bottom-32 ssm:px-6 sm:px-3 lg:px-2 justify-self-start  text-right">
+                  Faculty Registration
+                </p>
+                <p className="ssm:text-xs lg:text-sm w-56 font-poppins text-[#f7e2ff] absolute bottom-14 px-2 justify-self-start">
+                  Create account as a Faculty Member here. <br />
+                  You can sell, trade, buy items.
+                </p>
+              </div>
+            </div>
           </ModalBody>
 
           <ModalFooter></ModalFooter>

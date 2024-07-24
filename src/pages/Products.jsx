@@ -18,6 +18,7 @@ import {
   Button,
   RadioGroup,
 } from "@chakra-ui/react";
+import { MdAssignmentInd } from "react-icons/md";
 import {
   ArrowDownIcon,
   ArrowRightIcon,
@@ -491,8 +492,8 @@ function Products() {
                 <div className="relative isolate flex flex-col justify-end overflow-hidden   max-w-sm ">
                   <div className="grid grid-cols-2 mt-1 font-quicksand">
                     <label className="">
-                      <p className="truncate text-base ml-2 ">
-                        <AtSignIcon className="mr-1" />
+                      <p className="truncate flex text-base ml-1.5 ">
+                        <MdAssignmentInd className="mr-1 mt-1 text-lg" />
                         {item.sellerName}
                       </p>
                     </label>
