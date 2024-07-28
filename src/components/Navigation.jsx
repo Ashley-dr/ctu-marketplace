@@ -408,11 +408,6 @@ function Navigation() {
                         <Link to={`/Transactions/${isFaculty.id}`}>
                           <MenuItem>Transactions</MenuItem>
                         </Link>
-                        <MenuItem>
-                          <Button onClick={logout}>
-                            <CiLogout />
-                          </Button>
-                        </MenuItem>
                       </div>
                     ) : (
                       <MenuItem>
@@ -422,6 +417,11 @@ function Navigation() {
                         </Link>
                       </MenuItem>
                     )}
+                    <MenuItem>
+                      <Button onClick={logout}>
+                        <CiLogout />
+                      </Button>
+                    </MenuItem>
                   </MenuList>
                 </Menu>
               ) : (

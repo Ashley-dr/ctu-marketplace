@@ -296,27 +296,42 @@ router.put('/api/users/:id', upload.fields([
   { name: 'validId', maxCount: 1 },
   { name: 'image', maxCount: 1 },
   { name: 'shopImage', maxCount: 1 }
-]), (req, res) => {
-  const { email, username, fullname, address, gender, department, facebook, course, phoneNumber, shopDescription, gcashNumber, isSeller } = req.body;
-  const { image, validId, shopImage } = req.files;
+]), async (req, res) => {
+  try {
+    const { email, username, fullname, address, gender, department, facebook, course, phoneNumber, shopDescription, gcashNumber, isSeller } = req.body;
+    const { image, validId, shopImage } = req.files;
 
-  // Extract file paths from file objects
-  const imagePath = image ? image[0].path : null;
-  const validIdPath = validId ? validId[0].path : null;
-  const shopImagePath = shopImage ? shopImage[0].path : null;
-
-  // Update user data with file paths as strings
-  UserModel.findByIdAndUpdate(req.params.id, { email, username, fullname, address, gender, department, facebook, course, phoneNumber, shopDescription, gcashNumber, isSeller, image: imagePath, validId: validIdPath, shopImage: shopImagePath }, { new: true })
-    .then((result) => {
-      if (!result) {
-        return res.status(404).json({ message: "User not found" });
+    // Function to upload a single image to Cloudinary
+    const uploadToCloudinary = async (file) => {
+      try {
+        const result = await cloudinary.uploader.upload(file.path);
+        return result.secure_url; // Get the secure URL of the uploaded image
+      } catch (error) {
+        console.error('Error uploading to Cloudinary:', error);
+        throw new Error('Failed to upload image');
       }
-      res.json({ msg: "User data updated successfully" });
-    })
-    .catch((err) => {
-      console.log('Error updating user:', err);
-      res.status(400).json({ message: "Cannot update user data" });
-    });
+    };
+
+    // Upload images to Cloudinary
+    const imageUrl = image ? await uploadToCloudinary(image[0]) : null;
+    const validIdUrl = validId ? await uploadToCloudinary(validId[0]) : null;
+    const shopImageUrl = shopImage ? await uploadToCloudinary(shopImage[0]) : null;
+
+    // Update user data with Cloudinary URLs
+    const updatedUser = await UserModel.findByIdAndUpdate(req.params.id, {
+      email, username, fullname, address, gender, department, facebook, course, phoneNumber, shopDescription, gcashNumber, isSeller,
+      image: imageUrl, validId: validIdUrl, shopImage: shopImageUrl
+    }, { new: true });
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ msg: "User data updated successfully", user: updatedUser });
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(400).json({ message: "Cannot update user data" });
+  }
 });
 
 
@@ -356,30 +371,53 @@ router.delete("/api/faculty/:id", (req, res) => {
     console.log("Error to delete faculty user", err);
   });
 });
+
+
+
+
 router.put("/api/faculty/:id", upload.fields([
   { name: 'validId', maxCount: 1 },
   { name: 'image', maxCount: 1 },
   { name: 'shopImage', maxCount: 1 }
-]), (req, res) => {
-  const { email, username, fullname, address, gender,  facebook,  phoneNumber, shopDescription, gcashNumber, isSeller } = req.body;
+]), async (req, res) => {
+  try {
+      const { email, username, fullname, address, gender,  facebook,  phoneNumber, shopDescription, gcashNumber, isSeller } = req.body;
   const { image, validId, shopImage } = req.files;
-
-  // Extract file paths from file objects
-  const imagePath = image ? image[0].path : null;
-  const validIdPath = validId ? validId[0].path : null;
-  const shopImagePath = shopImage ? shopImage[0].path : null;
-
-  // Update user data with file paths as strings
-    FacultyModel.findByIdAndUpdate(req.params.id, { email, username, fullname, address, gender, facebook,  phoneNumber, shopDescription, gcashNumber, isSeller, image: imagePath, validId: validIdPath, shopImage: shopImagePath }, { new: true }).then((result) => {
-      if(!result){
-        return res.status(404).json({message: "Faculty not found"});
+ // Function to upload a single image to Cloudinary
+    const uploadToCloudinary = async (file) => {
+      try {
+        const result = await cloudinary.uploader.upload(file.path);
+        return result.secure_url; // Get the secure URL of the uploaded image
+      } catch (error) {
+        console.error('Error uploading to Cloudinary:', error);
+        throw new Error('Failed to upload image');
       }
-      res.json({ msg: "Become seller successfully"});
-    }).catch((err) => {
-       console.log('Error updating user:', err);
-      res.status(400).json({message: "Cannot become seller."});
-    });
+    };
+
+    // Upload images to Cloudinary
+    const imageUrl = image ? await uploadToCloudinary(image[0]) : null;
+    const validIdUrl = validId ? await uploadToCloudinary(validId[0]) : null;
+    const shopImageUrl = shopImage ? await uploadToCloudinary(shopImage[0]) : null;
+
+    // Update user data with Cloudinary URLs
+    const updatedUser = await FacultyModel.findByIdAndUpdate(req.params.id, {
+      email, username, fullname, address, gender, facebook, phoneNumber, shopDescription, gcashNumber, isSeller,
+      image: imageUrl, validId: validIdUrl, shopImage: shopImageUrl
+    }, { new: true });
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ msg: "User data updated successfully", user: updatedUser });
+    
+  } catch (error) {
+     console.error('Error updating user:', error);
+    res.status(400).json({ message: "Cannot update user data" });
+  }
 });
+
+
 
 // Faculty users Model //
 
