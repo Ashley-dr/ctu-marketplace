@@ -242,10 +242,10 @@ function BecomeSeller(props) {
               Become a seller, must input the following details.
             </h1>
             <figure className="flex justify-center mb-8">
-              <ol className="flex gap-5">
+              <ol className="flex ssm:mx-5 ssm:text-xs lg:text-base gap-5">
                 <li className="flex font-poppins">
                   <p className="pl-2   pr-2 border-[#077b8a] rounded-full  font-montserrat text-sm border-2 relative bottom-0 mr-2 bg-[#077b8a50] text-[#0b9fb3] font-bold text-center">
-                    <p className="">1</p>
+                    <p className="ssm:mt-1 lg:mt-0">1</p>
                   </p>{" "}
                   General Details
                 </li>
@@ -253,7 +253,7 @@ function BecomeSeller(props) {
                 <li className="flex font-poppins">
                   {" "}
                   <p className="pl-2 pr-2 border-[#077b8a] rounded-full  font-montserrat text-sm border-2 relative bottom-0 mr-2 bg-[#077b8a50] text-[#0b9fb3] font-bold text-center">
-                    2
+                    <p className="ssm:mt-1 lg:mt-0">2</p>
                   </p>{" "}
                   Confirm your Details
                 </li>
@@ -261,7 +261,7 @@ function BecomeSeller(props) {
                 <li className="flex font-poppins">
                   {" "}
                   <p className="pl-2   pr-2 border-[#077b8a] rounded-full  font-montserrat text-sm border-2 relative bottom-0 mr-2 bg-[#077b8a50] text-[#0b9fb3] font-bold text-center">
-                    3
+                    <p className="ssm:mt-1 lg:mt-0">3</p>
                   </p>{" "}
                   Wait for approval
                 </li>
@@ -468,7 +468,7 @@ function BecomeSeller(props) {
                   </label>
                   <br />
                 </article>
-                <article>
+                <article className="ssm:border-l-0 lg:border-l-2 ssm:pl-0 lg:pl-5 ">
                   {/* Image here */}
                   <div className="flex items-center justify-center w-full">
                     <label className="flex  flex-col items-center justify-center w-96 h-64 mb-5 border-2 border-gray-900 border-dashed rounded-lg cursor-pointer bg-[#eaf3fffa] hover:bg-[#c5d0f3fa] ">
@@ -507,7 +507,6 @@ function BecomeSeller(props) {
                           </span>
                           <br />{" "}
                           <span className="font-semibold">Click to upload</span>{" "}
-                          or drag and drop
                         </p>
                         <p className="text-xs text-gray-500 dark:text-gray-400">
                           PNG, JPG
@@ -535,7 +534,6 @@ function BecomeSeller(props) {
                           </span>
                           <br />{" "}
                           <span className="font-semibold">Click to upload</span>{" "}
-                          or drag and drop
                         </p>
                         <p className="text-xs text-gray-500 dark:text-gray-400">
                           PNG, JPG
@@ -556,7 +554,7 @@ function BecomeSeller(props) {
                   <br />
 
                   <Checkbox
-                    className="mb-5 p-2 rounded-md bg-[#95edf048] ssm:mr-0 lg:mr-10 grid text-center"
+                    className="mb-5 p-2 rounded-md bg-[#06ff9f48] ssm:mr-0 lg:mr-10 grid text-center"
                     type="checkbox"
                     name="isSeller"
                     colorScheme="teal"
@@ -578,7 +576,14 @@ function BecomeSeller(props) {
                   </Checkbox>
 
                   <br />
-                  <Button type="submit">Submit</Button>
+                  <Button
+                    className="mb-10"
+                    w={96}
+                    bgColor={"#06ff9f48"}
+                    type="submit"
+                  >
+                    Submit
+                  </Button>
 
                   {/* Image here */}
                 </article>
@@ -590,127 +595,303 @@ function BecomeSeller(props) {
         <></>
       )}
       {isFaculty ? (
-        <figure>
-          <article>
+        <figure className="max-w-full max-h-full bg-gradient-to-tr from-[#00ffdd2d] via-[#0834f515] to-[#08ceff1a] text-center ">
+          <article className="grid justify-items-center">
+            <h1 className="pt-5 font-bebas text-3xl">Let's get you Started!</h1>
+            <h1 className="mb-5 font-bebos">
+              Become a seller, must input the following details.
+            </h1>
+            <figure className="flex justify-center mb-8">
+              <ol className="flex ssm:mx-5 ssm:text-xs lg:text-base gap-5">
+                <li className="flex font-poppins">
+                  <p className="pl-2   pr-2 border-[#077b8a] rounded-full  font-montserrat text-sm border-2 relative bottom-0 mr-2 bg-[#077b8a50] text-[#0b9fb3] font-bold text-center">
+                    <p className="ssm:mt-1 lg:mt-0">1</p>
+                  </p>{" "}
+                  General Details
+                </li>
+                <p className="border-[#15a380] rounded-lg border-2 transform rotate-90  mr-2 ml-2"></p>
+                <li className="flex font-poppins">
+                  {" "}
+                  <p className="pl-2 pr-2 border-[#077b8a] rounded-full  font-montserrat text-sm border-2 relative bottom-0 mr-2 bg-[#077b8a50] text-[#0b9fb3] font-bold text-center">
+                    <p className="ssm:mt-1 lg:mt-0">2</p>
+                  </p>{" "}
+                  Confirm your Details
+                </li>
+                <p className="border-[#15a380] rounded-lg border-2 transform rotate-90  mr-2 ml-2"></p>
+                <li className="flex font-poppins">
+                  {" "}
+                  <p className="pl-2   pr-2 border-[#077b8a] rounded-full  font-montserrat text-sm border-2 relative bottom-0 mr-2 bg-[#077b8a50] text-[#0b9fb3] font-bold text-center">
+                    <p className="ssm:mt-1 lg:mt-0">3</p>
+                  </p>{" "}
+                  Wait for approval
+                </li>
+              </ol>
+            </figure>
             <form onSubmit={facultyOnSubmit}>
-              <input
-                type="text"
-                name="email"
-                placeholder={faculty.email}
-                value={faculty.email}
-                onChange={facultyOnChange}
-                disabled
-              />
-              <br />
-              <input
-                type="text"
-                name="username"
-                placeholder={faculty.username}
-                value={faculty.username}
-                onChange={facultyOnChange}
-                disabled
-              />
-              <br />
-              <input
-                type="text"
-                name="fullname"
-                placeholder={faculty.fullname}
-                value={faculty.fullname}
-                onChange={facultyOnChange}
-                disabled
-              />
-              <br />
-              <select
-                type="text"
-                name="gender"
-                value={faculty.gender}
-                onChange={facultyOnChange}
-                required
-              >
-                <option value=""></option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-              </select>
-              <br />
-              <input
-                type="text"
-                name="facebook"
-                placeholder="Input facebook Link"
-                value={faculty.facebook}
-                onChange={facultyOnChange}
-              />
-              <br />
-              <input
-                type="text"
-                name="address"
-                placeholder="Input address"
-                value={faculty.address}
-                onChange={facultyOnChange}
-              />
-              <br />
+              <figure className="grid ssm:grid-cols-1 lg:grid-cols-2 justify-items-center">
+                <article className="grid font-quicksand ">
+                  <article className="grid font-quicksand justify-items-start mb-4 ">
+                    <label className="grid mb-2">
+                      <p className="justify-self-start text-xs">Email:</p>
+                      <input
+                        className=" bg-transparent w-96"
+                        type="text"
+                        name="email"
+                        placeholder={faculty.email}
+                        value={faculty.email}
+                        onChange={facultyOnChange}
+                        disabled
+                      />
+                    </label>
+                    <label className="grid mb-2">
+                      <p className="justify-self-start text-xs">Username:</p>
+                      <input
+                        className="bg-transparent w-96"
+                        type="text"
+                        name="username"
+                        placeholder={faculty.username}
+                        value={faculty.username}
+                        onChange={facultyOnChange}
+                        disabled
+                      />
+                    </label>
+                    <label className="grid mb-2">
+                      <p className="justify-self-start text-xs">Fullname:</p>
+                      <input
+                        type="text"
+                        className="bg-transparent w-72"
+                        name="fullname"
+                        placeholder={faculty.fullname}
+                        value={faculty.fullname}
+                        onChange={facultyOnChange}
+                        disabled
+                      />
+                    </label>
+                  </article>
+                  <label className="grid mb-2">
+                    <p className="justify-self-start text-xs">Gender</p>
+                    <Select
+                      type="text"
+                      name="gender"
+                      borderBottom={"2px"}
+                      borderLeft={"1px"}
+                      borderRight={"1px"}
+                      borderTop={"1px"}
+                      value={faculty.gender}
+                      onChange={facultyOnChange}
+                      required
+                    >
+                      <option value=""></option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                    </Select>
+                  </label>
+                  <br />
+                  <label className="grid mb-2">
+                    <p className="justify-self-start text-xs">Facebook</p>
+                    <Input
+                      type="text"
+                      borderBottom={"2px"}
+                      borderLeft={"1px"}
+                      borderRight={"1px"}
+                      borderTop={"1px"}
+                      name="facebook"
+                      placeholder="Input facebook Link"
+                      value={faculty.facebook}
+                      onChange={facultyOnChange}
+                    />
+                    <p className="justify-self-start text-xs">
+                      Ex. (https://www.facebook.com/ashleydiligwapo/)
+                    </p>
+                  </label>
+                  <br />
+                  <label className="grid mb-2">
+                    <p className="justify-self-start text-xs">Address</p>
+                    <Input
+                      type="text"
+                      name="address"
+                      borderBottom={"2px"}
+                      borderLeft={"1px"}
+                      borderRight={"1px"}
+                      borderTop={"1px"}
+                      placeholder="Input address"
+                      value={faculty.address}
+                      onChange={facultyOnChange}
+                    />
+                  </label>
+                  <br />
+                  <label className="grid mb-2">
+                    <p className="justify-self-start text-xs">Phone number</p>
+                    <Input
+                      type="number"
+                      borderBottom={"2px"}
+                      borderLeft={"1px"}
+                      borderRight={"1px"}
+                      borderTop={"1px"}
+                      name="phoneNumber"
+                      placeholder="Phone #"
+                      value={faculty.phoneNumber}
+                      onChange={facultyOnChange}
+                    />
+                  </label>
+                  <br />
+                  <label className="grid mb-2">
+                    <p className="justify-self-start text-xs">Gcash Number</p>
+                    <Input
+                      borderBottom={"2px"}
+                      borderLeft={"1px"}
+                      borderRight={"1px"}
+                      borderTop={"1px"}
+                      type="number"
+                      name="gcashNumber"
+                      placeholder="Gcash #"
+                      value={faculty.gcashNumber}
+                      onChange={facultyOnChange}
+                    />
+                    <p className="justify-self-start text-xs">
+                      Please make sure to use verified (GCASH) Number.
+                    </p>
+                    <p className="justify-self-start text-xs">
+                      This is used for online transaction. (Required)
+                    </p>
+                  </label>
+                  <br />
+                  <label className="grid mb-2">
+                    <p className="justify-self-start text-xs">
+                      Shop Description
+                    </p>
+                    <Textarea
+                      type="text"
+                      borderBottom={"2px"}
+                      borderLeft={"1px"}
+                      borderRight={"1px"}
+                      borderTop={"1px"}
+                      name="shopDescription"
+                      placeholder="Shop Description"
+                      value={faculty.shopDescription}
+                      onChange={facultyOnChange}
+                    />
+                    <p className="justify-self-start text-xs">
+                      Input your profile or shop description.
+                    </p>
+                  </label>
+                  <br />
+                </article>
+                <article className="ssm:border-l-0 lg:border-l-2 ssm:pl-0 lg:pl-5 ">
+                  {/* Image here */}
+                  <div className="flex items-center justify-center w-full">
+                    <label className="flex  flex-col items-center justify-center w-96 h-64 mb-5 border-2 border-gray-900 border-dashed rounded-lg cursor-pointer bg-[#eaf3fffa] hover:bg-[#c5d0f3fa] ">
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <AiOutlineUpload className="text-5xl text-gray-900" />
+                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                          <span className="font-semibold text-gray-900 font-quicksand text-lg">
+                            Valid Id
+                          </span>
+                          <br />{" "}
+                          <span className="font-semibold">Click to upload</span>{" "}
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          PNG, JPG
+                        </p>
+                      </div>
+                      <input
+                        id="dropzone-file"
+                        type="file"
+                        className="text-black bg-transparent  relative top-5 mr-16"
+                        name="validId"
+                        accept="image/*"
+                        required
+                        onChange={FacultyOnChangeFileImage}
+                      />
+                    </label>
+                  </div>
+                  <div className="flex items-center justify-center w-full">
+                    <label className="flex  flex-col items-center justify-center w-96 h-64 mb-5 border-2 border-gray-900 border-dashed rounded-lg cursor-pointer bg-[#eaf3fffa] hover:bg-[#c5d0f3fa] ">
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <AiOutlineUpload className="text-5xl text-gray-900" />
+                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                          <span className="font-semibold text-gray-900 font-quicksand text-lg">
+                            Shop Cover Image
+                          </span>
+                          <br />{" "}
+                          <span className="font-semibold">Click to upload</span>{" "}
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          PNG, JPG
+                        </p>
+                      </div>
+                      <input
+                        id="dropzone-file"
+                        type="file"
+                        className="text-black bg-transparent  relative top-5 mr-16"
+                        name="shopImage"
+                        accept="image/*"
+                        required
+                        onChange={FacultyOnChangeFileImage}
+                      />
+                    </label>
+                  </div>
+                  <div className="flex items-center justify-center w-full">
+                    <label className="flex  flex-col items-center justify-center w-96 h-64 border-2 border-gray-900 border-dashed rounded-lg cursor-pointer bg-[#eaf3fffa] hover:bg-[#c5d0f3fa] ">
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <AiOutlineUpload className="text-5xl text-gray-900" />
+                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                          <span className="font-semibold text-gray-900 font-quicksand text-lg">
+                            Profile Image
+                          </span>
+                          <br />{" "}
+                          <span className="font-semibold">Click to upload</span>{" "}
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          PNG, JPG
+                        </p>
+                      </div>
+                      <input
+                        id="dropzone-file"
+                        type="file"
+                        className="text-black bg-transparent  relative top-5 mr-16"
+                        name="image"
+                        accept="image/*"
+                        required
+                        onChange={FacultyOnChangeFileImage}
+                      />
+                    </label>
+                  </div>
 
-              <input
-                type="number"
-                name="phoneNumber"
-                placeholder="Phone #"
-                value={faculty.phoneNumber}
-                onChange={facultyOnChange}
-              />
-              <br />
-              <input
-                type="number"
-                name="gcashNumber"
-                placeholder="Gcash #"
-                value={faculty.gcashNumber}
-                onChange={facultyOnChange}
-              />
-              <br />
+                  {/* Image here */}
+                  <br />
 
-              {/* Image here */}
-              <input
-                type="file"
-                accept="image/*"
-                name="validId"
-                onChange={FacultyOnChangeFileImage}
-              />
-              <br />
-              <input
-                type="file"
-                accept="image/*"
-                name="shopImage"
-                onChange={FacultyOnChangeFileImage}
-              />
-              <br />
-              <input
-                type="file"
-                accept="image/*"
-                name="image"
-                onChange={FacultyOnChangeFileImage}
-              />
-              <br />
-              {/* Image here */}
-
-              <input
-                type="text"
-                name="shopDescription"
-                placeholder="Shop Description"
-                value={faculty.shopDescription}
-                onChange={facultyOnChange}
-              />
-              <br />
-              <input
-                type="checkbox"
-                name="isSeller"
-                value={false}
-                onChange={facultyOnChange}
-              />
-              <label>
-                To confirm this account, please click the checkbox and wait for
-                the review for the confirmation of your account to be a seller.
-              </label>
-              <br />
-
-              <button type="submit">Save</button>
+                  <Checkbox
+                    className="mb-5 p-2 rounded-md bg-[#06ff9f48] ssm:mr-0 lg:mr-10 grid text-center"
+                    type="checkbox"
+                    name="isSeller"
+                    colorScheme="teal"
+                    border={"black"}
+                    value={false}
+                    onChange={facultyOnChange}
+                    required
+                  >
+                    <label className="  ">
+                      {" "}
+                      <p className="font-poppins text-sm  ssm:w-96 lg:w-100 ">
+                        {" "}
+                        To confirm this account, please click the checkbox and
+                        wait for the review for the confirmation of your account
+                        to be a seller.{" "}
+                      </p>
+                    </label>
+                  </Checkbox>
+                  <br />
+                  <Button
+                    className="mb-10"
+                    w={96}
+                    bgColor={"#06ff9f48"}
+                    type="submit"
+                  >
+                    Submit
+                  </Button>
+                </article>
+              </figure>
             </form>
           </article>
         </figure>

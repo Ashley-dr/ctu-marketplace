@@ -368,12 +368,12 @@ function Navigation() {
                     cursor={"pointer"}
                     minW={0}
                   >
-                    <Avatar size={"sm"} />
+                    <Avatar size={"md"} src={isFaculty.image} />
                   </MenuButton>
                   <MenuList alignItems={"center"}>
                     <br />
                     <Center>
-                      <Avatar size={"2xl"} />
+                      <Avatar showBorder size={"2xl"} src={isFaculty.image} />
                     </Center>
                     <br />
                     <Center>

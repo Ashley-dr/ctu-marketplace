@@ -51,7 +51,7 @@ function Products() {
   const [value, setValue] = useState("1");
   const [checkedItems, setCheckedItems] = useState([false, false]);
   return (
-    <div className="rounded-md  pb-4 max-w-full max-h-full justify-items-center grid ">
+    <div className="rounded-md  pb-4 max-w-full max-h-full justify-items-center grid  bg-gradient-to-tr from-[#00ffdd2d] via-[#0834f523] to-[#087bff1a]">
       <div className="bg-[#79787809] justify-items-center grid max-w-full w-full  pr-5">
         <form className="">
           <figure className="grid ">
