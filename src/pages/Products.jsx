@@ -39,14 +39,18 @@ function Products() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [placement, setPlacement] = useState("top");
   useEffect(() => {
-    axios
-      .get("http://localhost:4000/api/products")
-      .then((result) => {
-        setProductsData(result.data);
-      })
-      .catch((err) => {
-        console.log("Error fetching products data", err);
-      });
+    const fetchData = async () => {
+      axios
+        .get("http://localhost:4000/api/products")
+        .then((result) => {
+          setProductsData(result.data);
+        })
+        .catch((err) => {
+          console.log("Error fetching products data", err);
+        });
+    };
+    const interval = setInterval(fetchData, 1000);
+    return () => clearInterval(interval);
   }, []);
   const [value, setValue] = useState("1");
   const [checkedItems, setCheckedItems] = useState([false, false]);

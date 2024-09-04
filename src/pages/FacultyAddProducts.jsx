@@ -139,9 +139,9 @@ function FacultyAddProducts() {
     setProducts({ ...products, categories: categoriesVar });
   };
   return (
-    <div className="rounded-md  pb-4 max-w-full max-h-full justify-items-center grid ">
+    <div className="rounded-md  pb-4 max-w-full max-h-full justify-items-center grid bg-gradient-to-tr from-[#00ffdd2d] via-[#0834f523] to-[#087bff1a]">
       <figure className="max-w-full w-full ">
-        <article className="border bg-[#807ee631] px-9 pt-5 mt-2 rounded-lg pb-5 lg:mx-9">
+        <article className=" px-9 pt-5 mt-2 rounded-lg pb-5 lg:mx-9">
           <form onSubmit={productSubmit}>
             <p className=" text-lg font-bebas">Add a new Product</p>
             <div>

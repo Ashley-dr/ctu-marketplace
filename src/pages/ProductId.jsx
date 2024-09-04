@@ -125,15 +125,19 @@ function ProductId() {
   }, [cookies, navigate, removeCookies]);
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:4000/api/products/${id}`)
-      .then((result) => {
-        setProductData(result.data);
-        console.log(result.data);
-      })
-      .catch((err) => {
-        console.log("Error to fetch product");
-      });
+    const fetchData = async () => {
+      axios
+        .get(`http://localhost:4000/api/products/${id}`)
+        .then((result) => {
+          setProductData(result.data);
+        })
+        .catch((err) => {
+          console.log("Error to fetch product");
+        });
+    };
+    fetchData();
+    const interval = setInterval(fetchData, 1000);
+    return () => clearInterval(interval);
   }, [id]);
 
   const handleUserModal = (products) => {
@@ -173,7 +177,7 @@ function ProductId() {
           sellerFacebook: "",
           buyerFacebook: "",
         });
-        navigate("/");
+        navigate(`/Orders/${purchasedSchema.userId}`);
       })
       .catch((err) => {
         console.log("Error submitting:", err);
@@ -244,7 +248,7 @@ function ProductId() {
     ],
   };
   return (
-    <div className="rounded-md  pb-4 max-w-full max-h-full justify-items-center grid ">
+    <div className="rounded-md  pb-4 max-w-full max-h-full justify-items-center grid bg-gradient-to-tr from-[#00ffdd2d] via-[#0834f523] to-[#087bff1a]">
       <figure className=" justify-items-center grid max-w-full w-full">
         <article>
           {productData ? (

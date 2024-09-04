@@ -23,9 +23,11 @@ function Account() {
     });
   useEffect(() => {
     const verifyCookie = async () => {
+
       if (!cookies.token) {
         navigate("/");
       }
+      
       const { data } = await axios.post(
         "http://localhost:4000/facultypost",
         {},
