@@ -26,7 +26,14 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Alert,
+  Alert, 
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
 } from "@chakra-ui/react";
 import { FaSignInAlt } from "react-icons/fa";
 import axios from "axios";
@@ -249,12 +256,15 @@ function Navigation() {
         px={4}
       >
         <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
-          <Link to="/">
-            <Box className="">
+          <Link to="/" className="flex space-x-4 font-poppins">
+            <Box className="mt-1">
               {" "}
               <Avatar size={"sm"} />
             </Box>
+            <Text className="text-sm">CTU DANAO <hr /> MARKETPLACE</Text>
           </Link>
+
+          
           <Flex alignItems={"center"}>
             <Stack direction={"row"} spacing={7}>
               <Button onClick={toggleColorMode} className="mt-1">
@@ -434,70 +444,35 @@ function Navigation() {
       </Box>
 
       {/* Student Sign up Modal */}
-      <Modal
+      <Drawer
         blockScrollOnMount={false}
         isOpen={signupModal.isOpen}
         onClose={signupModal.onClose}
+        size={"full"}
       >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Create your account</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody pb={6}>
-            <form onSubmit={handleSignupSubmit}>
-              <FormControl>
-                <FormLabel>Email:</FormLabel>
-                <Input
-                  placeholder="email@"
-                  type="email"
-                  name="email"
-                  value={SignupInputValue.email}
-                  onChange={(e) => {
-                    setSignUpInputValue({
-                      ...SignupInputValue,
-                      [e.target.name]: e.target.value,
-                    });
-                  }}
-                />
-              </FormControl>
+        <DrawerOverlay />
+        <DrawerContent>
+          <p className="text-center mt-16 text-2xl font-bold font-poppins">Create new Account as Student</p>
+          <p className="text-center text-sm font-thin mt-2">Already Registered? <button className=" font-normal" onClick={loginModal.onOpen}>Login</button></p>
+          <DrawerCloseButton />
+          <DrawerBody pb={6} className="grid justify-items-center ">
+            <form onSubmit={handleSignupSubmit} className="w-72">
 
-              <FormControl>
-                <FormLabel>Username:</FormLabel>
-                <Input
-                  placeholder="Username"
-                  type="text"
-                  name="username"
-                  value={SignupInputValue.username}
-                  onChange={(e) => {
-                    setSignUpInputValue({
-                      ...SignupInputValue,
-                      [e.target.name]: e.target.value,
-                    });
-                  }}
-                />
-              </FormControl>
-              <FormControl>
-                <FormLabel>Password:</FormLabel>
-                <Input
-                  placeholder="Password"
-                  type="password"
-                  name="password"
-                  value={SignupInputValue.password}
-                  onChange={(e) => {
-                    setSignUpInputValue({
-                      ...SignupInputValue,
-                      [e.target.name]: e.target.value,
-                    });
-                  }}
-                />
-              </FormControl>
 
-              <FormControl>
-                <FormLabel>Fullname:</FormLabel>
+            <FormControl>
+                <label className=" font-poppins font-thick uppercase tracking-widest  text-sm">Fullname</label>
                 <Input
-                  placeholder="Fullname"
+                  placeholder="FULLNAME"
                   type="text"
+                 mt={2}
+                  mb={2}
                   name="fullname"
+                  rounded={"none"}
+                  borderBottom={"1px"}
+                  borderLeft={"1px"}
+                  borderRight={"1px"}
+                  borderTop={"1px"}
+                  
                   value={SignupInputValue.fullname}
                   onChange={(e) => {
                     setSignUpInputValue({
@@ -508,16 +483,68 @@ function Navigation() {
                 />
               </FormControl>
 
-              <ModalFooter>
-                <Button type="submit" colorScheme="blue" mr={3}>
-                  Save
+
+              <FormControl>
+                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">email</label>
+                <Input
+                  placeholder="email"
+                  type="email"
+                  name="email"
+
+                  mt={2}
+                  mb={2}
+                  rounded={"none"}
+                  borderBottom={"1px"}
+                  borderLeft={"1px"}
+                  borderRight={"1px"}
+                  borderTop={"1px"}
+                  value={SignupInputValue.email}
+                  onChange={(e) => {
+                    setSignUpInputValue({
+                      ...SignupInputValue,
+                      [e.target.name]: e.target.value,
+                    });
+                  }}
+                />
+              </FormControl>
+
+        
+              <FormControl>
+              <label className=" font-poppins font-thick uppercase tracking-widest text-sm">password</label>
+                <Input
+                  placeholder="Password"
+                  type="password"
+                  name="password"
+
+                  mt={2}
+                  mb={2}
+                  rounded={"none"}
+                  borderBottom={"1px"}
+                  borderLeft={"1px"}
+                  borderRight={"1px"}
+                  borderTop={"1px"}
+                  value={SignupInputValue.password}
+                  onChange={(e) => {
+                    setSignUpInputValue({
+                      ...SignupInputValue,
+                      [e.target.name]: e.target.value,
+                    });
+                  }}
+                />
+              </FormControl>
+
+         
+
+              <ModalFooter className="grid">
+                <Button className=" self-center justify-self-center" type="submit"  >
+                  Sign up
                 </Button>
-                <Button onClick={signupModal.onClose}>Cancel</Button>
+                
               </ModalFooter>
             </form>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
       {/* Student Sign up Modal */}
 
       {/* Faculty Member Sign up Modal */}

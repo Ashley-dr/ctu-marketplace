@@ -14,6 +14,7 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
+import { AiOutlineUpload } from "react-icons/ai";
 function FacultyAddProducts() {
   const [cookies, removeCookies] = useCookies([]);
 
@@ -139,11 +140,43 @@ function FacultyAddProducts() {
     setProducts({ ...products, categories: categoriesVar });
   };
   return (
-    <div className="rounded-md  pb-4 max-w-full max-h-full justify-items-center grid bg-gradient-to-tr from-[#00ffdd2d] via-[#0834f523] to-[#087bff1a]">
-      <figure className="max-w-full w-full ">
+    <figure className="max-w-full pt-2 max-h-full bg-gradient-to-tr from-[#00ffdd2d] via-[#0834f515] to-[#08ceff1a] text-center ">
+     <figure className="max-w-full w-full ">
         <article className=" px-9 pt-5 mt-2 rounded-lg pb-5 lg:mx-9">
+
+        <article className="grid justify-items-center">
+
+        <h1 className="pt-5 font-bebas text-3xl">Add new product.</h1>
+     
+     <figure className="flex justify-center mb-8">
+       <ol className="flex ssm:mx-5 ssm:text-xs lg:text-base gap-5">
+         <li className="flex font-poppins">
+           <p className="pl-2   pr-2 border-[#077b8a] rounded-full  font-montserrat text-sm border-2 relative bottom-0 mr-2 bg-[#077b8a50] text-[#0b9fb3] font-bold text-center">
+             <p className="ssm:mt-1 lg:mt-0">1</p>
+           </p>{" "}
+           Input product 
+         </li>
+         <p className="border-[#15a380] rounded-lg border-2 transform rotate-90  mr-2 ml-2"></p>
+         <li className="flex font-poppins">
+           {" "}
+           <p className="pl-2 pr-2 border-[#077b8a] rounded-full  font-montserrat text-sm border-2 relative bottom-0 mr-2 bg-[#077b8a50] text-[#0b9fb3] font-bold text-center">
+             <p className="ssm:mt-1 lg:mt-0">2</p>
+           </p>{" "}
+           Product on inventory
+         </li>
+         {/* <p className="border-[#15a380] rounded-lg border-2 transform rotate-90  mr-2 ml-2"></p>
+         <li className="flex font-poppins">
+           {" "}
+           <p className="pl-2   pr-2 border-[#077b8a] rounded-full  font-montserrat text-sm border-2 relative bottom-0 mr-2 bg-[#077b8a50] text-[#0b9fb3] font-bold text-center">
+             <p className="ssm:mt-1 lg:mt-0">3</p>
+           </p>{" "}
+           Wait for approval
+         </li> */}
+       </ol>
+     </figure>
           <form onSubmit={productSubmit}>
-            <p className=" text-lg font-bebas">Add a new Product</p>
+          <figure className="grid ssm:grid-cols-1 lg:grid-cols-2 justify-items-center">
+            <article className="grid font-quicksand w-96">
             <div>
               <input
                 type="text"
@@ -181,142 +214,181 @@ function FacultyAddProducts() {
                 hidden
               />
             </div>
-            <div className="grid mb-3 ">
-              <label className="mb-1 mt-3 font-montserrat text-sm">
-                Product Name:{" "}
-              </label>
-              <Input
-                bg={"slate"}
-                border="1px"
-                borderColor="slate"
-                className=" border-slate-400 border-t border-e border-x border-y px-3 rounded-md p-2 text-black bg-[#eceeee]"
-                type="text"
-                value={products.prodName}
-                name="prodName"
-                placeholder="Product Name"
-                onChange={productHandler}
-              />
-            </div>
-            <div className="grid grid-cols-2 items-start">
-              <label className="mb-3 mt-3 font-montserrat text-sm grid">
-                Stocks:{" "}
+            
+              <label className="grid mb-2">
+                    <p className="justify-self-start text-xs">Product name</p>
                 <Input
-                  bg={"slate"}
+                
                   border="1px"
                   borderColor="slate"
-                  className=" border-slate-400 border-t border-e border-x border-y px-3 rounded-md p-2  text-black bg-[#eceeee] mr-2"
-                  type="number"
-                  value={products.stocks}
-                  name="stocks"
-                  placeholder="stocks"
-                  onChange={productHandler}
-                />
-              </label>
-              <label className="mb-3 ml-3  mt-3 font-montserrat text-sm grid">
-                <p className="px-2">Price: </p>
-                <InputGroup>
-                  <InputLeftElement
-                    pointerEvents="none"
-                    color="gray.900"
-                    fontSize="1.2em"
-                  >
-                    ₱
-                  </InputLeftElement>
-
-                  <Input
-                    bg={"slate"}
-                    border="1px"
-                    borderColor="slate"
-                    ml={2}
-                    className=" border-slate-400 border-t border-e border-x border-y px-3 rounded-md p-2 text-black bg-[#eceeee] "
-                    type="number"
-                    value={products.price}
-                    name="price"
-                    placeholder="Price"
-                    onChange={productHandler}
-                  />
-
-                  <InputRightElement></InputRightElement>
-                </InputGroup>
-              </label>
-              <label className="mb-3  mt-3 font-montserrat text-sm grid">
-                Categories:{" "}
-                <Select
-                  isMulti={true}
-                  options={categoriesOption}
                   type="text"
-                  name="categories"
-                  className=" border-slate-400 border-t border-e border-x border-y  rounded-md text-black bg-[#eceeee] "
-                  value={categoriesOption.filter((option) =>
-                    products.categories.includes(option.value)
-                  )}
-                  placeholder="Categories"
-                  onChange={categoriesOnChange}
-                />
-              </label>
-              <label className="mb-3 ml-3 mr-2 mt-3 font-montserrat text-sm grid">
-                <p className="px-2">Item Image: Up 5 files. </p>
-                <Input
-                  pl={0}
-                  p="6px"
-                  mx={2}
-                  bg={"slate"}
-                  border="1px"
-                  borderColor="slate"
-                  type="file"
-                  className=" border-slate-400 border-t border-e border-x border-y  rounded-md text-black bg-[#e1e4e4]"
-                  value={productImage.image}
-                  accept="image/"
-                  name="image"
-                  placeholder="image"
-                  multiple
-                  onChange={productHandlerFile}
-                />
-              </label>
-              <div className="grid mb-3 ">
-                <label className="mb-1  font-montserrat text-sm">
-                  Select Option Market Type of:{" "}
-                </label>
-                <select
-                  className="w-56 border-slate-400 border-t border-e border-x border-y px-3 rounded-md p-2 text-black bg-[#eceeee]"
-                  name="marketType"
-                  value={products.marketType}
+                  borderBottom={"2px"}
+                  borderLeft={"1px"}
+                  borderRight={"1px"}
+                  borderTop={"1px"}
+                  value={products.prodName}
+                  name="prodName"
+                  placeholder="Product Name"
                   onChange={productHandler}
                   required
+                />
+           </label>
+
+          
+           <label className="grid mb-2">
+           <p className="justify-self-start text-xs">Stocks</p>
+                  <Input
+                    borderBottom={"2px"}
+                    borderLeft={"1px"}
+                    borderRight={"1px"}
+                    borderTop={"1px"}
+                  
+                    borderColor="slate"
+                    type="number"
+                    value={products.stocks}
+                    name="stocks"
+                    placeholder="stocks"
+                    onChange={productHandler}
+                    required
+                  />
+                </label>
+                
+                <label className="grid mb-2">
+                <p className="justify-self-start text-xs">Price</p>
+                  <InputGroup>
+                    <InputLeftElement
+                      pointerEvents="none"
+                      color="gray.100"
+                      fontSize="1.2em"
+                    >
+                      ₱
+                    </InputLeftElement>
+
+                    <Input
+                           borderBottom={"2px"}
+                           borderLeft={"1px"}
+                           borderRight={"1px"}
+                           borderTop={"1px"}
+                 
+                      type="number"
+                      value={products.price}
+                      name="price"
+                      placeholder="Price"
+                      onChange={productHandler}
+                      required
+                    />
+
+                    <InputRightElement></InputRightElement>
+                  </InputGroup>
+                </label>
+          
+           
+                <label className="grid mb-2">
+                    <p className="justify-self-start text-xs">Market Type</p>
+                   <select
+                    className=" border-slate-400 border-t border-e border-x border-y px-3 rounded-md p-2  bg-transparent"
+                    name="marketType"
+                    value={products.marketType}
+                    onChange={productHandler}
+                    required
+                  >
+                    <option value="" >Select</option>
+                    <option value="Trading" className="text-black">Trading</option>
+                    <option value="Selling" className="text-black">Selling</option>
+                  </select>
+                </label>
+            
+
+                <label className="grid mb-2">
+                    <p className="justify-self-start text-xs">Description</p>
+                    <Textarea
+                borderBottom={"2px"}
+                borderLeft={"1px"}
+                borderRight={"1px"}
+                borderTop={"1px"}   type="text"
+                  value={products.description}
+                  name="description"
+                  required
+                  placeholder="Add Description"
+                  onChange={productHandler}
+                />{" "}
+              </label>
+              <label className="grid mb-2">
+                <p className="justify-self-start text-xs">Categories</p>
+                  <Select
+                    isMulti={true}
+                    bg={"transparent"}
+                    options={categoriesOption}
+                    type="text"
+                    borderBottom={"2px"}
+                    borderLeft={"1px"}
+                    borderRight={"1px"}
+                    borderTop={"1px"}
+                    name="categories"
+                    className="  border-t border-e border-x border-y  rounded-md text-black  "
+                    value={categoriesOption.filter((option) =>
+                      products.categories.includes(option.value)
+                    )}
+                    placeholder="Categories"
+                    
+                    onChange={categoriesOnChange}
+                    required
+                  />
+                </label>
+              <center>
+                {" "}
+                <button
+                  type="submit"
+                  className="bg-gray-800  p-2 px-4 rounded-lg text-white font-quicksand font-semibold flex items-center hover:bg-gray-600"
                 >
-                  <option value="">Select</option>
-                  <option value="Trading">Trading</option>
-                  <option value="Selling">Selling</option>
-                </select>
-              </div>
-            </div>
-            <label className="mb-3 mt-3 font-montserrat text-sm grid">
-              Description:{" "}
-              <Textarea
-                bg={"slate"}
-                border="1px"
-                borderColor="slate"
-                className=" border-slate-400 border-t border-e border-x border-y px-3 rounded-md p-2 text-black bg-[#eceeee] "
-                type="text"
-                value={products.description}
-                name="description"
-                placeholder="Add Description"
-                onChange={productHandler}
-              />{" "}
-            </label>
-            <center>
-              {" "}
-              <button
-                type="submit"
-                className="bg-gray-800 p-2 px-4 rounded-lg text-white font-quicksand font-semibold flex items-center hover:bg-gray-600"
-              >
-                Add Item <AddIcon className="ml-2 text-xs" />
-              </button>
-            </center>
+                  Add Item <AddIcon className="ml-2 text-xs" />
+                </button>
+              </center>
+            </article>
+
+            <article className="ssm:border-l-0 lg:border-l-2 ssm:pl-0 lg:pl-5 ">
+
+
+
+            <label className="flex items-center justify-center w-full">
+            <label className="flex  flex-col items-center justify-center w-96 h-64 mb-5 border-2 border-gray-900 border-dashed rounded-lg cursor-pointer bg-[#eaf3fffa] hover:bg-[#c5d0f3fa] ">
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <AiOutlineUpload className="text-5xl text-gray-900" />
+                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                          <span className="font-semibold text-gray-900 font-quicksand text-lg">
+                            Valid Id
+                          </span>
+                          <br />{" "}
+                          <span className="font-semibold">Click to upload</span>{" "}
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          PNG, JPG
+                        </p>
+                      </div>
+                  <input       
+                    id="dropzone-file"      
+                    type="file"
+                    className="text-black bg-transparent  relative top-5 mr-16"
+                        value={productImage.image}
+                    accept="image/"
+                    name="image"
+                    placeholder="image"
+                    multiple
+                    required
+                    onChange={productHandlerFile}
+                  />
+                  </label>
+                </label>
+
+                
+              </article>
+
+            </figure>
           </form>
         </article>
+        </article>
       </figure>
-    </div>
+    </figure>
   );
 }
 
