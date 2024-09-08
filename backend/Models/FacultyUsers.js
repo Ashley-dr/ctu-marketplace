@@ -52,6 +52,9 @@ const FacultySchema = new mongoose.Schema({
   isFaculty: {
     type: String,
   },
+  isBuyer: {
+    type: Boolean,
+  },
   isSeller: {
     type: Boolean,
   },

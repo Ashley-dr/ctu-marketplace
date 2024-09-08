@@ -7,12 +7,12 @@ import bcrypt from "bcryptjs";
 
 export const Signup = async (req, res, next) => {
   try {
-    const { email, password, username, facebook,  fullname, department, image, gender, course, phoneNumber, validId, shopImage, shopDescription, gcashNumber,address, createdAt } = req.body;
+    const { email, isBuyer, idNumber, password, username, facebook,  fullname, department, image, gender, course, phoneNumber, validId, shopImage, shopDescription, gcashNumber,address, createdAt } = req.body;
     const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
       return res.json({ message: "User already exists" });
     }
-    const user = await UserModel.create({ email, password, username,facebook, fullname, department, image, gender, course, phoneNumber, validId, address, shopImage, shopDescription, gcashNumber, createdAt });
+    const user = await UserModel.create({ email, isBuyer, idNumber, password, username,facebook, fullname, department, image, gender, course, phoneNumber, validId, address, shopImage, shopDescription, gcashNumber, createdAt });
     const token = createSecretToken(user._id);
     res.cookie("token", token, {
       withCredentials: true,
@@ -34,12 +34,12 @@ export const Signup = async (req, res, next) => {
 
 export const FacultySignup = async (req, res, next) => {
   try {
-    const { email, password, username, fullname, facebook, image, gender, phoneNumber, validId, shopImage, shopDescription, gcashNumber, address, createdAt,  } = req.body;
+    const { email, isBuyer, password, username, fullname, facebook, image, gender, phoneNumber, validId, shopImage, shopDescription, gcashNumber, address, createdAt,  } = req.body;
     const existingUser = await FacultyModel.findOne({ email });
     if (existingUser) {
       return res.json({ message: "User already exists" });
     }
-    const facultyuser = await FacultyModel.create({ email, password, username, fullname, facebook, image, gender, phoneNumber, validId, shopImage,address, shopDescription, gcashNumber,createdAt });
+    const facultyuser = await FacultyModel.create({ email, isBuyer, password, username, fullname, facebook, image, gender, phoneNumber, validId, shopImage,address, shopDescription, gcashNumber,createdAt });
     const token = createSecretToken(facultyuser._id);
     res.cookie("token", token, {
       withCredentials: true,

@@ -14,6 +14,8 @@ import { DonePurchasedModel } from "../Models/DonePurchased.js";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import path from "path";
 import { ProductModel } from "../Models/Products.js";
+import { PurchasedModel } from "../Models/Purchased.js";
+import { createSecretToken } from "../util/SecretToken.js";
 dotenv.config()
 const router = express.Router();
 
@@ -25,7 +27,7 @@ router.post("/facultypost", FacultyuserVerification);
 
 
 import {v2 as cloudinary} from 'cloudinary';       
-import { PurchasedModel } from "../Models/Purchased.js";
+
 cloudinary.config({ 
   cloud_name: 'dxruxxfoa', 
   api_key: '559133875522998', 
@@ -48,6 +50,9 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+
+
+
 
 
 // Add Products //

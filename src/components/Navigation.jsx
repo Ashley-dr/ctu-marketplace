@@ -34,6 +34,7 @@ import {
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
+  Select,
 } from "@chakra-ui/react";
 import { FaSignInAlt } from "react-icons/fa";
 import axios from "axios";
@@ -45,6 +46,7 @@ import { MdOutlineAlternateEmail } from "react-icons/md";
 import { UserContext } from "../../backend/Context/userContext";
 import { CiLogout } from "react-icons/ci";
 import { PiPasswordBold } from "react-icons/pi";
+import { AiOutlineUpload } from "react-icons/ai";
 function Navigation() {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -66,6 +68,7 @@ function Navigation() {
     fullname: "",
     department: "",
     facebook: "",
+    address: "",
     gender: "",
     course: "",
     phoneNumber: "",
@@ -73,12 +76,16 @@ function Navigation() {
     shopImage: "",
     shopDescription: "",
     gcashNumber: "",
+    idNumber: "",
+    image: "",
+    isBuyer: false,
   });
   const [FacultySignupInputValue, setFacultySignupInputValue] = useState({
     email: "",
     password: "",
     username: "",
     fullname: "",
+    address: "",
     facebook: "",
     gender: "",
     phoneNumber: "",
@@ -86,6 +93,7 @@ function Navigation() {
     shopImage: "",
     shopDescription: "",
     gcashNumber: "",
+    isBuyer: false,
   });
 
   const [inputLogin, setInputLogin] = useState({
@@ -121,15 +129,20 @@ function Navigation() {
           validId: "",
           shopDescription: "",
           shopImage: "",
+          image: "",
           gcashNumber: "",
+          idNumber: "",
+          address: "",
+          isBuyer: "",
         });
         const { success, message } = result;
         if (success) {
           handleSuccess(message);
           setTimeout(() => {}, 2000);
+          // alert("Account successfully created");
         } else {
           handleError(message);
-          alert("Account already Exist.");
+          // alert("Account already Exist.");
         }
         window.location.reload();
         navigate("/");
@@ -152,11 +165,13 @@ function Navigation() {
           fullname: "",
           facebook: "",
           gender: "",
-
+          image: "",
           phoneNumber: "",
           validId: "",
           shopDescription: "",
           shopImage: "",
+          address: "",
+          isBuyer: "",
           gcashNumber: "",
         });
         const { success, message } = result;
@@ -456,7 +471,7 @@ function Navigation() {
           <p className="text-center text-sm font-thin mt-2">Already Registered? <button className=" font-normal" onClick={loginModal.onOpen}>Login</button></p>
           <DrawerCloseButton />
           <DrawerBody pb={6} className="grid justify-items-center ">
-            <form onSubmit={handleSignupSubmit} className="w-72">
+            <form onSubmit={handleSignupSubmit} className="w-96">
 
 
             <FormControl>
@@ -480,6 +495,7 @@ function Navigation() {
                       [e.target.name]: e.target.value,
                     });
                   }}
+                  required
                 />
               </FormControl>
 
@@ -505,9 +521,35 @@ function Navigation() {
                       [e.target.name]: e.target.value,
                     });
                   }}
+                  required
                 />
               </FormControl>
 
+
+              <FormControl>
+                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">Username</label>
+                <Input
+                  placeholder="Username"
+                  type="text"
+                  name="username"
+
+                  mt={2}
+                  mb={2}
+                  rounded={"none"}
+                  borderBottom={"1px"}
+                  borderLeft={"1px"}
+                  borderRight={"1px"}
+                  borderTop={"1px"}
+                  value={SignupInputValue.username}
+                  onChange={(e) => {
+                    setSignUpInputValue({
+                      ...SignupInputValue,
+                      [e.target.name]: e.target.value,
+                    });
+                  }}
+                  required
+                />
+              </FormControl>
         
               <FormControl>
               <label className=" font-poppins font-thick uppercase tracking-widest text-sm">password</label>
@@ -530,17 +572,210 @@ function Navigation() {
                       [e.target.name]: e.target.value,
                     });
                   }}
+                  required
                 />
               </FormControl>
 
          
+              <FormControl>
+                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">address</label>
+                <Input
+                  placeholder="Address"
+                  type="text"
+                  name="address"
 
-              <ModalFooter className="grid">
-                <Button className=" self-center justify-self-center" type="submit"  >
+                  mt={2}
+                  mb={2}
+                  rounded={"none"}
+                  borderBottom={"1px"}
+                  borderLeft={"1px"}
+                  borderRight={"1px"}
+                  borderTop={"1px"}
+                  value={SignupInputValue.address}
+                  onChange={(e) => {
+                    setSignUpInputValue({
+                      ...SignupInputValue,
+                      [e.target.name]: e.target.value,
+                    });
+                  }}
+                  required
+                />
+              </FormControl>
+
+              <FormControl>
+                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">ctu id number</label>
+                <Input
+                  placeholder="id #"
+                  type="number"
+                  name="idNumber"
+
+                  mt={2}
+                  mb={2}
+                  rounded={"none"}
+                  borderBottom={"1px"}
+                  borderLeft={"1px"}
+                  borderRight={"1px"}
+                  borderTop={"1px"}
+                  value={SignupInputValue.idNumber}
+                  onChange={(e) => {
+                    setSignUpInputValue({
+                      ...SignupInputValue,
+                      [e.target.name]: e.target.value,
+                    });
+                  }}
+                  required
+                />
+              </FormControl>
+
+               
+
+              <FormControl>
+                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">Phone Number</label>
+                <Input
+                  placeholder="Phone #"
+                  type="number"
+                  name="phoneNumber"
+
+                  mt={2}
+                  mb={2}
+                  rounded={"none"}
+                  borderBottom={"1px"}
+                  borderLeft={"1px"}
+                  borderRight={"1px"}
+                  borderTop={"1px"}
+                  value={SignupInputValue.phoneNumber}
+                  onChange={(e) => {
+                    setSignUpInputValue({
+                      ...SignupInputValue,
+                      [e.target.name]: e.target.value,
+                    });
+                  }}
+                  required
+                />
+              </FormControl>
+
+              <FormControl>
+                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">Department</label>
+                <Select
+                
+                  type="text"
+                  name="department"
+
+                  mt={2}
+                  mb={2}
+                  rounded={"none"}
+                  borderBottom={"1px"}
+                  borderLeft={"1px"}
+                  borderRight={"1px"}
+                  borderTop={"1px"}
+                  value={SignupInputValue.department}
+                  onChange={(e) => {
+                    setSignUpInputValue({
+                      ...SignupInputValue,
+                      [e.target.name]: e.target.value,
+                    });
+                  }}
+
+                required
+                >
+                <option value="">Select</option>
+                      <option value="COLLEGE OF TECHNOLOGY">
+                        COLLEGE OF TECHNOLOGY
+                      </option>
+                      <option value="COLLEGE OF ENGINEERING">
+                        COLLEGE OF ENGINEERING
+                      </option>
+                      <option value="COLLEGE OF EDUCATION">
+                        COLLEGE OF EDUCATION
+                      </option>
+                      <option value="COLLEGE OF MANAGEMENT ENTREPRENEURSHIP">
+                        COLLEGE OF MANAGEMENT ENTREPRENEURSHIP
+                      </option>
+                </Select>
+              </FormControl>
+
+              <FormControl>
+                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">Sex</label>
+                <Select
+                
+                  type="text"
+                  name="gender"
+
+                  mt={2}
+                  mb={2}
+                  rounded={"none"}
+                  borderBottom={"1px"}
+                  borderLeft={"1px"}
+                  borderRight={"1px"}
+                  borderTop={"1px"}
+                  value={SignupInputValue.gender}
+                  onChange={(e) => {
+                    setSignUpInputValue({
+                      ...SignupInputValue,
+                      [e.target.name]: e.target.value,
+                    });
+                  }}
+                  required
+                >
+                <option value="">Select</option>
+                      <option value="MALE">
+                        MALE
+                      </option>
+                      <option value="FEMALE">
+                        FEMALE
+                      </option>
+                 
+                </Select>
+              </FormControl>
+              {/* <FormControl>
+              <label className=" font-poppins font-thick uppercase tracking-widest text-sm">Profile Picture</label>
+               
+              <label className="flex items-center justify-center w-full">
+            <label className="flex  flex-col items-center justify-center w-96 h-64 mb-5 border-2 border-gray-900 border-dashed rounded-lg cursor-pointer bg-[#eaf3fffa] hover:bg-[#c5d0f3fa] ">
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <AiOutlineUpload className="text-5xl text-gray-900" />
+                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                          <span className="font-semibold text-gray-900 font-quicksand text-lg">
+                            Profile Image
+                          </span>
+                          <br />{" "}
+                          <span className="font-semibold">Click to upload</span>{" "}
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          PNG, JPG
+                        </p>
+                      </div>
+                      <Input        
+              type="file"
+              name="image"
+              accept="image/*"
+              mt={2}
+              mb={2}
+              rounded={"none"}
+              borderBottom={"1px"}
+              borderLeft={"1px"}
+              borderRight={"1px"}
+              borderTop={"1px"}
+              value={SignupInputValue.image}
+              onChange={(e) => {
+                setSignUpInputValue({
+                  ...SignupInputValue,
+                  [e.target.name]: e.target.value,
+                });
+              }}
+            />
+                  </label>
+                </label>
+              </FormControl> */}
+
+        
+
+              <DrawerFooter className="grid">
+                <Button rounded={"none"} className="w-full rounded-none self-center justify-self-center" type="submit"  >
                   Sign up
                 </Button>
                 
-              </ModalFooter>
+              </DrawerFooter>
             </form>
           </DrawerBody>
         </DrawerContent>
@@ -548,23 +783,58 @@ function Navigation() {
       {/* Student Sign up Modal */}
 
       {/* Faculty Member Sign up Modal */}
-      <Modal
+      <Drawer
         blockScrollOnMount={false}
         isOpen={facultysignupModal.isOpen}
         onClose={facultysignupModal.onClose}
+        size={"full"}
       >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Faculty Members Registration</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody pb={6}>
-            <form onSubmit={handleFacultySignupSubmit}>
+        <DrawerOverlay />
+        <DrawerContent>
+        <p className="text-center mt-16 text-2xl font-bold font-poppins">Create new Account as Faculty Member</p>
+          <p className="text-center text-sm font-thin mt-2">Already Registered? <button className=" font-normal" onClick={loginModal.onOpen}>Login</button></p>
+           <DrawerCloseButton />
+          <DrawerBody pb={6} className="grid justify-items-center ">
+            <form onSubmit={handleFacultySignupSubmit} className="w-96">
+
+            <FormControl>
+            <label className=" font-poppins font-thick uppercase tracking-widest text-sm">Full name</label>
+              
+                <Input
+                  placeholder="FULLNAME"
+                  type="text"
+                  name="fullname"
+                  mt={2}
+                  mb={2}
+                  rounded={"none"}
+                  borderBottom={"1px"}
+                  borderLeft={"1px"}
+                  borderRight={"1px"}
+                  borderTop={"1px"}
+                  value={FacultySignupInputValue.fullname}
+                  onChange={(e) => {
+                    setFacultySignupInputValue({
+                      ...FacultySignupInputValue,
+                      [e.target.name]: e.target.value,
+                    });
+                  }}
+                />
+              </FormControl>
+
               <FormControl>
-                <FormLabel>Email:</FormLabel>
+              <label className=" font-poppins font-thick uppercase tracking-widest text-sm">email</label>
+               
                 <Input
                   placeholder="email@"
                   type="email"
                   name="email"
+                  mt={2}
+                  mb={2}
+                  rounded={"none"}
+                  borderBottom={"1px"}
+                  borderLeft={"1px"}
+                  borderRight={"1px"}
+                  borderTop={"1px"}
                   value={FacultySignupInputValue.email}
                   onChange={(e) => {
                     setFacultySignupInputValue({
@@ -576,11 +846,19 @@ function Navigation() {
               </FormControl>
 
               <FormControl>
-                <FormLabel>Username:</FormLabel>
+                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">Username</label>
                 <Input
                   placeholder="Username"
                   type="text"
                   name="username"
+
+                  mt={2}
+                  mb={2}
+                  rounded={"none"}
+                  borderBottom={"1px"}
+                  borderLeft={"1px"}
+                  borderRight={"1px"}
+                  borderTop={"1px"}
                   value={FacultySignupInputValue.username}
                   onChange={(e) => {
                     setFacultySignupInputValue({
@@ -588,14 +866,24 @@ function Navigation() {
                       [e.target.name]: e.target.value,
                     });
                   }}
+                  required
                 />
               </FormControl>
+           
               <FormControl>
-                <FormLabel>Password:</FormLabel>
+              <label className=" font-poppins font-thick uppercase tracking-widest text-sm">password</label>
                 <Input
                   placeholder="Password"
                   type="password"
                   name="password"
+
+                  mt={2}
+                  mb={2}
+                  rounded={"none"}
+                  borderBottom={"1px"}
+                  borderLeft={"1px"}
+                  borderRight={"1px"}
+                  borderTop={"1px"}
                   value={FacultySignupInputValue.password}
                   onChange={(e) => {
                     setFacultySignupInputValue({
@@ -603,16 +891,50 @@ function Navigation() {
                       [e.target.name]: e.target.value,
                     });
                   }}
+                  required
                 />
               </FormControl>
 
               <FormControl>
-                <FormLabel>Fullname:</FormLabel>
+                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">address</label>
                 <Input
-                  placeholder="Fullname"
+                  placeholder="Address"
                   type="text"
-                  name="fullname"
-                  value={FacultySignupInputValue.fullname}
+                  name="address"
+
+                  mt={2}
+                  mb={2}
+                  rounded={"none"}
+                  borderBottom={"1px"}
+                  borderLeft={"1px"}
+                  borderRight={"1px"}
+                  borderTop={"1px"}
+                  value={FacultySignupInputValue.address}
+                  onChange={(e) => {
+                    setFacultySignupInputValue({
+                      ...FacultySignupInputValue,
+                      [e.target.name]: e.target.value,
+                    });
+                  }}
+                  required
+                />
+              </FormControl>
+
+              <FormControl>
+                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">Phone Number</label>
+                <Input
+                  placeholder="Phone #"
+                  type="number"
+                  name="phoneNumber"
+
+                  mt={2}
+                  mb={2}
+                  rounded={"none"}
+                  borderBottom={"1px"}
+                  borderLeft={"1px"}
+                  borderRight={"1px"}
+                  borderTop={"1px"}
+                  value={FacultySignupInputValue.phoneNumber}
                   onChange={(e) => {
                     setFacultySignupInputValue({
                       ...FacultySignupInputValue,
@@ -622,29 +944,48 @@ function Navigation() {
                 />
               </FormControl>
               <FormControl>
-                <FormLabel>Facebook Link:</FormLabel>
-                <Input
-                  placeholder="Facebook"
+                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">Sex</label>
+                <Select
+                
                   type="text"
-                  name="facebook"
-                  value={FacultySignupInputValue.facebook}
+                  name="gender"
+
+                  mt={2}
+                  mb={2}
+                  rounded={"none"}
+                  borderBottom={"1px"}
+                  borderLeft={"1px"}
+                  borderRight={"1px"}
+                  borderTop={"1px"}
+                  value={FacultySignupInputValue.gender}
                   onChange={(e) => {
                     setFacultySignupInputValue({
                       ...FacultySignupInputValue,
                       [e.target.name]: e.target.value,
                     });
                   }}
-                />
+                >
+                <option value="">Select</option>
+                      <option value="MALE">
+                        MALE
+                      </option>
+                      <option value="FEMALE">
+                        FEMALE
+                      </option>
+                 
+                </Select>
               </FormControl>
-              <ModalFooter>
-                <Button type="submit" colorScheme="blue" mr={3}>
-                  Save
+    
+              <DrawerFooter className="grid">
+                <Button rounded={"none"} className="w-full rounded-none self-center justify-self-center" type="submit"  >
+                  Sign up
                 </Button>
-              </ModalFooter>
+                
+              </DrawerFooter>
             </form>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
       {/* Faculty Member Sign up Modal */}
 
       {/* Log in Modal */}

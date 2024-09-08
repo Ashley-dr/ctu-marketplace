@@ -72,6 +72,12 @@ address: {
     type: Date,
     default: new Date(),
   },
+  idNumber: {
+    type: Number,
+  },
+  isBuyer: {
+    type: Boolean,
+  },
 });
 
 UserSchema.pre("save", async function (){
