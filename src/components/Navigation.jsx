@@ -26,7 +26,7 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Alert, 
+  Alert,
   Drawer,
   DrawerBody,
   DrawerFooter,
@@ -35,7 +35,17 @@ import {
   DrawerContent,
   DrawerCloseButton,
   Select,
+  InputGroup,
+  InputRightElement,
+  IconButton,
+  Heading,
+  VStack,
+  useToast,
+  Container,
 } from "@chakra-ui/react";
+import logo from "../assets/ctu-logo.jpg";
+import { FiEye } from "react-icons/fi";
+import { FiEyeOff } from "react-icons/fi";
 import { FaSignInAlt } from "react-icons/fa";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
@@ -56,10 +66,131 @@ function Navigation() {
   const [userData, setUserData] = useState(null);
   const signupModal = useDisclosure();
   const loginModal = useDisclosure();
+  const forgotPasswordModal = useDisclosure();
   const selectModal = useDisclosure();
   const facultysignupModal = useDisclosure();
   const [isAdmin, setIsAdmin] = useState();
   const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [done, setDone] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [password, setNewPassword] = useState("");
+  const [newConfirmPassword, setNewConfirmPassword] = useState("");
+  const [token, setToken] = useState("");
+
+  const handleForgotPassword = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.post(
+        `http://localhost:4000/userForgotPassword`,
+        { email: email },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (res.status === 200) {
+        toast({
+          title: "Success",
+          description: `Password reset code sent to ${email}. Check your inbox.`,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+        console.log("Email sent");
+        setDone(true);
+      }
+    } catch (error) {
+      console.error(
+        "Error in forgot password:",
+        error.response?.data?.message || error.message
+      );
+      if (error.response?.status === 404) {
+        toast({
+          title: "Error",
+          description:
+            "Email not found. Please check the email address and try again.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: "Error",
+          description:
+            error.response?.data?.message ||
+            "An error occurred. Please try again.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const changePassword = async () => {
+    if (password !== newConfirmPassword) {
+      toast({
+        title: "Error",
+        description: "Passwords do not match.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    if (!token || !password) {
+      toast({
+        title: "Error",
+        description: "Please enter both the reset token and new password.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `http://localhost:4000/userResetPassword`,
+        { token, password },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("Password reset:", response.data);
+      // toast({
+      //   title: "Success",
+      //   description: "Your password has been reset successfully.",
+      //   status: "success",
+      //   duration: 5000,
+      //   isClosable: true,
+      // });
+      // // Optionally, redirect the user to the login page or another page
+      if (response.data.success) {
+        toast.success(response.data.message);
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Password reset error:", error);
+      toast({
+        title: "Error",
+        description: "Failed to reset password. Please try again.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
 
   const [SignupInputValue, setSignUpInputValue] = useState({
     email: "",
@@ -135,20 +266,18 @@ function Navigation() {
           address: "",
           isBuyer: "",
         });
-        const { success, message } = result;
-        if (success) {
-          handleSuccess(message);
-          setTimeout(() => {}, 2000);
-          // alert("Account successfully created");
-        } else {
-          handleError(message);
-          // alert("Account already Exist.");
+        if (result.data.success) {
+          toast.success(result.data.message);
+          navigate("/");
         }
-        window.location.reload();
-        navigate("/");
       })
       .catch((err) => {
         console.log("Error", err);
+        if (err.response && err.response.status === 400) {
+          toast.error(err.response.data.message);
+        } else {
+          toast.error("An unexpected error occurred. Please try again.");
+        }
       });
   };
 
@@ -174,19 +303,20 @@ function Navigation() {
           isBuyer: "",
           gcashNumber: "",
         });
-        const { success, message } = result;
-        if (success) {
-          handleSuccess(message);
-          setTimeout(() => {}, 2000);
-        } else {
-          handleError(message);
-          alert("Account already Exist.");
+
+        if (result.data.success) {
+          toast.success(result.data.message);
+          navigate("/");
         }
-        window.location.reload();
-        navigate("/");
+        // window.location.reload();
       })
       .catch((err) => {
         console.log("Error", err);
+        if (err.response && err.response.status === 400) {
+          toast.error(err.response.data.message);
+        } else {
+          toast.error("An unexpected error occurred. Please try again.");
+        }
       });
   };
 
@@ -272,14 +402,15 @@ function Navigation() {
       >
         <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
           <Link to="/" className="flex space-x-4 font-poppins">
-            <Box className="mt-1">
+            <Box className="">
               {" "}
-              <Avatar size={"sm"} />
+              <Avatar size={"md"} src={logo} />
             </Box>
-            <Text className="text-sm">CTU DANAO <hr /> MARKETPLACE</Text>
+            <Text className="text-sm mt-1.5">
+              CTU DANAO <hr /> MARKETPLACE
+            </Text>
           </Link>
 
-          
           <Flex alignItems={"center"}>
             <Stack direction={"row"} spacing={7}>
               <Button onClick={toggleColorMode} className="mt-1">
@@ -340,7 +471,7 @@ function Navigation() {
                       {" "}
                       <MenuItem>Orders</MenuItem>
                     </Link>
-
+                    <MenuItem>Notification</MenuItem>
                     <MenuItem>
                       {" "}
                       <Link to="/Account">Account Settings</Link>
@@ -350,9 +481,7 @@ function Navigation() {
                         <Link to={`/AddProducts/${isUsers.id}`}>
                           <MenuItem> Add Products</MenuItem>
                         </Link>
-                        <Link to={`/Inventory/${isUsers.id}`}>
-                          <MenuItem>Inventory</MenuItem>
-                        </Link>
+
                         <Link to={`/Transactions/${isUsers.id}`}>
                           <MenuItem>Transactions</MenuItem>
                         </Link>
@@ -415,7 +544,7 @@ function Navigation() {
                       {" "}
                       <MenuItem>Orders</MenuItem>
                     </Link>
-
+                    <MenuItem>Notification</MenuItem>
                     <MenuItem>
                       {" "}
                       <Link to="/Account">Account Settings</Link>
@@ -427,9 +556,7 @@ function Navigation() {
                             Add Products
                           </Link>
                         </MenuItem>
-                        <Link to={`/Inventory/${isFaculty.id}`}>
-                          <MenuItem>Inventory</MenuItem>
-                        </Link>
+
                         <Link to={`/Transactions/${isFaculty.id}`}>
                           <MenuItem>Transactions</MenuItem>
                         </Link>
@@ -461,25 +588,33 @@ function Navigation() {
       {/* Student Sign up Modal */}
       <Drawer
         blockScrollOnMount={false}
+        placement="left"
         isOpen={signupModal.isOpen}
         onClose={signupModal.onClose}
         size={"full"}
       >
         <DrawerOverlay />
         <DrawerContent>
-          <p className="text-center mt-16 text-2xl font-bold font-poppins">Create new Account as Student</p>
-          <p className="text-center text-sm font-thin mt-2">Already Registered? <button className=" font-normal" onClick={loginModal.onOpen}>Login</button></p>
+          <p className="text-center mt-16 text-2xl font-bold font-poppins">
+            Create new Account as Student
+          </p>
+          <p className="text-center text-sm font-thin mt-2">
+            Already Registered?{" "}
+            <button className=" font-normal" onClick={loginModal.onOpen}>
+              Login
+            </button>
+          </p>
           <DrawerCloseButton />
           <DrawerBody pb={6} className="grid justify-items-center ">
             <form onSubmit={handleSignupSubmit} className="w-96">
-
-
-            <FormControl>
-                <label className=" font-poppins font-thick uppercase tracking-widest  text-sm">Fullname</label>
+              <FormControl>
+                <label className=" font-poppins font-thick uppercase tracking-widest  text-sm">
+                  Fullname
+                </label>
                 <Input
                   placeholder="FULLNAME"
                   type="text"
-                 mt={2}
+                  mt={2}
                   mb={2}
                   name="fullname"
                   rounded={"none"}
@@ -487,7 +622,6 @@ function Navigation() {
                   borderLeft={"1px"}
                   borderRight={"1px"}
                   borderTop={"1px"}
-                  
                   value={SignupInputValue.fullname}
                   onChange={(e) => {
                     setSignUpInputValue({
@@ -499,14 +633,14 @@ function Navigation() {
                 />
               </FormControl>
 
-
               <FormControl>
-                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">email</label>
+                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">
+                  email
+                </label>
                 <Input
                   placeholder="email"
                   type="email"
                   name="email"
-
                   mt={2}
                   mb={2}
                   rounded={"none"}
@@ -525,14 +659,14 @@ function Navigation() {
                 />
               </FormControl>
 
-
               <FormControl>
-                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">Username</label>
+                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">
+                  Username
+                </label>
                 <Input
                   placeholder="Username"
                   type="text"
                   name="username"
-
                   mt={2}
                   mb={2}
                   rounded={"none"}
@@ -550,14 +684,15 @@ function Navigation() {
                   required
                 />
               </FormControl>
-        
+
               <FormControl>
-              <label className=" font-poppins font-thick uppercase tracking-widest text-sm">password</label>
+                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">
+                  password
+                </label>
                 <Input
                   placeholder="Password"
                   type="password"
                   name="password"
-
                   mt={2}
                   mb={2}
                   rounded={"none"}
@@ -576,14 +711,14 @@ function Navigation() {
                 />
               </FormControl>
 
-         
               <FormControl>
-                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">address</label>
+                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">
+                  address
+                </label>
                 <Input
                   placeholder="Address"
                   type="text"
                   name="address"
-
                   mt={2}
                   mb={2}
                   rounded={"none"}
@@ -603,12 +738,13 @@ function Navigation() {
               </FormControl>
 
               <FormControl>
-                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">ctu id number</label>
+                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">
+                  ctu id number
+                </label>
                 <Input
                   placeholder="id #"
                   type="number"
                   name="idNumber"
-
                   mt={2}
                   mb={2}
                   rounded={"none"}
@@ -627,15 +763,14 @@ function Navigation() {
                 />
               </FormControl>
 
-               
-
               <FormControl>
-                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">Phone Number</label>
+                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">
+                  Phone Number
+                </label>
                 <Input
                   placeholder="Phone #"
                   type="number"
                   name="phoneNumber"
-
                   mt={2}
                   mb={2}
                   rounded={"none"}
@@ -655,12 +790,12 @@ function Navigation() {
               </FormControl>
 
               <FormControl>
-                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">Department</label>
+                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">
+                  Department
+                </label>
                 <Select
-                
                   type="text"
                   name="department"
-
                   mt={2}
                   mb={2}
                   rounded={"none"}
@@ -675,32 +810,31 @@ function Navigation() {
                       [e.target.name]: e.target.value,
                     });
                   }}
-
-                required
+                  required
                 >
-                <option value="">Select</option>
-                      <option value="COLLEGE OF TECHNOLOGY">
-                        COLLEGE OF TECHNOLOGY
-                      </option>
-                      <option value="COLLEGE OF ENGINEERING">
-                        COLLEGE OF ENGINEERING
-                      </option>
-                      <option value="COLLEGE OF EDUCATION">
-                        COLLEGE OF EDUCATION
-                      </option>
-                      <option value="COLLEGE OF MANAGEMENT ENTREPRENEURSHIP">
-                        COLLEGE OF MANAGEMENT ENTREPRENEURSHIP
-                      </option>
+                  <option value="">Select</option>
+                  <option value="COLLEGE OF TECHNOLOGY">
+                    COLLEGE OF TECHNOLOGY
+                  </option>
+                  <option value="COLLEGE OF ENGINEERING">
+                    COLLEGE OF ENGINEERING
+                  </option>
+                  <option value="COLLEGE OF EDUCATION">
+                    COLLEGE OF EDUCATION
+                  </option>
+                  <option value="COLLEGE OF MANAGEMENT ENTREPRENEURSHIP">
+                    COLLEGE OF MANAGEMENT ENTREPRENEURSHIP
+                  </option>
                 </Select>
               </FormControl>
 
               <FormControl>
-                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">Sex</label>
+                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">
+                  Sex
+                </label>
                 <Select
-                
                   type="text"
                   name="gender"
-
                   mt={2}
                   mb={2}
                   rounded={"none"}
@@ -717,14 +851,9 @@ function Navigation() {
                   }}
                   required
                 >
-                <option value="">Select</option>
-                      <option value="MALE">
-                        MALE
-                      </option>
-                      <option value="FEMALE">
-                        FEMALE
-                      </option>
-                 
+                  <option value="">Select</option>
+                  <option value="MALE">MALE</option>
+                  <option value="FEMALE">FEMALE</option>
                 </Select>
               </FormControl>
               {/* <FormControl>
@@ -768,13 +897,14 @@ function Navigation() {
                 </label>
               </FormControl> */}
 
-        
-
               <DrawerFooter className="grid">
-                <Button rounded={"none"} className="w-full rounded-none self-center justify-self-center" type="submit"  >
+                <Button
+                  rounded={"none"}
+                  className="w-full rounded-none self-center justify-self-center"
+                  type="submit"
+                >
                   Sign up
                 </Button>
-                
               </DrawerFooter>
             </form>
           </DrawerBody>
@@ -791,15 +921,23 @@ function Navigation() {
       >
         <DrawerOverlay />
         <DrawerContent>
-        <p className="text-center mt-16 text-2xl font-bold font-poppins">Create new Account as Faculty Member</p>
-          <p className="text-center text-sm font-thin mt-2">Already Registered? <button className=" font-normal" onClick={loginModal.onOpen}>Login</button></p>
-           <DrawerCloseButton />
+          <p className="text-center mt-16 text-2xl font-bold font-poppins">
+            Create new Account as Faculty Member
+          </p>
+          <p className="text-center text-sm font-thin mt-2">
+            Already Registered?{" "}
+            <button className=" font-normal" onClick={loginModal.onOpen}>
+              Login
+            </button>
+          </p>
+          <DrawerCloseButton />
           <DrawerBody pb={6} className="grid justify-items-center ">
             <form onSubmit={handleFacultySignupSubmit} className="w-96">
+              <FormControl>
+                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">
+                  Full name
+                </label>
 
-            <FormControl>
-            <label className=" font-poppins font-thick uppercase tracking-widest text-sm">Full name</label>
-              
                 <Input
                   placeholder="FULLNAME"
                   type="text"
@@ -822,8 +960,10 @@ function Navigation() {
               </FormControl>
 
               <FormControl>
-              <label className=" font-poppins font-thick uppercase tracking-widest text-sm">email</label>
-               
+                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">
+                  email
+                </label>
+
                 <Input
                   placeholder="email@"
                   type="email"
@@ -846,12 +986,13 @@ function Navigation() {
               </FormControl>
 
               <FormControl>
-                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">Username</label>
+                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">
+                  Username
+                </label>
                 <Input
                   placeholder="Username"
                   type="text"
                   name="username"
-
                   mt={2}
                   mb={2}
                   rounded={"none"}
@@ -869,14 +1010,15 @@ function Navigation() {
                   required
                 />
               </FormControl>
-           
+
               <FormControl>
-              <label className=" font-poppins font-thick uppercase tracking-widest text-sm">password</label>
+                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">
+                  password
+                </label>
                 <Input
                   placeholder="Password"
                   type="password"
                   name="password"
-
                   mt={2}
                   mb={2}
                   rounded={"none"}
@@ -896,12 +1038,13 @@ function Navigation() {
               </FormControl>
 
               <FormControl>
-                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">address</label>
+                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">
+                  address
+                </label>
                 <Input
                   placeholder="Address"
                   type="text"
                   name="address"
-
                   mt={2}
                   mb={2}
                   rounded={"none"}
@@ -921,12 +1064,13 @@ function Navigation() {
               </FormControl>
 
               <FormControl>
-                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">Phone Number</label>
+                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">
+                  Phone Number
+                </label>
                 <Input
                   placeholder="Phone #"
                   type="number"
                   name="phoneNumber"
-
                   mt={2}
                   mb={2}
                   rounded={"none"}
@@ -944,12 +1088,36 @@ function Navigation() {
                 />
               </FormControl>
               <FormControl>
-                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">Sex</label>
+                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">
+                  Facebook
+                </label>
+                <Input
+                  placeholder="Facebook"
+                  type="text"
+                  name="facebook"
+                  mt={2}
+                  mb={2}
+                  rounded={"none"}
+                  borderBottom={"1px"}
+                  borderLeft={"1px"}
+                  borderRight={"1px"}
+                  borderTop={"1px"}
+                  value={FacultySignupInputValue.facebook}
+                  onChange={(e) => {
+                    setFacultySignupInputValue({
+                      ...FacultySignupInputValue,
+                      [e.target.name]: e.target.value,
+                    });
+                  }}
+                />
+              </FormControl>
+              <FormControl>
+                <label className=" font-poppins font-thick uppercase tracking-widest text-sm">
+                  Sex
+                </label>
                 <Select
-                
                   type="text"
                   name="gender"
-
                   mt={2}
                   mb={2}
                   rounded={"none"}
@@ -965,22 +1133,20 @@ function Navigation() {
                     });
                   }}
                 >
-                <option value="">Select</option>
-                      <option value="MALE">
-                        MALE
-                      </option>
-                      <option value="FEMALE">
-                        FEMALE
-                      </option>
-                 
+                  <option value="">Select</option>
+                  <option value="MALE">MALE</option>
+                  <option value="FEMALE">FEMALE</option>
                 </Select>
               </FormControl>
-    
+
               <DrawerFooter className="grid">
-                <Button rounded={"none"} className="w-full rounded-none self-center justify-self-center" type="submit"  >
+                <Button
+                  rounded={"none"}
+                  className="w-full rounded-none self-center justify-self-center"
+                  type="submit"
+                >
                   Sign up
                 </Button>
-                
               </DrawerFooter>
             </form>
           </DrawerBody>
@@ -993,7 +1159,7 @@ function Navigation() {
         blockScrollOnMount={false}
         isOpen={loginModal.isOpen}
         onClose={loginModal.onClose}
-        size={"lg"}
+        size={"xl"}
       >
         <ModalOverlay />
         <ModalContent className="border-r-8  border-[#111827]">
@@ -1024,7 +1190,7 @@ function Navigation() {
                   }}
                 />
               </FormControl>
-              <FormControl className="flex mb-10 mt-10">
+              <FormControl className="flex mb-1 mt-10">
                 <FormLabel className="pt-1.5 border bg-[#142138] rounded-md">
                   <p className="text-xl mr-1 mb-2 pt-0.5 pl-2 text-white pr-1">
                     <PiPasswordBold />
@@ -1044,6 +1210,14 @@ function Navigation() {
                   }}
                 />
               </FormControl>
+
+              <Button
+                bg={"none"}
+                className=""
+                onClick={forgotPasswordModal.onOpen}
+              >
+                Forgot Password ?
+              </Button>
 
               <div className="bg-gray-900 mt-5 rounded-lg text-white text-center text-sm  p-3 font-quicksand grid hover:bg-gray-950">
                 <button type="submit" className="flex w-full justify-center">
@@ -1114,6 +1288,153 @@ function Navigation() {
         </ModalContent>
       </Modal>
       {/* Selector Modal */}
+
+      {/* Forgot Password reset password */}
+      <Modal
+        blockScrollOnMount={false}
+        isOpen={forgotPasswordModal.isOpen}
+        onClose={forgotPasswordModal.onClose}
+        size={"lg"}
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader></ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Box p={6} rounded="lg" boxShadow="md">
+              <VStack spacing={4} align="stretch">
+                <Heading as="h2" size="lg" textAlign="center" mb={2}>
+                  Reset Account
+                </Heading>
+                <Text fontSize="md" textAlign="center">
+                  Forgot password? Input your email and check the reset code
+                  from your email.
+                </Text>
+
+                {!done ? (
+                  <>
+                    <Input
+                      placeholder="Email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      type="email"
+                      bg="#efdbbb4f"
+                      color="#AD9C8E"
+                      fontSize="12px"
+                      rounded="md"
+                      mb={4}
+                    />
+                    <Button
+                      colorScheme="orange"
+                      bg="#DFC4A4"
+                      color="#4f3a3a"
+                      size="md"
+                      onClick={handleForgotPassword}
+                      isLoading={loading}
+                      loadingText="Processing..."
+                    >
+                      Change Password
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Box>
+                      <Text
+                        textAlign="center"
+                        bg="transparent"
+                        mt={5}
+                        mb={2}
+                        rounded="xl"
+                        width="100%"
+                      >
+                        {email}
+                      </Text>
+                      <Text fontSize="sm" textAlign="center" px={2} my={2}>
+                        Reset code is valid for 1 hour.
+                      </Text>
+                    </Box>
+                  </>
+                )}
+
+                {done && (
+                  <>
+                    <Input
+                      placeholder="Reset Code"
+                      value={token}
+                      onChange={(e) => setToken(e.target.value)}
+                      fontSize="12px"
+                      rounded="md"
+                      mb={4}
+                    />
+                    <InputGroup size="md" mb={4}>
+                      <Input
+                        pr="4.5rem"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="New Password"
+                        value={password}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        color="#AD9C8E"
+                        fontSize="12px"
+                        rounded="md"
+                      />
+                      <InputRightElement width="3rem">
+                        <IconButton
+                          variant="ghost"
+                          aria-label={
+                            showPassword ? "Hide password" : "Show password"
+                          }
+                          icon={showPassword ? <FiEyeOff /> : <FiEye />}
+                          onClick={() => setShowPassword(!showPassword)}
+                        />
+                      </InputRightElement>
+                    </InputGroup>
+
+                    <InputGroup size="md" mb={4}>
+                      <Input
+                        pr="4.5rem"
+                        type={showConfirmPassword ? "text" : "password"}
+                        placeholder="Confirm Password"
+                        value={newConfirmPassword}
+                        onChange={(e) => setNewConfirmPassword(e.target.value)}
+                        color="#AD9C8E"
+                        fontSize="12px"
+                        rounded="md"
+                      />
+                      <InputRightElement width="3rem">
+                        <IconButton
+                          variant="ghost"
+                          aria-label={
+                            showConfirmPassword
+                              ? "Hide password"
+                              : "Show password"
+                          }
+                          icon={showConfirmPassword ? <FiEyeOff /> : <FiEye />}
+                          onClick={() =>
+                            setShowConfirmPassword(!showConfirmPassword)
+                          }
+                        />
+                      </InputRightElement>
+                    </InputGroup>
+
+                    <Button
+                      colorScheme="orange"
+                      bg="#DFC4A4"
+                      color="#4f3a3a"
+                      size="md"
+                      onClick={changePassword}
+                    >
+                      Submit
+                    </Button>
+                  </>
+                )}
+              </VStack>
+            </Box>
+          </ModalBody>
+
+          <ModalFooter></ModalFooter>
+        </ModalContent>
+      </Modal>
+      {/* Forgot Password reset password */}
     </div>
   );
 }

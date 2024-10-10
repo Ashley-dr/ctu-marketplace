@@ -19,20 +19,17 @@ const UserSchema = new mongoose.Schema({
   },
   fullname: {
     type: String,
-    required: [true, "Your Fullname is required"],
-
   },
 
-address: {
-  type: String,
-},
+  address: {
+    type: String,
+  },
 
   image: {
     type: String,
   },
   gender: {
     type: String,
-   
   },
   department: {
     type: String,
@@ -59,13 +56,13 @@ address: {
   gcashNumber: {
     type: Number,
   },
-  isSeller : {
+  isSeller: {
     type: Boolean,
   },
   isUser: {
     type: String,
   },
-  isAdmin : {
+  isAdmin: {
     type: Boolean,
   },
   createdAt: {
@@ -78,10 +75,12 @@ address: {
   isBuyer: {
     type: Boolean,
   },
+  resetToken: { type: String },
+  resetTokenExpiration: { type: String },
 });
 
-UserSchema.pre("save", async function (){
-    this.password = await bcrypt.hash(this.password, 12);
+UserSchema.pre("save", async function () {
+  this.password = await bcrypt.hash(this.password, 12);
 });
 
 export const UserModel = mongoose.model("User", UserSchema);

@@ -3,11 +3,11 @@ import mongoose from "mongoose";
 // const commentSchema = new mongoose.Schema({
 //   userCommenterName: {
 //     type: String,
-   
+
 //   },
 //   comment: {
 //     type: [String],
-  
+
 //   },
 //   createdAt: {
 //     type: Date,
@@ -21,46 +21,46 @@ const productSchema = new mongoose.Schema({
   },
   sellerName: {
     type: String,
-   
   },
-    stocks: {
+  stocks: {
     type: Number,
-   
   },
-prodName: {
+  prodName: {
     type: String,
   },
 
   sellerEmail: {
     type: String,
   },
-    facebook: {
+  facebook: {
     type: String,
   },
 
-description: {
+  description: {
     type: String,
   },
-image: {
-    type: [String ],
+  image: {
+    type: [String],
   },
-comments: [
+  comments: [
     {
       comment: { type: String },
+      commenterId: { type: String },
       commenterName: { type: String, required: true },
-      createdAt: { type: Date, default: new Date() }
-    }
+      createdAt: { type: Date, default: new Date() },
+    },
   ],
-price: {
+  price: {
     type: Number,
-
   },
-marketType : {
-  type: String,
-},
-categories: [{
+  marketType: {
     type: String,
-  }],
+  },
+  categories: [
+    {
+      type: String,
+    },
+  ],
   accountType: {
     type: String,
   },
@@ -69,7 +69,5 @@ categories: [{
     default: new Date(),
   },
 });
-
-
 
 export const ProductModel = mongoose.model("Product", productSchema);

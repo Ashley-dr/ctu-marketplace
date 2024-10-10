@@ -543,7 +543,12 @@ function Products() {
                       <div className="absolute inset-0 opacity-40 rounded-md"></div>
                       <div className="absolute  inset-0 ssm:mt-52 sm:mt-52 md:mt-60 lg:mt-72  bg-gradient-to-t from-gray-900 via-gray-500/30">
                         <h2 className="z-10 relative lg:top-6 text-2xl px-4  font-orbitron text-white">
-                          <p>₱.{item.price}</p>
+                          <p>
+                            {new Intl.NumberFormat("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            }).format(item.price)}
+                          </p>
                         </h2>
                       </div>
                     </a>

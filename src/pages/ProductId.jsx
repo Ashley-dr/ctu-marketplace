@@ -33,6 +33,7 @@ import {
 } from "@chakra-ui/react";
 import { RiSendPlane2Fill } from "react-icons/ri";
 import { CgNametag } from "react-icons/cg";
+import { MdDelete } from "react-icons/md";
 import { FaFacebookSquare } from "react-icons/fa";
 import { formatDate, formatDistanceToNow } from "date-fns";
 import { AtSignIcon, CalendarIcon, LinkIcon } from "@chakra-ui/icons";
@@ -187,36 +188,65 @@ function ProductId() {
     e.preventDefault();
 
     let commenterName = "";
+    let commenterId = "";
     if (isUsers) {
       commenterName = isUsers.fullname;
+      commenterId = isUsers.id;
     } else if (isFaculty) {
       commenterName = isFaculty.fullname;
+      commenterId = isFaculty.id;
     }
     axios
       .post(`http://localhost:4000/api/comments/${id}`, {
         comment: newComment,
+        commenterId: commenterId,
         commenterName: commenterName,
       })
       .then((result) => {
         setComments([...comments, result.data]);
         setNewComments("");
-        window.location.reload();
       })
       .catch((err) => {
         console.log("Error posting comment: ", err);
       });
   };
-  const commentDelete = (id) => {
+  const commentDelete = (commentId) => {
     axios
-      .delete(`http://localhost:4000/api/commentDelete/${id}`)
+      .delete(`http://localhost:4000/api/comments/${id}/${commentId}`)
       .then((result) => {
-        // navigate("/");
+        setComments(comments.filter((comment) => comment._id !== commentId));
       })
       .catch((err) => {
-        console.log("Error to delete this comment", err);
+        console.log("Error deleting comment:", err);
       });
   };
-  // to do next is to make the schema and input types of this and Aggregate
+
+  useEffect(() => {
+    let intervalId;
+
+    const fetchComments = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:4000/api/comments/${id}`
+        );
+        setComments(response.data);
+      } catch (error) {
+        console.error("Error fetching comments", error);
+      }
+    };
+
+    if (id) {
+      // Fetch immediately and then start polling
+      fetchComments();
+      intervalId = setInterval(fetchComments, 1000); // Fetch every 1 second
+    }
+
+    // Cleanup on unmount or when selectedProductId changes
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [id]);
+
   const quantityHandler = (e) => {
     e.preventDefault();
     const newQuantity = parseInt(e.target.value, 10);
@@ -248,7 +278,7 @@ function ProductId() {
     ],
   };
   return (
-    <div className="rounded-md  pb-4 max-w-full max-h-full justify-items-center grid bg-gradient-to-tr from-[#00ffdd2d] via-[#0834f523] to-[#087bff1a]">
+    <div className="rounded-md  pb-4 max-w-full max-h-full justify-items-center grid bg-gradient-to-tr from-[#0e0e2e2d] via-[#0834f523] to-[#087bff1a]">
       <figure className=" justify-items-center grid max-w-full w-full">
         <article>
           {productData ? (
@@ -260,6 +290,7 @@ function ProductId() {
                       infiniteLoop
                       stopOnHover
                       swipeable={true}
+                      showThumbs={false}
                       autoPlay
                       emulateTouch={true}
                       className="bg-[#111827] relative rounded-lg"
@@ -308,8 +339,12 @@ function ProductId() {
                           </p>
                           <div className="mt-3 grid grid-cols-2">
                             <p className="flex  mr-5">
-                              <p className="mb-1 text-xs">PHP: </p>{" "}
-                              {productData.price}
+                              {productData && productData.price
+                                ? productData.price.toLocaleString("en-PH", {
+                                    style: "currency",
+                                    currency: "PHP",
+                                  })
+                                : "Loading price..."}
                             </p>
                             <p className="flex justify-self-center mr-4">
                               <RiAccountCircleLine className="mr-1" />{" "}
@@ -424,41 +459,9 @@ function ProductId() {
                   </CardBody>
                 </Card>
               </div>
-              <div className="bg-[#27262615] mt-10 rounded-lg  text-sm   p-1 grid ">
-                {productData.comments && productData.comments.length > 0 && (
-                  <div className="">
-                    <p className="ml-5">Comments</p>
-                    {productData.comments.map((comment) => (
-                      <p key={comment._id}>
-                        <article className="grid  mt-2 mx-3 px-3 mb-4 bg-[#554f4f33] rounded-md font-poppins">
-                          <p className="flex">
-                            <p className="flex underline font-extralight pt-1 mb-1">
-                              <CgNametag className="mt-0.5 mr-1 text-base" />{" "}
-                              {comment.commenterName}
-                            </p>
-                            <p className="ml-2 text-xs mt-1 flex">
-                              <LuDot className=" mr-1 text-base" />{" "}
-                              {formatDateToNow(comment.createdAt)}
-                            </p>
-                          </p>
-                          <p className="font-quicksand mb-2 pl-1 ssm:w-96 md:w-100 lg:w-128">
-                            {comment.comment}
-                          </p>
-                        </article>
-                        {/* <button
-                        onClick={() => {
-                          commentDelete(comment._id);
-                        }}
-                      >
-                        Delete
-                      </button> */}
-                      </p>
-                    ))}
-                  </div>
-                )}
-              </div>
+
               {isUsers && (
-                <div className="bg-gray-900  text-white  text-sm  rounded-sm p-2 grid ">
+                <div className="bg-gray-900 mt-8 text-white  text-sm  rounded-sm p-2 grid ">
                   <form onSubmit={commentHandler} className="flex">
                     <textarea
                       className="text-black w-full rounded-sm px-2  font-quicksand bg-[#e4eaec]"
@@ -479,7 +482,7 @@ function ProductId() {
                 </div>
               )}
               {isFaculty && (
-                <div className="bg-gray-900  text-white  text-sm  rounded-sm p-2 grid ">
+                <div className="bg-gray-900 mt-8  text-white  text-sm  rounded-sm p-2 grid ">
                   <form onSubmit={commentHandler} className="flex">
                     <textarea
                       className="text-black w-full rounded-sm px-2  font-quicksand bg-[#e4eaec]"
@@ -499,6 +502,50 @@ function ProductId() {
                   </form>
                 </div>
               )}
+              <div className="bg-[#27262615] rounded-lg text-sm w-full p-1 grid">
+                {productData.comments && productData.comments.length > 0 ? (
+                  <div>
+                    <p className="ml-5">Comments</p>
+                    {productData.comments
+                      .map((comment) => (
+                        <article
+                          key={comment._id}
+                          className="grid mr-2 mt-2 mb-4 bg-[#554f4f33] rounded-md font-poppins"
+                        >
+                          <div className="flex">
+                            <span className="flex underline font-extralight pt-1 mb-1">
+                              <CgNametag className="mt-0.5 mr-1 text-base" />{" "}
+                              {comment.commenterName}
+                            </span>
+                            <span className="ml-2 text-xs mt-1 flex">
+                              <LuDot className="mr-1 text-base" />{" "}
+                              {formatDateToNow(comment.createdAt)}
+                            </span>
+                          </div>
+                          <p className="font-quicksand mb-2 pl-1 w-96">
+                            {comment.comment}
+                          </p>
+                          {isUsers.id === comment.commenterId ? (
+                            <>
+                              {" "}
+                              <button
+                                className="justify-self-start mb-1"
+                                onClick={() => commentDelete(comment._id)}
+                              >
+                                <MdDelete className="text-base" />
+                              </button>
+                            </>
+                          ) : (
+                            <></>
+                          )}
+                        </article>
+                      ))
+                      .reverse()}
+                  </div>
+                ) : (
+                  <p className="text-center">No comments available.</p>
+                )}
+              </div>
             </div>
           ) : (
             <></>
@@ -511,7 +558,11 @@ function ProductId() {
           <ModalContent>
             <ModalHeader>
               Item name: {UserSelectedProduct.prodName} <br />
-              Price: {UserSelectedProduct.price}
+              Price:{" "}
+              {UserSelectedProduct.price.toLocaleString("en-PH", {
+                style: "currency",
+                currency: "PHP",
+              })}
             </ModalHeader>
             <ModalCloseButton />
             <ModalBody>
@@ -701,7 +752,11 @@ function ProductId() {
           <ModalContent>
             <ModalHeader>
               Item name: {FacultySelectedProduct.prodName} <br />
-              Price: {FacultySelectedProduct.price}
+              Price:{" "}
+              {FacultySelectedProduct.price.toLocaleString("en-PH", {
+                style: "currency",
+                currency: "PHP",
+              })}
             </ModalHeader>
             <ModalCloseButton />
             <ModalBody>

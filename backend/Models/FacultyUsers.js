@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
 const FacultySchema = new mongoose.Schema({
-   email: {
+  email: {
     type: String,
     required: [true, "Your email address is required"],
     unique: true,
@@ -17,19 +17,15 @@ const FacultySchema = new mongoose.Schema({
   },
   fullname: {
     type: String,
-    required: [true, "Your Fullname is required"],
-  
   },
   gender: {
     type: String,
-   
   },
   image: {
     type: String,
   },
   facebook: {
     type: String,
-   
   },
   address: {
     type: String,
@@ -55,6 +51,9 @@ const FacultySchema = new mongoose.Schema({
   isBuyer: {
     type: Boolean,
   },
+  isUser: {
+    type: String,
+  },
   isSeller: {
     type: Boolean,
   },
@@ -62,10 +61,12 @@ const FacultySchema = new mongoose.Schema({
     type: Date,
     default: new Date(),
   },
+  resetToken: { type: String },
+  resetTokenExpiration: { type: String },
 });
 
-FacultySchema.pre("save", async function (){
-    this.password = await bcrypt.hash(this.password, 12);
+FacultySchema.pre("save", async function () {
+  this.password = await bcrypt.hash(this.password, 12);
 });
 
 export const FacultyModel = mongoose.model("FacultyUsers", FacultySchema);

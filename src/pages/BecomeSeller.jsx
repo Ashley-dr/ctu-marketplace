@@ -271,11 +271,6 @@ function BecomeSeller(props) {
               <br />
               <figure className="grid ssm:grid-cols-1 lg:grid-cols-2 justify-items-center">
                 <article className="grid font-quicksand ">
-
-
-
-
-
                   <article className="grid font-quicksand justify-items-start mb-4 ">
                     <label className="grid mb-2">
                       <p className="justify-self-start text-xs">Email:</p>
@@ -314,7 +309,6 @@ function BecomeSeller(props) {
                       />
                     </label>
                   </article>
-
 
                   <label className="grid mb-2">
                     <p className="justify-self-start text-xs">Gender</p>
@@ -476,18 +470,9 @@ function BecomeSeller(props) {
                   <br />
                 </article>
 
-
-
-
-
-
-
                 <article className="ssm:border-l-0 lg:border-l-2 ssm:pl-0 lg:pl-5 ">
                   {/* Image here */}
 
-
-
-                  
                   <div className="flex items-center justify-center w-full">
                     <label className="flex  flex-col items-center justify-center w-96 h-64 mb-5 border-2 border-gray-900 border-dashed rounded-lg cursor-pointer bg-[#eaf3fffa] hover:bg-[#c5d0f3fa] ">
                       <div className="flex flex-col items-center justify-center pt-5 pb-6">
@@ -521,7 +506,8 @@ function BecomeSeller(props) {
                         <AiOutlineUpload className="text-5xl text-gray-900" />
                         <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
                           <span className="font-semibold text-gray-900 font-quicksand text-lg">
-                            Shop Cover Image
+                            Shop Cover Image (Instrinsic image size: 1920 x 1080
+                            px)
                           </span>
                           <br />{" "}
                           <span className="font-semibold">Click to upload</span>{" "}

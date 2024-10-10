@@ -5,7 +5,7 @@ import viteLogo from "/vite.svg";
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import Home from "./pages/Home";
-import Login from "./pages/Login";
+
 import Signup from "./pages/Signup";
 import Navigation from "./components/Navigation";
 import { UserContextProvider } from "../backend/Context/userContext";
@@ -31,7 +31,7 @@ function App() {
         </header>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
+
           <Route path="/Signup" element={<Signup />} />
           <Route path="/Account" element={<Account />} />
           <Route path="/AdminDash" element={<AdminDashboard />} />
