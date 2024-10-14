@@ -45,17 +45,24 @@ import {
 } from "@chakra-ui/react";
 import logo from "../assets/ctu-logo.jpg";
 import { FiEye } from "react-icons/fi";
+import { GrTransaction } from "react-icons/gr";
 import { FiEyeOff } from "react-icons/fi";
-import { FaSignInAlt } from "react-icons/fa";
+import { FaSignInAlt, FaUserCheck } from "react-icons/fa";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { useCookies } from "react-cookie";
-import { MdOutlineAlternateEmail } from "react-icons/md";
+import {
+  MdAccountBox,
+  MdAddBox,
+  MdDashboard,
+  MdNotifications,
+  MdOutlineAlternateEmail,
+} from "react-icons/md";
 import { UserContext } from "../../backend/Context/userContext";
 import { CiLogout } from "react-icons/ci";
-import { PiPasswordBold } from "react-icons/pi";
+import { PiPasswordBold, PiShoppingCartDuotone } from "react-icons/pi";
 import { AiOutlineUpload } from "react-icons/ai";
 function Navigation() {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -393,7 +400,7 @@ function Navigation() {
     window.location.reload();
   };
   return (
-    <div className="max-w-full">
+    <div className="max-w-full font-quicksand text-sm">
       <ToastContainer />
       <Box
         className="max-w-full "
@@ -411,7 +418,7 @@ function Navigation() {
             </Text>
           </Link>
 
-          <Flex alignItems={"center"}>
+          <Flex zIndex={10} alignItems={"center"}>
             <Stack direction={"row"} spacing={7}>
               <Button onClick={toggleColorMode} className="mt-1">
                 {" "}
@@ -421,14 +428,12 @@ function Navigation() {
               {!isUsers && !isFaculty ? (
                 <>
                   {" "}
-                  <Box className="">
+                  <Box className="space-x-2 m-1">
                     <Button onClick={loginModal.onOpen}>
-                      {/* <Link to="/login">LOGIN</Link> */}
-                      Login
+                      <p className="text-xs">Login</p>
                     </Button>
                     <Button onClick={selectModal.onOpen}>
-                      {/* <Link to="/Signup">SIGN UP</Link> */}
-                      Signup
+                      <p className="text-xs">Signup</p>
                     </Button>
                   </Box>
                 </>
@@ -445,7 +450,11 @@ function Navigation() {
                     cursor={"pointer"}
                     minW={0}
                   >
-                    <Avatar size={"md"} src={isUsers.image} />
+                    <Avatar
+                      size={"md"}
+                      className="border-green-600"
+                      src={isUsers.image}
+                    />
                   </MenuButton>
                   <MenuList alignItems={"center"}>
                     <br />
@@ -454,7 +463,7 @@ function Navigation() {
                     </Center>
                     <br />
                     <Center>
-                      <p>Welcome</p>
+                      <p className="">Welcome</p>
                     </Center>
                     <Center>
                       <p>
@@ -463,46 +472,63 @@ function Navigation() {
                       </p>
                     </Center>
                     <Center>
-                      <p>Logged as Student Member</p>
+                      <p>Student Member</p>
                     </Center>
                     <MenuDivider />
 
                     <Link to={`/Orders/${isUsers.id}`}>
                       {" "}
-                      <MenuItem>Orders</MenuItem>
+                      <MenuItem className="gap-2 ">
+                        <PiShoppingCartDuotone /> Orders
+                      </MenuItem>
                     </Link>
-                    <MenuItem>Notification</MenuItem>
-                    <MenuItem>
+                    <MenuItem className="gap-2 ">
                       {" "}
-                      <Link to="/Account">Account Settings</Link>
+                      <MdNotifications /> Notification
                     </MenuItem>
+                    <Link to="/Account">
+                      {" "}
+                      <MenuItem className="gap-2 ">
+                        <MdAccountBox /> Account Settings
+                      </MenuItem>
+                    </Link>
                     {isUsers.isSeller === true ? (
                       <div>
                         <Link to={`/AddProducts/${isUsers.id}`}>
-                          <MenuItem> Add Products</MenuItem>
+                          <MenuItem className="gap-2 ">
+                            {" "}
+                            <MdAddBox /> Add Products
+                          </MenuItem>
                         </Link>
 
                         <Link to={`/Transactions/${isUsers.id}`}>
-                          <MenuItem>Transactions</MenuItem>
+                          <MenuItem className="gap-2 ">
+                            {" "}
+                            <GrTransaction /> Transactions
+                          </MenuItem>
                         </Link>
                       </div>
                     ) : (
                       <MenuItem>
                         {" "}
                         <Link to={`/BecomeSeller/${isUsers.id}`}>
-                          Become a Seller
+                          <FaUserCheck /> Become a Seller
                         </Link>
                       </MenuItem>
                     )}
                     {isUsers.isAdmin === true ? (
-                      <MenuItem>
-                        <Link to="/AdminDash">Admin Dashboard</Link>
-                      </MenuItem>
+                      <Link to="/AdminDash">
+                        <MenuItem className="gap-2">
+                          {" "}
+                          <MdDashboard /> Admin Dashboard
+                        </MenuItem>
+                      </Link>
                     ) : (
                       <></>
                     )}
                     <MenuItem>
-                      <Button onClick={logout}>
+                      <Button className="w-full gap-2" onClick={logout}>
+                        <p className="text-xs">Sign out</p>
                         <CiLogout />
                       </Button>
                     </MenuItem>
@@ -537,40 +563,54 @@ function Navigation() {
                       <p>{isFaculty.fullname}</p>
                     </Center>
                     <Center>
-                      <p>Logged as Faculty Member</p>
+                      <p>Faculty Member</p>
                     </Center>
                     <MenuDivider />
                     <Link to={`/Orders/${isFaculty.id}`}>
                       {" "}
-                      <MenuItem>Orders</MenuItem>
+                      <MenuItem className="gap-2 ">
+                        {" "}
+                        <PiShoppingCartDuotone /> Orders
+                      </MenuItem>
                     </Link>
-                    <MenuItem>Notification</MenuItem>
-                    <MenuItem>
+                    <MenuItem className="gap-2 ">
                       {" "}
-                      <Link to="/Account">Account Settings</Link>
+                      <MdNotifications /> Notification
                     </MenuItem>
+
+                    <Link to="/Account">
+                      <MenuItem className="gap-2 ">
+                        <MdAccountBox />
+                        Account Settings
+                      </MenuItem>
+                    </Link>
+
                     {isFaculty.isSeller === true ? (
                       <div>
-                        <MenuItem>
-                          <Link to={`/FacultyAddProducts/${isFaculty.id}`}>
-                            Add Products
-                          </Link>
-                        </MenuItem>
+                        <Link to={`/FacultyAddProducts/${isFaculty.id}`}>
+                          <MenuItem className="gap-2 ">
+                            <MdAddBox /> Add Products
+                          </MenuItem>
+                        </Link>
 
                         <Link to={`/Transactions/${isFaculty.id}`}>
-                          <MenuItem>Transactions</MenuItem>
+                          <MenuItem className="gap-2 ">
+                            {" "}
+                            <GrTransaction />
+                            Transactions
+                          </MenuItem>
                         </Link>
                       </div>
                     ) : (
-                      <MenuItem>
-                        {" "}
-                        <Link to={`/BecomeSeller/${isFaculty.id}`}>
-                          Become a Seller
-                        </Link>
-                      </MenuItem>
+                      <Link to={`/BecomeSeller/${isFaculty.id}`}>
+                        <MenuItem className="gap-2 ">
+                          <FaUserCheck /> Become a Seller
+                        </MenuItem>
+                      </Link>
                     )}
                     <MenuItem>
-                      <Button onClick={logout}>
+                      <Button className="w-full gap-2" onClick={logout}>
+                        <p className="text-xs">Sign out</p>
                         <CiLogout />
                       </Button>
                     </MenuItem>

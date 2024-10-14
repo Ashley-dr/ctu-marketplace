@@ -30,6 +30,11 @@ import {
   StackDivider,
   Box,
   Text,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
 } from "@chakra-ui/react";
 import { RiSendPlane2Fill } from "react-icons/ri";
 import { CgNametag } from "react-icons/cg";
@@ -408,7 +413,7 @@ function ProductId() {
                       </Box>
                       <Box>
                         {" "}
-                        {isUsers ? (
+                        {isUsers && (
                           <>
                             <div className="bg-gray-900  text-white text-center text-sm  rounded-sm p-2 grid hover:bg-gray-950">
                               <button
@@ -420,11 +425,9 @@ function ProductId() {
                               </button>
                             </div>
                           </>
-                        ) : (
-                          <></>
                         )}
                         <div>
-                          {isFaculty ? (
+                          {isFaculty && (
                             <>
                               <div className="bg-gray-900  text-white text-center text-sm  rounded-sm p-2 grid hover:bg-gray-950">
                                 <button
@@ -438,8 +441,6 @@ function ProductId() {
                                 </button>
                               </div>
                             </>
-                          ) : (
-                            <> </>
                           )}
                           {!isFaculty && !isUsers ? (
                             <>
@@ -460,7 +461,7 @@ function ProductId() {
                 </Card>
               </div>
 
-              {isUsers && (
+              {isUsers || isFaculty ? (
                 <div className="bg-gray-900 mt-8 text-white  text-sm  rounded-sm p-2 grid ">
                   <form onSubmit={commentHandler} className="flex">
                     <textarea
@@ -480,28 +481,10 @@ function ProductId() {
                     </button>
                   </form>
                 </div>
+              ) : (
+                <></>
               )}
-              {isFaculty && (
-                <div className="bg-gray-900 mt-8  text-white  text-sm  rounded-sm p-2 grid ">
-                  <form onSubmit={commentHandler} className="flex">
-                    <textarea
-                      className="text-black w-full rounded-sm px-2  font-quicksand bg-[#e4eaec]"
-                      type="text"
-                      value={newComment}
-                      onChange={(event) => setNewComments(event.target.value)}
-                      placeholder="Add a comment"
-                    />
 
-                    <button
-                      className="flex float-right px-2 border rounded-md p-1 pl-4 pt-2 hover:bg-[#c1cec633] pr-3 h-10"
-                      type="submit"
-                    >
-                      Comment{" "}
-                      <RiSendPlane2Fill className="mt-0.5 ml-2 text-base" />
-                    </button>
-                  </form>
-                </div>
-              )}
               <div className="bg-[#27262615] rounded-lg text-sm w-full p-1 grid">
                 {productData.comments && productData.comments.length > 0 ? (
                   <div>
@@ -525,18 +508,29 @@ function ProductId() {
                           <p className="font-quicksand mb-2 pl-1 w-96">
                             {comment.comment}
                           </p>
-                          {isUsers.id === comment.commenterId ? (
-                            <>
-                              {" "}
-                              <button
-                                className="justify-self-start mb-1"
-                                onClick={() => commentDelete(comment._id)}
-                              >
-                                <MdDelete className="text-base" />
-                              </button>
-                            </>
-                          ) : (
-                            <></>
+                          {(isUsers?.id === comment.commenterId ||
+                            isFaculty?.id === comment.commenterId) && (
+                            <Accordion defaultIndex={[1]} allowMultiple>
+                              <AccordionItem>
+                                <h2>
+                                  <AccordionButton>
+                                    <Box as="span" flex="1" textAlign="right">
+                                      <MdDelete className="text-base" />
+                                    </Box>
+                                    <AccordionIcon />
+                                  </AccordionButton>
+                                </h2>
+                                <AccordionPanel textAlign={"center"} pb={4}>
+                                  <p>Do you want to remove this comment?</p>
+                                  <Button
+                                    className="justify-self-start mb-1 flex"
+                                    onClick={() => commentDelete(comment._id)}
+                                  >
+                                    Confirm
+                                  </Button>
+                                </AccordionPanel>
+                              </AccordionItem>
+                            </Accordion>
                           )}
                         </article>
                       ))

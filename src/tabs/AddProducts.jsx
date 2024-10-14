@@ -12,29 +12,32 @@ import {
   InputLeftElement,
   InputRightElement,
   Textarea,
+  Checkbox,
+  CheckboxGroup,
+  useToast,
 } from "@chakra-ui/react";
-import { AddIcon } from "@chakra-ui/icons";
+import { AddIcon, CheckIcon } from "@chakra-ui/icons";
 import { AiOutlineUpload } from "react-icons/ai";
-function FacultyAddProducts() {
+function AddProducts() {
   const [cookies, removeCookies] = useCookies([]);
-
-  const [isFaculty, setisFaculty] = useState("");
+  const [isUsers, setisUser] = useState("");
+  const [facultysData, setFacultyData] = useState([]);
   const { id } = useParams();
   const navigate = useNavigate();
-  const [productImage, setProductImage] = useState([]);
   const [products, setProducts] = useState({
+    sellerId: "",
     sellerName: "",
-    prodName: "",
-    description: "",
     stocks: "",
     sellerEmail: "",
+    prodName: "",
+    description: "",
     price: "",
-    sellerId: "",
     categories: [],
     accountType: "",
     facebook: "",
     marketType: "",
   });
+  const [productImage, setProductImage] = useState([]);
 
   useEffect(() => {
     const verifyCookie = async () => {
@@ -42,17 +45,18 @@ function FacultyAddProducts() {
         navigate("/");
       }
       const { data } = await axios.post(
-        "http://localhost:4000/facultypost",
+        "http://localhost:4000/userspost",
         {},
         { withCredentials: true }
       );
       const { status, user } = data;
-      setisFaculty(user);
+      setisUser(user);
 
       return status;
     };
     verifyCookie();
   }, [cookies, navigate, removeCookies]);
+
   const productHandler = (e) => {
     setProducts({ ...products, [e.target.name]: e.target.value });
   };
@@ -65,10 +69,10 @@ function FacultyAddProducts() {
   const productSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("sellerName", products.sellerName);
-    formData.append("sellerEmail", products.sellerEmail);
-    formData.append("stocks", products.stocks);
     formData.append("sellerId", products.sellerId);
+    formData.append("sellerName", products.sellerName);
+    formData.append("stocks", products.stocks);
+    formData.append("sellerEmail", products.sellerEmail);
     formData.append("prodName", products.prodName);
     formData.append("description", products.description);
     formData.append("price", products.price);
@@ -87,12 +91,13 @@ function FacultyAddProducts() {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
+
       console.log("Image Uploaded", response.data.image);
       setProducts({
-        sellerName: "",
-        sellerEmail: "",
         sellerId: "",
+        sellerName: "",
         stocks: "",
+        sellerEmail: "",
         prodName: "",
         description: "",
         price: "",
@@ -102,18 +107,22 @@ function FacultyAddProducts() {
         marketType: "",
       });
       setProductImage([]);
-      navigate("/");
     } catch (error) {
       console.log("Error uploading images", error);
     }
+    navigate("/Account");
   };
+
   const categoriesOption = [
     { value: "Fashion", label: "Fashion" },
     { value: "Furnitures", label: "Furnitures" },
     { value: "Health & Beauty", label: "Health & Beauty" },
     { value: "Books & Media", label: "Books & Media" },
     { value: "Art & Collectibles", label: "Art & Collectibles" },
-    { value: "Mobiles & Gadgets", label: "Mobiles & Gadgets" },
+    {
+      value: "Mobiles CellPhone & Gadgets",
+      label: "Mobiles CellPhone & Gadgets",
+    },
     { value: "Laptops & Computers", label: "Laptops & Computers" },
     { value: "Camera & Photo", label: "Camera & Photo" },
     { value: "Electronic Parts", label: "Electronic Parts" },
@@ -135,6 +144,7 @@ function FacultyAddProducts() {
     { value: "Womens Shoes", label: "Women's Shoes" },
     { value: "Other Items", label: "Other Items" },
   ];
+
   const categoriesOnChange = (select) => {
     const categoriesVar = select.map((option) => option.value);
     setProducts({ ...products, categories: categoriesVar });
@@ -142,7 +152,7 @@ function FacultyAddProducts() {
   return (
     <figure className="max-w-full pt-2 max-h-full bg-gradient-to-tr from-[#00ffdd2d] via-[#0834f515] to-[#08ceff1a] text-center ">
       <figure className="max-w-full w-full ">
-        <article className=" px-9 pt-5 mt-2 rounded-lg pb-5 lg:mx-9">
+        <article className="  px-9 pt-5 mt-2 rounded-lg pb-5 lg:mx-9">
           <article className="grid justify-items-center">
             <h1 className="pt-5 font-bebas text-3xl">Add new product.</h1>
 
@@ -160,16 +170,8 @@ function FacultyAddProducts() {
                   <p className="pl-2 pr-2 border-[#077b8a] rounded-full  font-montserrat text-sm border-2 relative bottom-0 mr-2 bg-[#077b8a50] text-[#0b9fb3] font-bold text-center">
                     <p className="ssm:mt-1 lg:mt-0">2</p>
                   </p>{" "}
-                  Product on inventory
+                  Inventory on Profile
                 </li>
-                {/* <p className="border-[#15a380] rounded-lg border-2 transform rotate-90  mr-2 ml-2"></p>
-         <li className="flex font-poppins">
-           {" "}
-           <p className="pl-2   pr-2 border-[#077b8a] rounded-full  font-montserrat text-sm border-2 relative bottom-0 mr-2 bg-[#077b8a50] text-[#0b9fb3] font-bold text-center">
-             <p className="ssm:mt-1 lg:mt-0">3</p>
-           </p>{" "}
-           Wait for approval
-         </li> */}
               </ol>
             </figure>
             <form className="mb-32" onSubmit={productSubmit}>
@@ -178,35 +180,35 @@ function FacultyAddProducts() {
                   <div>
                     <input
                       type="text"
-                      value={(products.sellerName = isFaculty.fullname)}
+                      value={(products.sellerName = isUsers.fullname)}
                       name="sellerName"
                       onChange={productHandler}
                       hidden
                     />
                     <input
                       type="text"
-                      value={(products.sellerEmail = isFaculty.email)}
+                      value={(products.sellerEmail = isUsers.email)}
                       name="sellerEmail"
                       onChange={productHandler}
                       hidden
                     />
                     <input
                       type="text"
-                      value={(products.sellerId = isFaculty.id)}
+                      value={(products.sellerId = isUsers.id)}
                       name="sellerId"
                       onChange={productHandler}
                       hidden
                     />
                     <input
                       type="text"
-                      value={(products.accountType = isFaculty.isFaculty)}
+                      value={(products.accountType = isUsers.isUser)}
                       name="accountType"
                       onChange={productHandler}
                       hidden
                     />
                     <input
                       type="text"
-                      value={(products.facebook = isFaculty.facebook)}
+                      value={(products.facebook = isUsers.facebook)}
                       name="facebook"
                       onChange={productHandler}
                       hidden
@@ -310,16 +312,6 @@ function FacultyAddProducts() {
                       onChange={productHandler}
                     />{" "}
                   </label>
-
-                  <center>
-                    {" "}
-                    <button
-                      type="submit"
-                      className="bg-gray-800  p-2 px-4 rounded-lg text-white font-quicksand font-semibold flex items-center hover:bg-gray-600"
-                    >
-                      Add Item <AddIcon className="ml-2 text-xs" />
-                    </button>
-                  </center>
                 </article>
 
                 <article className="ssm:border-l-0 lg:border-l-2 ssm:pl-0 lg:pl-5 ">
@@ -373,6 +365,16 @@ function FacultyAddProducts() {
                       />
                     </label>
                   </label>
+
+                  <center>
+                    {" "}
+                    <button
+                      type="submit"
+                      className="bg-gray-800 w-full justify-center p-2 px-4 rounded-lg text-white font-quicksand font-semibold flex items-center hover:bg-gray-600"
+                    >
+                      Add Item <AddIcon className="ml-2 text-xs" />
+                    </button>
+                  </center>
                 </article>
               </figure>
             </form>
@@ -383,4 +385,4 @@ function FacultyAddProducts() {
   );
 }
 
-export default FacultyAddProducts;
+export default AddProducts;

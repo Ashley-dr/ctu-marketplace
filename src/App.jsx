@@ -6,21 +6,20 @@ import "./App.css";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import Home from "./pages/Home";
 
-import Signup from "./pages/Signup";
 import Navigation from "./components/Navigation";
 import { UserContextProvider } from "../backend/Context/userContext";
-import Account from "./pages/Account";
-import BecomeSeller from "./pages/BecomeSeller";
-import AdminDashboard from "./pages/AdminDashboard";
-import SellerApproval from "./pages/SellerApproval";
-import AccountsToBeSeller from "./pages/AccountsToBeSeller";
-import SellerFacultyApproval from "./pages/SellerFacultyApproval";
-import AddProducts from "./pages/AddProducts";
-import FacultyAddProducts from "./pages/FacultyAddProducts";
+import Account from "./tabs/Account";
+import BecomeSeller from "./tabs/BecomeSeller";
+import AdminDashboard from "./adminpanel/AdminDashboard";
+import SellerApproval from "./adminpanel/SellerApproval";
+import AccountsToBeSeller from "./adminpanel/AccountsToBeSeller";
+import SellerFacultyApproval from "./adminpanel/SellerFacultyApproval";
+import AddProducts from "./tabs/AddProducts";
+import FacultyAddProducts from "./tabs/FacultyAddProducts";
 import ProductId from "./pages/ProductId";
-import Orders from "./pages/Orders";
-import Inventory from "./pages/Inventory";
-import Transactions from "./pages/Transactions";
+import Orders from "./tabs/Orders";
+import Inventory from "./tabs/Inventory";
+import Transactions from "./tabs/Transactions";
 
 function App() {
   return (
@@ -32,7 +31,6 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
 
-          <Route path="/Signup" element={<Signup />} />
           <Route path="/Account" element={<Account />} />
           <Route path="/AdminDash" element={<AdminDashboard />} />
           <Route path="/BecomeSeller/:id" element={<BecomeSeller />} />

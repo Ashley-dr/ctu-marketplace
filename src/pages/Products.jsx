@@ -505,8 +505,8 @@ function Products() {
                       {" "}
                       {item.marketType == "Selling" ? (
                         <>
-                          <p className=" font-quicksand uppercase font-bold  ssm:text-sm ssm:ml-14 md:text-base lg:text-base pl-1 pr-1 rounded-md bg-[#2dd1b662] flex">
-                            <TbSquareLetterS className="mt-1 mr-2" />
+                          <p className=" font-quicksand uppercase font-bold   ssm:text-xs ssm:ml-14 md:text-base md:w-full lg:text-base pl-1 pr-1 rounded-md bg-[#2dd1b662] flex">
+                            {/* <TbSquareLetterS className="text-xs mt-0.5" /> */}
                             {item.marketType}
                           </p>
                         </>
@@ -516,7 +516,7 @@ function Products() {
                       {item.marketType == "Trading" ? (
                         <>
                           <p className=" font-quicksand uppercase font-bold pl-1 pr-1 rounded-md bg-[#ff7b0f50] ssm:text-sm ssm:ml-14 md:text-base lg:text-base flex">
-                            <TbLetterT className="mt-1 mr-1" />
+                            {/* <TbLetterT className="mt-1 mr-1" /> */}
                             {item.marketType}
                           </p>
                         </>

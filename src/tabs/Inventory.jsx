@@ -48,7 +48,7 @@ import { formatDate, formatDistanceToNow } from "date-fns";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { MdOutlineModeComment } from "react-icons/md";
-import ProductId from "./ProductId";
+import ProductId from "../pages/ProductId";
 import { FiDelete } from "react-icons/fi";
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { IoChevronBack } from "react-icons/io5";

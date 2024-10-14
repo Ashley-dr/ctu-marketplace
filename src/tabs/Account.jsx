@@ -38,6 +38,7 @@ import { useCookies } from "react-cookie";
 import { FiEdit3, FiEyeOff } from "react-icons/fi";
 import Inventory from "./Inventory";
 import { FaFacebook } from "react-icons/fa";
+import Orders from "./Orders";
 
 function Account() {
   const [cookies, removeCookies] = useCookies([]);
@@ -566,18 +567,12 @@ function Account() {
             />
 
             {/* Edit Button to Open Modal */}
-            <button
-              onClick={() => handleUpdateAccount(isFaculty)}
-              className="z-10 ml-48 relative bottom-44 text-4xl text-white"
-            >
-              <FiEdit3 />
-            </button>
 
-            <p className="mt-2 relative bottom-24 flex font-quicksand font-bold">
+            <p className="mt-2 relative bottom-16 flex font-quicksand font-bold">
               {isFaculty.fullname}
             </p>
 
-            <label className="text-xs relative bottom-24 mt-1">
+            <label className="text-xs relative bottom-16 mt-1">
               {isFaculty.isSeller && (
                 <p className="bg-green-300 text-gray-950 px-2 rounded-md text-xs truncate font-semibold">
                   Verified Seller
@@ -586,7 +581,7 @@ function Account() {
             </label>
           </figure>
 
-          <figure className="flex gap-16 relative bottom-24 mb-5 text-center">
+          <figure className="flex gap-16 relative bottom-16 mb-5 text-center">
             <label className="grid">
               <p>218</p>
               <p>ITEM SELL</p>
@@ -602,7 +597,7 @@ function Account() {
           </figure>
 
           <Tabs
-            className="relative bottom-24"
+            className="relative bottom-16"
             isFitted
             size={"md"}
             variant="enclosed"
@@ -617,6 +612,12 @@ function Account() {
               </TabPanel>
               <TabPanel>
                 <figure className="font-poppins  shadow-2xl space-y-2 border bg-[#ebe6e60a] grid mb-16 p-5 ssm:w-96 lg:w-128 text-sm rounded-2xl">
+                  <button
+                    onClick={() => handleUpdateAccount(isFaculty)}
+                    className="   text-2xl text-white justify-self-end px-4"
+                  >
+                    <FiEdit3 />
+                  </button>
                   {isFaculty.isSeller ? (
                     <>
                       <p className="text-center mb-2  ssm:w-80 ssm:mx-3 lg:mx-0 lg:w-full  text-lg">
@@ -697,7 +698,7 @@ function Account() {
                       name="email"
                       value={email}
                       onChange={handleEmailChange}
-                      placeholder={users.email}
+                      placeholder={faculty.email}
                       required
                     />
                     <Button className="w-full" mr={1} type="submit">
@@ -715,7 +716,7 @@ function Account() {
                         name="gcashNumber"
                         value={gcashNumber}
                         onChange={handleUserNumbersChange}
-                        placeholder={users.gcashNumber}
+                        placeholder={faculty.gcashNumber}
                         required
                       />
                     </FormControl>
@@ -726,7 +727,7 @@ function Account() {
                         name="phoneNumber"
                         value={phoneNumber}
                         onChange={handleUserNumbersChange}
-                        placeholder={users.phoneNumber}
+                        placeholder={faculty.phoneNumber}
                         required
                       />
                     </FormControl>
@@ -1023,18 +1024,12 @@ function Account() {
             />
 
             {/* Edit Button to Open Modal */}
-            <button
-              onClick={() => handleUpdateAccount(isUsers)}
-              className="z-10 ml-48 relative bottom-44 text-4xl text-white"
-            >
-              <FiEdit3 />
-            </button>
 
-            <p className="mt-2 relative bottom-24 flex font-quicksand font-bold">
+            <p className="mt-2 relative bottom-16 flex font-quicksand font-bold">
               {isUsers.fullname}
             </p>
 
-            <label className="text-xs relative bottom-24 mt-1">
+            <label className="text-xs relative bottom-16 mt-1">
               {isUsers.isSeller && (
                 <p className="bg-green-300 text-gray-950 px-2 rounded-md text-xs truncate font-semibold">
                   Verified Seller
@@ -1043,7 +1038,7 @@ function Account() {
             </label>
           </figure>
 
-          <figure className="flex gap-16 relative bottom-24 mb-5 text-center">
+          <figure className="flex gap-16 relative bottom-16 mb-5 text-center">
             <label className="grid">
               <p>218</p>
               <p>ITEM SELL</p>
@@ -1059,7 +1054,7 @@ function Account() {
           </figure>
 
           <Tabs
-            className="relative bottom-24"
+            className="relative bottom-16"
             isFitted
             size={"md"}
             variant="enclosed"
@@ -1074,6 +1069,12 @@ function Account() {
               </TabPanel>
               <TabPanel>
                 <figure className="font-poppins shadow-2xl space-y-2 border bg-[#ebe6e60a] grid mb-16 p-5 ssm:w-96 lg:w-128 text-sm rounded-2xl">
+                  <button
+                    onClick={() => handleUpdateAccount(isUsers)}
+                    className="   text-2xl text-white justify-self-end px-4"
+                  >
+                    <FiEdit3 />
+                  </button>
                   {isUsers.isSeller ? (
                     <>
                       <p className="text-center mb-2  ssm:w-80 ssm:mx-3 lg:mx-0 lg:w-full  text-lg">
@@ -1084,6 +1085,7 @@ function Account() {
                   ) : (
                     <p className="text-center mb-2 text-lg">Become a Seller</p>
                   )}
+
                   <label className="text-xs">
                     Email:
                     <p className="text-base truncate  ssm:w-80 lg:w-100 font-semibold">
