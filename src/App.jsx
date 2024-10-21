@@ -20,6 +20,8 @@ import ProductId from "./pages/ProductId";
 import Orders from "./tabs/Orders";
 import Inventory from "./tabs/Inventory";
 import Transactions from "./tabs/Transactions";
+import Footer from "./components/Footer";
+import MainDashboard from "./adminpanel/MainDashboard";
 
 function App() {
   return (
@@ -32,13 +34,13 @@ function App() {
           <Route path="/" element={<Home />} />
 
           <Route path="/Account" element={<Account />} />
-          <Route path="/AdminDash" element={<AdminDashboard />} />
+          <Route path="/MainAdmDash/*" element={<MainDashboard />} />
           <Route path="/BecomeSeller/:id" element={<BecomeSeller />} />
-          <Route path="/SellerApproval/:id" element={<SellerApproval />} />
-          <Route
+          {/* <Route path="/SellerApproval/:id" element={<SellerApproval />} /> */}
+          {/* <Route
             path="/SellerFacultyApproval/:id"
             element={<SellerFacultyApproval />}
-          />
+          /> */}
           <Route path="/Transactions/:id" element={<Transactions />} />
           <Route path="/Inventory/:id" element={<Inventory />} />
           <Route path="/Orders/:id" element={<Orders />} />
@@ -50,7 +52,9 @@ function App() {
           <Route path="/AccountsToBeSeller" element={<AccountsToBeSeller />} />
           <Route path="/ProductId/:id" element={<ProductId />} />
         </Routes>
-        <footer></footer>
+        <footer>
+          <Footer />
+        </footer>
       </Router>
     </UserContextProvider>
   );

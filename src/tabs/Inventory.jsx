@@ -4,6 +4,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useCookies } from "react-cookie";
+import { formatDateToNow } from "../pages/ProductId";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import {
   Card,
@@ -37,6 +38,7 @@ import {
   AccordionButton,
   AccordionPanel,
   AccordionIcon,
+  Img,
 } from "@chakra-ui/react";
 import { MdDelete } from "react-icons/md";
 import { RiSendPlane2Fill } from "react-icons/ri";
@@ -52,18 +54,14 @@ import ProductId from "../pages/ProductId";
 import { FiDelete } from "react-icons/fi";
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { IoChevronBack } from "react-icons/io5";
-export const formatDateToNow = (date) => {
-  const validDate = new Date(date);
-  if (isNaN(validDate)) {
-    return "Invalid date";
-  }
-  return formatDistanceToNow(validDate, { addSuffix: true });
-};
+import logo from "../assets/ctu-logo.jpg";
 function Inventory({ userId }) {
   const [cookies, removeCookies] = useCookies([]);
   const [myProducts, setMyProducts] = useState([]);
   const [viewModal, setViewModal] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComments] = useState("");
   const [isUsers, setisUser] = useState("");
@@ -174,20 +172,29 @@ function Inventory({ userId }) {
   }, [cookies, navigate, removeCookies]);
 
   useEffect(() => {
-    if (userId) {
-      const interval = setInterval(() => {
-        axios
-          .get(`http://localhost:4000/api/inventory/${userId}`)
-          .then((result) => {
-            setMyProducts(result.data);
-          })
-          .catch((err) => {
-            console.log("Error fetching your products", err);
-          });
-      }, 1000); // 1000 milliseconds = 1 second
+    try {
+      if (userId) {
+        const interval = setInterval(() => {
+          axios
+            .get(`http://localhost:4000/api/inventory/${userId}`)
+            .then((result) => {
+              setMyProducts(result.data);
+              setLoading(false);
+              setError(null);
+            })
+            .catch((err) => {
+              console.log("Error fetching your products", err);
+            });
+        }, 1000); // 1000 milliseconds = 1 second
 
-      // Clear interval on component unmount
-      return () => clearInterval(interval);
+        // Clear interval on component unmount
+        return () => clearInterval(interval);
+      }
+    } catch (error) {
+      setError("Error fetching products data");
+      console.error("Error fetching products data:", error);
+    } finally {
+      setLoading(false);
     }
   }, [userId]);
 
@@ -230,101 +237,116 @@ function Inventory({ userId }) {
     <div className="max-w-full max-h-full ">
       <div>
         <ul className="grid  grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
-          {myProducts.length === 0 ? (
-            <main className="w-64 ">
-              <p className="text-center">No item</p>
-            </main>
+          {loading && myProducts.length === 0 ? (
+            <div className="flex text-center justify-center mb-10 relative md:left-28 lg:left-52 mt-10">
+              <div className="animate-pulse rounded-full  bg-gray-900  border-gray-900">
+                <Img src={logo} className="rounded-full " />
+              </div>
+            </div>
           ) : (
-            myProducts.map((item) => (
-              <Card
-                maxW="xs"
-                rounded={"lg"}
-                mx={3}
-                mt={5}
-                shadow={"2xl"}
-                mb={5}
-                className="grid ssm:w-96 lg:w-64"
-                key={item._id}
-              >
-                <CardHeader>
-                  <Flex spacing="4" className="text-xs" isTruncated>
-                    <Flex flex="1" gap="2" alignItems="center" flexWrap="wrap">
-                      <Avatar src={userId.image} size={"sm"} />
-
-                      <Box>
-                        <Text className="">{item.accountType}</Text>
-                        <Heading size="xss" isTruncated>
-                          {item.sellerName}
-                        </Heading>
-                        <Text>{item.sellerEmail}</Text>
-                      </Box>
-                    </Flex>
-                  </Flex>
-                </CardHeader>
-                <Text ml={5} className="font-bold  relative bottom-3">
-                  {item.prodName}
-                </Text>
-                <Text ml={5} className="  relative bottom-3">
-                  Stocks: {item.stocks}
-                </Text>
-                <Text
-                  ml={5}
-                  className="font-semibold text-xs relative bottom-3"
-                >
-                  {new Intl.NumberFormat("en-PH", {
-                    style: "currency",
-                    currency: "PHP",
-                  }).format(viewModal.price)}
-                </Text>
-                <Text
-                  ml={5}
-                  className="font-semibold text-xs relative bottom-3"
-                >
-                  {item.marketType === "Selling" && "Trading" ? (
-                    <p className="text-green-200">{item.marketType}</p>
-                  ) : (
-                    <p className="text-orange-200">{item.marketType}</p>
-                  )}
-                </Text>
-
-                <CardBody pt={1}>
-                  <Text
-                    overflowY={"scroll"}
-                    className="h-12 mb-4 shadow-inner  w-full px-1"
+            <>
+              {myProducts.length === 0 ? (
+                <main className="w-64 ">
+                  <p className="text-center">No item</p>
+                </main>
+              ) : (
+                myProducts.map((item) => (
+                  <Card
+                    maxW="xs"
+                    rounded={"lg"}
+                    mx={3}
+                    mt={5}
+                    shadow={"2xl"}
+                    mb={5}
+                    className="grid ssm:w-96 lg:w-64"
+                    key={item._id}
                   >
-                    {item.description}
-                  </Text>
-                </CardBody>
+                    <CardHeader>
+                      <Flex spacing="4" className="text-xs" isTruncated>
+                        <Flex
+                          flex="1"
+                          gap="2"
+                          alignItems="center"
+                          flexWrap="wrap"
+                        >
+                          <Avatar src={userId.image} size={"sm"} />
 
-                {item.image && item.image.length > 0 && (
-                  <div className="">
-                    {item.image.slice(0, 1).map((image, index) => (
-                      <a
-                        key={index}
-                        target="_blank"
-                        href={image}
-                        rel="noreferrer"
+                          <Box>
+                            <Text className="">{item.accountType}</Text>
+                            <Heading size="xss" isTruncated>
+                              {item.sellerName}
+                            </Heading>
+                            <Text>{item.sellerEmail}</Text>
+                          </Box>
+                        </Flex>
+                      </Flex>
+                    </CardHeader>
+                    <Text ml={5} className="font-bold  relative bottom-3">
+                      {item.prodName}
+                    </Text>
+                    <Text ml={5} className="  relative bottom-3">
+                      Stocks: {item.stocks}
+                    </Text>
+                    <Text
+                      ml={5}
+                      className="font-semibold text-xs relative bottom-3"
+                    >
+                      {new Intl.NumberFormat("en-PH", {
+                        style: "currency",
+                        currency: "PHP",
+                      }).format(viewModal.price)}
+                    </Text>
+                    <Text
+                      ml={5}
+                      className="font-semibold text-xs relative bottom-3"
+                    >
+                      {item.marketType === "Selling" && "Trading" ? (
+                        <p className="text-green-200">{item.marketType}</p>
+                      ) : (
+                        <p className="text-orange-200">{item.marketType}</p>
+                      )}
+                    </Text>
+
+                    <CardBody pt={1}>
+                      <Text
+                        overflowY={"scroll"}
+                        className="h-12 mb-4 shadow-inner  w-full px-1"
                       >
-                        <Image
-                          objectFit="cover"
-                          className="w-full h-64"
-                          src={image}
-                          alt={`Image ${index + 1}`}
-                        />
-                      </a>
-                    ))}
-                  </div>
-                )}
-                <div className="bg-gray-900  text-white text-center text-sm  rounded-sm p-2 grid hover:bg-gray-950">
-                  <button
-                    className="flex w-full justify-center"
-                    onClick={() => handleModal(item)}
-                  >
-                    View <CiShoppingCart className="text-lg mt-0.5 mx-2" />
-                  </button>
-                </div>
-              </Card>
-            ))
+                        {item.description}
+                      </Text>
+                    </CardBody>
+
+                    {item.image && item.image.length > 0 && (
+                      <div className="">
+                        {item.image.slice(0, 1).map((image, index) => (
+                          <a
+                            key={index}
+                            target="_blank"
+                            href={image}
+                            rel="noreferrer"
+                          >
+                            <Image
+                              objectFit="cover"
+                              className="w-full h-64"
+                              src={image}
+                              alt={`Image ${index + 1}`}
+                            />
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                    <div className="bg-gray-900  text-white text-center text-sm  rounded-sm p-2 grid hover:bg-gray-950">
+                      <button
+                        className="flex w-full justify-center"
+                        onClick={() => handleModal(item)}
+                      >
+                        View <CiShoppingCart className="text-lg mt-0.5 mx-2" />
+                      </button>
+                    </div>
+                  </Card>
+                ))
+              )}
+            </>
           )}
         </ul>
       </div>
@@ -432,11 +454,14 @@ function Inventory({ userId }) {
                         <Box as="span" flex="1" textAlign="left">
                           <Text ml={2} className="font-bold grid">
                             <label className="font-thin text-xs">
-                              Item name:
+                              <Text className="text-xs font-thin">
+                                {formatDateToNow(viewModal.createdAt)}
+                              </Text>
                             </label>
                             {viewModal.prodName}
                           </Text>
                         </Box>
+
                         <DeleteIcon />
                         <AccordionIcon />
                       </AccordionButton>

@@ -5,17 +5,21 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import multer from "multer";
-import {v2 as cloudinary} from "cloudinary";
-import { FacultyuserVerification } from "./Middlewares/AuthMiddleware.js";
-import { userVerification } from "./Middlewares/AuthMiddleware.js";
-import authRoute from "./Routes/AuthRoute.js"
-import { UserModel } from "./Models/UserModel.js";
-import { FacultyModel } from "./Models/FacultyUsers.js";
-dotenv.config()
-mongoose.connect(process.env.MONGODB_URI).then(()=> console.log("MonggoDB Successfull connection:")).catch((err)=>{
+import { v2 as cloudinary } from "cloudinary";
+import authRoute from "./Routes/AuthRoute.js";
+import addCartRoute from "./Routes/AddCart.js";
+import DonePurchasedRoute from "./Routes/DonePurchased.js";
+import FacultyRoute from "./Routes/FacultyRoute.js";
+import UserRoute from "./Routes/UsersRoute.js";
+import ProductRoute from "./Routes/Products.js";
+
+dotenv.config();
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then(() => console.log("MonggoDB Successfull connection:"))
+  .catch((err) => {
     console.log(err);
-});
+  });
 
 const PORT = 4000;
 const app = express();
@@ -28,15 +32,13 @@ app.use(
 );
 app.use(express.json());
 app.use(cookieParser());
-cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.API_KEY,
-  api_secret: process.env.API_SECRET,
-});
 
-
-app.get('/', (req, res) => res.send(`Server is ready`));
+app.get("/", (req, res) => res.send(`Server is ready`));
 app.use("/", authRoute);
+app.use("/", addCartRoute);
+app.use("/", DonePurchasedRoute);
+app.use("/", FacultyRoute);
+app.use("/", UserRoute);
+app.use("/", ProductRoute);
+
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
-
-

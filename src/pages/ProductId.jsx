@@ -61,6 +61,12 @@ export const formatDateToNow = (date) => {
   return formatDistanceToNow(validDate, { addSuffix: true });
 };
 import { LuDot } from "react-icons/lu";
+import { initLightboxJS } from "lightbox.js-react";
+import "lightbox.js-react/dist/index.css";
+import { SlideshowLightbox } from "lightbox.js-react";
+import Lightbox from "yet-another-react-lightbox";
+import { Zoom } from "yet-another-react-lightbox/plugins";
+import "yet-another-react-lightbox/styles.css";
 function ProductId() {
   const [cookies, removeCookies] = useCookies([]);
   const [productData, setProductData] = useState([]);
@@ -74,6 +80,7 @@ function ProductId() {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [quantity, setQuantity] = useState(1);
+
   const [purchasedSchema, setPurchasedSchema] = useState({
     sellerId: "",
     userId: "",
@@ -282,6 +289,13 @@ function ProductId() {
       },
     ],
   };
+  const [open, setOpen] = useState(false); // Lightbox open state
+  const [currentImage, setCurrentImage] = useState(0); // Track current image index
+
+  const handleOpenLightbox = (index) => {
+    setCurrentImage(index); // Set the clicked image index
+    setOpen(true); // Open the lightbox
+  };
   return (
     <div className="rounded-md  pb-4 max-w-full max-h-full justify-items-center grid bg-gradient-to-tr from-[#0e0e2e2d] via-[#0834f523] to-[#087bff1a]">
       <figure className=" justify-items-center grid max-w-full w-full">
@@ -291,36 +305,47 @@ function ProductId() {
               <div className="mt-5   grid  ssm:grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 justify-items-center ">
                 <div className="max-w-96 max-h-96 lg:mr-16 ssm:mb-20 lg:mb-0 mt-5 rounded-lg">
                   {productData.image && productData.image.length > 0 && (
-                    <Carousel
-                      infiniteLoop
-                      stopOnHover
-                      swipeable={true}
-                      showThumbs={false}
-                      autoPlay
-                      emulateTouch={true}
-                      className="bg-[#111827] relative rounded-lg"
-                      showArrows={true}
-                      slideInterval={5000}
-                    >
-                      {productData.image.map((image, index) => (
-                        <div key={index} className="">
-                          <a
-                            target="_blank"
-                            href={image}
-                            rel="noopener noreferrer"
-                          >
+                    <>
+                      <Carousel
+                        infiniteLoop
+                        stopOnHover
+                        swipeable={true}
+                        showThumbs={false}
+                        autoPlay
+                        emulateTouch={true}
+                        className="bg-[#111827] relative rounded-lg"
+                        showArrows={true}
+                        slideInterval={5000}
+                      >
+                        {productData.image.map((image, index) => (
+                          <div key={index}>
                             <img
-                              className="shadow-inner hover:shadow-xl size-96  rounded-md"
+                              className="shadow-inner hover:shadow-xl size-96 rounded-md cursor-pointer"
                               src={image}
                               alt={`Image ${index + 1}`}
+                              onClick={() => handleOpenLightbox(index)} // Open lightbox on click
                             />
-                            <button className="relative bg-[#0c0a0a54] bottom-20 font-poppins p-1.5 text-white rounded-lg font-bold hover:bg-[#000000c4]">
+                            <button
+                              className="relative bg-[#0c0a0a54] bottom-20 font-poppins p-1.5 text-white rounded-lg font-bold hover:bg-[#000000c4]"
+                              onClick={() => handleOpenLightbox(index)} // Open lightbox on button click
+                            >
                               Show Image ( {`${index + 1}`} )
                             </button>
-                          </a>
-                        </div>
-                      ))}
-                    </Carousel>
+                          </div>
+                        ))}
+                      </Carousel>
+
+                      {/* Lightbox component */}
+                      <Lightbox
+                        open={open}
+                        close={() => setOpen(false)} // Close lightbox
+                        slides={productData.image.map((image) => ({
+                          src: image,
+                        }))} // Map images for lightbox
+                        index={currentImage} // Start from the clicked image
+                        plugins={[Zoom]}
+                      />
+                    </>
                   )}
                 </div>
                 <Card mt={5} shadow={"xl"}>

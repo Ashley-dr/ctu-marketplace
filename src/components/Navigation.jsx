@@ -517,7 +517,7 @@ function Navigation() {
                       </MenuItem>
                     )}
                     {isUsers.isAdmin === true ? (
-                      <Link to="/AdminDash">
+                      <Link to="/MainAdmDash">
                         <MenuItem className="gap-2">
                           {" "}
                           <MdDashboard /> Admin Dashboard

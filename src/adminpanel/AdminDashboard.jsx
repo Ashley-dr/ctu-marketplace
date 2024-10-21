@@ -2,33 +2,33 @@
 /* eslint-disable no-unused-vars */
 import { React, useEffect, useState } from "react";
 import axios from "axios";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { Box, Image } from "@chakra-ui/react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
-  AppShell,
-  Sidebar,
-  SidebarSection,
-  SidebarToggleButton,
-  NavItem,
-} from "@saas-ui/react";
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
+  Box,
+  Button,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableContainer,
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Heading,
+  Text,
+  IconButton,
   useDisclosure,
 } from "@chakra-ui/react";
-import { FiHome, FiUsers, FiSettings } from "react-icons/fi";
-import AccountsToBeSeller from "./AccountsToBeSeller";
+import { DeleteIcon } from "@chakra-ui/icons";
+import { AppShell } from "@saas-ui/react";
+
 function AdminDashboard() {
   const [usersData, setUsersData] = useState([]);
   const [facultysData, setFacultyData] = useState([]);
-  const { id } = useParams();
   const navigate = useNavigate();
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     axios
@@ -37,9 +37,10 @@ function AdminDashboard() {
         setUsersData(result.data);
       })
       .catch((err) => {
-        console.log("Error to fetch all Users Data", err);
+        console.log("Error fetching Users Data", err);
       });
   }, []);
+
   useEffect(() => {
     axios
       .get("http://localhost:4000/api/faculty")
@@ -47,174 +48,140 @@ function AdminDashboard() {
         setFacultyData(result.data);
       })
       .catch((err) => {
-        console.log("Error to fetch all Faculty Data", err);
+        console.log("Error fetching Faculty Data", err);
       });
   }, []);
+
   const userDelete = (id) => {
     axios
       .delete(`http://localhost:4000/api/users/${id}`)
-      .then((result) => {
-        navigate("/");
+      .then(() => {
+        setUsersData(usersData.filter((user) => user._id !== id));
       })
       .catch((err) => {
-        console.log("Error to remove this user data", err);
+        console.log("Error removing user data", err);
       });
   };
+
   const facultyDelete = (id) => {
     axios
       .delete(`http://localhost:4000/api/faculty/${id}`)
-      .then((result) => {
-        navigate("/");
+      .then(() => {
+        setFacultyData(facultysData.filter((faculty) => faculty._id !== id));
       })
       .catch((err) => {
-        console.log("Error to remove this faculty data", err);
+        console.log("Error removing faculty data", err);
       });
   };
+
   return (
-    <div>
-      <AppShell
-        sidebar={
-          <Sidebar
-            className="mx-4 p-5 mt-5 bg-slate-500 rounded-md"
-            variant="compact"
-            width="200px"
-            toggleBreakpoint="sm"
-          >
-            <SidebarSection>
-              <NavItem icon={<FiUsers size="1.2em" />} size="md">
-                <Link to="/AccountsToBeSeller">Sellers Approval</Link>
-              </NavItem>
-              <NavItem icon={<FiSettings size="1.2em" />} size="md">
-                Settings
-              </NavItem>
-            </SidebarSection>
-          </Sidebar>
-        }
-      >
-        <figure className="mx-5 p-5 mt-5 bg-slate-500 rounded-md">
-          <h1 className="text-center text-xl">Students data & Facultys Data</h1>
-          <table>
-            <thead>
-              <tr className=" ">
-                <th>Email</th>
-                <th>Username</th>
-                <th>Fullname</th>
-                <th>Address</th>
-                <th>Gender</th>
-                <th>Department</th>
-                <th>Fb Link</th>
-                <th>Course</th>
-                <th>Phone #</th>
-                <th>Stamp</th>
-              </tr>
-            </thead>
-            <tbody>
-              {usersData.map((item) => (
-                <tr key={item._id}>
-                  <td>
-                    <p>{item.email}</p>
-                  </td>
-                  <td>
-                    <p>{item.username}</p>
-                  </td>
-                  <td>
-                    <p>{item.fullname}</p>
-                  </td>
+    <AppShell>
+      <Box p={5} minHeight="100vh" className="text-xs font-quicksand">
+        <Heading textAlign="center" mb={8}>
+          <p className="text-base font-semibold font-quicksand">
+            Students & Faculty Data
+          </p>
+        </Heading>
 
-                  <td>
-                    <p>{item.address}</p>
-                  </td>
-                  <td>
-                    <p>{item.gender}</p>
-                  </td>
-                  <td>
-                    {" "}
-                    <p>{item.department}</p>
-                  </td>
-                  <td>
-                    <p>{item.facebook}</p>
-                  </td>
-                  <td>
-                    <p>{item.course}</p>
-                  </td>
-                  <td>
-                    {" "}
-                    <p>{item.phoneNumber}</p>
-                  </td>
-                  <td>
-                    {" "}
-                    <p>{item.createdAt}</p>
-                  </td>
+        <Card variant="outline" mb={8}>
+          <CardHeader>
+            <Heading size="xs">Student Data</Heading>
+          </CardHeader>
+          <CardBody>
+            <TableContainer>
+              <Table variant="striped" colorScheme="gray">
+                <Thead>
+                  <Tr>
+                    <Th>Email</Th>
+                    <Th>Username</Th>
+                    <Th>Fullname</Th>
+                    <Th>Address</Th>
+                    <Th>Gender</Th>
+                    <Th>Department</Th>
+                    <Th>Facebook</Th>
+                    <Th>Course</Th>
+                    <Th>Phone</Th>
+                    <Th>Created At</Th>
+                    <Th>Action</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {usersData.map((user) => (
+                    <Tr key={user._id}>
+                      <Td>{user.email}</Td>
+                      <Td>{user.username}</Td>
+                      <Td>{user.fullname}</Td>
+                      <Td>{user.address}</Td>
+                      <Td>{user.gender}</Td>
+                      <Td>{user.department}</Td>
+                      <Td>{user.facebook}</Td>
+                      <Td>{user.course}</Td>
+                      <Td>{user.phoneNumber}</Td>
+                      <Td>{new Date(user.createdAt).toLocaleDateString()}</Td>
+                      <Td>
+                        <IconButton
+                          colorScheme="red"
+                          icon={<DeleteIcon />}
+                          onClick={() => userDelete(user._id)}
+                        />
+                      </Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          </CardBody>
+        </Card>
 
-                  <button
-                    onClick={() => {
-                      userDelete(item._id);
-                    }}
-                  >
-                    delete
-                  </button>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <figure>
-            <table>
-              <thead>
-                <tr className=" ">
-                  <th>Email</th>
-                  <th>Username</th>
-                  <th>Fullname</th>
-                  <th>Address</th>
-                  <th>Gender</th>
-
-                  <th>Fb Link</th>
-
-                  <th>Phone #</th>
-                  <th>Stamp</th>
-                </tr>
-              </thead>
-              <tbody>
-                {facultysData.map((item) => (
-                  <tr key={item._id}>
-                    <td>
-                      <p>{item.email}</p>
-                    </td>
-                    <td>
-                      {" "}
-                      <p>{item.username}</p>
-                    </td>
-                    <td>
-                      {" "}
-                      <p>{item.address}</p>
-                    </td>
-                    <td>
-                      {" "}
-                      <p>{item.gender}</p>
-                    </td>
-                    <td>
-                      <p>{item.facebook}</p>
-                    </td>
-                    <td>
-                      <p>{item.phoneNumber}</p>
-                    </td>
-                    <td>
-                      <p>{item.createdAt}</p>
-                    </td>
-                    <button
-                      onClick={() => {
-                        facultyDelete(item._id);
-                      }}
-                    >
-                      delete
-                    </button>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </figure>
-        </figure>
-      </AppShell>
-    </div>
+        <Card variant="outline">
+          <CardHeader>
+            <Heading size="xs">Faculty Data</Heading>
+          </CardHeader>
+          <CardBody>
+            <TableContainer>
+              <Table variant="striped" colorScheme="gray">
+                <Thead>
+                  <Tr>
+                    <Th>Email</Th>
+                    <Th>Username</Th>
+                    <Th>Fullname</Th>
+                    <Th>Address</Th>
+                    <Th>Gender</Th>
+                    <Th>Facebook</Th>
+                    <Th>Phone</Th>
+                    <Th>Created At</Th>
+                    <Th>Action</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {facultysData.map((faculty) => (
+                    <Tr key={faculty._id}>
+                      <Td>{faculty.email}</Td>
+                      <Td>{faculty.username}</Td>
+                      <Td>{faculty.fullname}</Td>
+                      <Td>{faculty.address}</Td>
+                      <Td>{faculty.gender}</Td>
+                      <Td>{faculty.facebook}</Td>
+                      <Td>{faculty.phoneNumber}</Td>
+                      <Td>
+                        {new Date(faculty.createdAt).toLocaleDateString()}
+                      </Td>
+                      <Td>
+                        <IconButton
+                          colorScheme="red"
+                          icon={<DeleteIcon />}
+                          onClick={() => facultyDelete(faculty._id)}
+                        />
+                      </Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          </CardBody>
+        </Card>
+      </Box>
+    </AppShell>
   );
 }
 
