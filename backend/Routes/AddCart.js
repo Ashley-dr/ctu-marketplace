@@ -29,6 +29,29 @@ router.post("/api/purchasedItem", (req, res) => {
       console.log("error", err);
     });
 });
+router.get("/api/user-orders", async (req, res) => {
+  try {
+    const orderCount = await PurchasedModel.aggregate([
+      {
+        $group: {
+          _id: "$userId", // Group by userId
+          totalOrders: { $sum: 1 }, // Count the number of orders for each user
+          totalQuantity: { $sum: "$quantity" }, // Sum the total quantity of products
+          totalSpent: { $sum: "$total" }, // Sum the total amount spent by each user
+        },
+      },
+      {
+        $sort: { totalOrders: -1 }, // Optional: Sort by number of orders
+      },
+    ]);
+
+    // Send the aggregated result as a response
+    res.json(orderCount);
+  } catch (err) {
+    console.error("Error aggregating orders per user:", err);
+    res.status(500).send("Server Error");
+  }
+});
 router.put("/api/purchasedItem/:id", upload.single("image"), (req, res) => {
   PurchasedModel.findByIdAndUpdate(req.params.id, req.body, { new: true })
     .then((result) => {

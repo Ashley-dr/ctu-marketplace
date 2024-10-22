@@ -6,6 +6,7 @@ import SellerApproval from "./SellerApproval";
 import AdminDashboard from "./AdminDashboard";
 import AccountsToBeSeller from "./AccountsToBeSeller";
 import SellerFacultyApproval from "./SellerFacultyApproval";
+import Transactions from "./Transactions";
 function MainDashboard() {
   return (
     <div>
@@ -20,6 +21,7 @@ function MainDashboard() {
           path="/SellerFacultyApproval/:id"
           element={<SellerFacultyApproval />}
         />
+        <Route path="/Transactions" element={<Transactions />} />
       </Routes>
     </div>
   );

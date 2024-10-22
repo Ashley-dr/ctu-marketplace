@@ -75,6 +75,7 @@ const UserSchema = new mongoose.Schema({
   isBuyer: {
     type: Boolean,
   },
+
   resetToken: { type: String },
   resetTokenExpiration: { type: String },
 });

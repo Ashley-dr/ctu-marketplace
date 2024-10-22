@@ -36,6 +36,7 @@ import { CiShoppingCart } from "react-icons/ci";
 import { BsBox2 } from "react-icons/bs";
 function Orders() {
   const [orders, setOrders] = useState([]);
+  const [orderCounts, setOrderCounts] = useState([]);
   const [cookies, removeCookies] = useCookies([]);
   const { id } = useParams();
   const [isUsers, setisUser] = useState("");
@@ -121,6 +122,17 @@ function Orders() {
     const interval = setInterval(fetchTransactions, 1000);
     return () => clearInterval(interval);
   }, [id]);
+
+  // useEffect(() => {
+  //   axios
+  //     .get("http://localhost:4000/api/users-orders")
+  //     .then((result) => {
+  //       setOrderCounts(result);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // });
 
   const removeItemClick = (id) => {
     axios

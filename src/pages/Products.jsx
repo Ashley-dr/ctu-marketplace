@@ -41,6 +41,7 @@ export const formatDateToNow = (date) => {
   return formatDistanceToNow(new Date(date), { addSuffix: true });
 };
 import logo from "../assets/ctu-logo.jpg";
+import logomarket from "../assets/ctu-logo-marketplace.jpg";
 function Products() {
   const [search, setSearch] = useState("");
   const [productsData, setProductsData] = useState([]);
@@ -217,7 +218,7 @@ function Products() {
     return (
       <div className="flex justify-center items-center h-screen">
         <div className="animate-pulse rounded-full h-64 w-64  border-gray-900">
-          <Img src={logo} className="rounded-full " />
+          <Img src={logomarket} className="rounded-full " />
         </div>
       </div>
     );

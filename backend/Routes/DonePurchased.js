@@ -31,6 +31,11 @@ router.post(
         price,
         accountType,
         tax,
+        buyerPhoneNumber,
+        sellerPhoneNumber,
+        buyerGcashNumber,
+        sellerGcashNumber,
+        buyerType,
       } = req.body;
       const imageUrls = [];
       for (const file of req.files) {
@@ -58,6 +63,11 @@ router.post(
         accountType,
         image,
         tax,
+        buyerPhoneNumber,
+        sellerPhoneNumber,
+        buyerGcashNumber,
+        sellerGcashNumber,
+        buyerType,
       });
       await newImages.save();
     } catch (error) {
@@ -66,5 +76,27 @@ router.post(
     }
   }
 );
+router.get("/api/DonePurchased", async (req, res) => {
+  DonePurchasedModel.find()
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((err) => {
+      res.status(404).json(err);
+    });
+});
+router.delete("/api/DonePurchased/:id", async (req, res) => {
+  try {
+    const deleteProduct = await DonePurchasedModel.findByIdAndDelete(
+      req.params.id
+    );
+    if (!deleteProduct) {
+      return res.status(404).json({ error: "Unable to delete this product." });
+    }
+    res.status(200).json({ message: "Product deleted successfully" });
+  } catch (error) {
+    res.status(505).json({ error: error.message });
+  }
+});
 
 export default router;

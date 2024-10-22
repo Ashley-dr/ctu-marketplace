@@ -64,6 +64,12 @@ const productSchema = new mongoose.Schema({
   accountType: {
     type: String,
   },
+  sellerPhoneNumber: {
+    type: Number,
+  },
+  sellerGcashNumber: {
+    type: Number,
+  },
   createdAt: {
     type: Date,
     default: new Date(),

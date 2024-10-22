@@ -53,7 +53,12 @@ function Transactions() {
     buyerFacebook: "",
     picture: "",
     price: "",
+    buyerPhoneNumber: "",
+    sellerPhoneNumber: "",
+    buyerGcashNumber: "",
+    sellerGcashNumber: "",
     accountType: "",
+    buyerType: "",
     tax: "",
   });
   const [imageSubmit, setImageSubmit] = useState([]);
@@ -73,6 +78,12 @@ function Transactions() {
     types: "",
     image: "",
     picture: "",
+    buyerPhoneNumber: "",
+    sellerPhoneNumber: "",
+    buyerGcashNumber: "",
+    sellerGcashNumber: "",
+    accountType: "",
+    buyerType: "",
   });
   const {
     isOpen: isOpenSecond,
@@ -253,6 +264,11 @@ function Transactions() {
     formData.append("buyerFacebook", doneTransactSchema.buyerFacebook);
     formData.append("price", doneTransactSchema.price);
     formData.append("accountType", doneTransactSchema.accountType);
+    formData.append("buyerPhoneNumber", doneTransactSchema.buyerPhoneNumber);
+    formData.append("sellerPhoneNumber", doneTransactSchema.sellerPhoneNumber);
+    formData.append("buyerGcashNumber", doneTransactSchema.buyerGcashNumber);
+    formData.append("sellerGcashNumber", doneTransactSchema.sellerGcashNumber);
+    formData.append("buyerType", doneTransactSchema.buyerType);
     imageSubmit.forEach((pictures) => {
       formData.append("picture", pictures);
     });
@@ -285,6 +301,10 @@ function Transactions() {
         picture: "",
         price: "",
         tax: "",
+        buyerPhoneNumber: "",
+        sellerPhoneNumber: "",
+        buyerGcashNumber: "",
+        sellerGcashNumber: "",
         accountType: "",
       });
       setImageSubmit([]);
@@ -721,6 +741,50 @@ function Transactions() {
                         value={
                           (doneTransactSchema.accountType =
                             statusData.accountType)
+                        }
+                        onChange={imageHandler}
+                      />
+                      <input
+                        type="text"
+                        name="buyerType"
+                        value={
+                          (doneTransactSchema.buyerType = statusData.buyerType)
+                        }
+                        onChange={imageHandler}
+                      />
+                      <input
+                        type="number"
+                        name="buyerPhoneNumber"
+                        value={
+                          (doneTransactSchema.buyerPhoneNumber =
+                            statusData.buyerPhoneNumber)
+                        }
+                        onChange={imageHandler}
+                      />
+                      <input
+                        type="number"
+                        name="buyerGcashNumber"
+                        value={
+                          (doneTransactSchema.buyerGcashNumber =
+                            statusData.buyerGcashNumber)
+                        }
+                        onChange={imageHandler}
+                      />
+                      <input
+                        type="number"
+                        name="sellerGcashNumber"
+                        value={
+                          (doneTransactSchema.sellerGcashNumber =
+                            statusData.sellerGcashNumber)
+                        }
+                        onChange={imageHandler}
+                      />
+                      <input
+                        type="number"
+                        name="sellerPhoneNumber"
+                        value={
+                          (doneTransactSchema.sellerPhoneNumber =
+                            statusData.sellerPhoneNumber)
                         }
                         onChange={imageHandler}
                       />

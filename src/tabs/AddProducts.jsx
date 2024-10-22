@@ -36,6 +36,8 @@ function AddProducts() {
     accountType: "",
     facebook: "",
     marketType: "",
+    sellerPhoneNumber: "",
+    sellerGcashNumber: "",
   });
   const [productImage, setProductImage] = useState([]);
 
@@ -80,6 +82,8 @@ function AddProducts() {
     formData.append("accountType", products.accountType);
     formData.append("facebook", products.facebook);
     formData.append("marketType", products.marketType);
+    formData.append("sellerPhoneNumber", products.sellerPhoneNumber);
+    formData.append("sellerGcashNumber", products.sellerGcashNumber);
     productImage.forEach((image) => {
       formData.append("image", image);
     });
@@ -105,6 +109,8 @@ function AddProducts() {
         accountType: "",
         facebook: "",
         marketType: "",
+        sellerPhoneNumber: "",
+        sellerGcashNumber: "",
       });
       setProductImage([]);
     } catch (error) {
@@ -189,6 +195,20 @@ function AddProducts() {
                       type="text"
                       value={(products.sellerEmail = isUsers.email)}
                       name="sellerEmail"
+                      onChange={productHandler}
+                      hidden
+                    />
+                    <input
+                      type="number"
+                      value={(products.sellerPhoneNumber = isUsers.phoneNumber)}
+                      name="phoneNumber"
+                      onChange={productHandler}
+                      hidden
+                    />
+                    <input
+                      type="number"
+                      value={(products.sellerGcashNumber = isUsers.gcashNumber)}
+                      name="gcashNumber"
                       onChange={productHandler}
                       hidden
                     />

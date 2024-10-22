@@ -22,6 +22,8 @@ router.post("/api/products", upload.array("image", 5), async (req, res) => {
       marketType,
       accountType,
       facebook,
+      sellerPhoneNumber,
+      sellerGcashNumber,
     } = req.body;
     const imageUrls = [];
     for (const file of req.files) {
@@ -40,6 +42,8 @@ router.post("/api/products", upload.array("image", 5), async (req, res) => {
       marketType,
       accountType,
       facebook,
+      sellerPhoneNumber,
+      sellerGcashNumber,
       image: imageUrls,
     });
     await newImages.save();

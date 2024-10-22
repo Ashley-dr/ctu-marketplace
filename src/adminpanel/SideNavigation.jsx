@@ -27,7 +27,7 @@ import { FiHome, FiUsers, FiSettings } from "react-icons/fi";
 import { CiCircleCheck, CiMenuBurger } from "react-icons/ci";
 import { LuMenu } from "react-icons/lu";
 import { BiHome } from "react-icons/bi";
-import { GrDocumentVerified } from "react-icons/gr";
+import { GrDocumentVerified, GrTransaction } from "react-icons/gr";
 function SideNavigation() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [placement, setPlacement] = React.useState("left");
@@ -55,6 +55,12 @@ function SideNavigation() {
                 >
                   <GrDocumentVerified className="text-sm mt-0.5" />
                   <Text>Account to be Seller</Text>
+                </Link>
+              </p>
+              <p>
+                <Link to="/MainAdmDash/Transactions" className="flex gap-2">
+                  <GrTransaction className="text-sm mt-0.5" />
+                  <Text>Transactions</Text>
                 </Link>
               </p>
               {/* MIMK-138 */}

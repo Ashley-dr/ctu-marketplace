@@ -44,6 +44,7 @@ import {
   Container,
 } from "@chakra-ui/react";
 import logo from "../assets/ctu-logo.jpg";
+import logomarket from "../assets/ctu-logo-marketplace.jpg";
 import { FiEye } from "react-icons/fi";
 import { GrTransaction } from "react-icons/gr";
 import { FiEyeOff } from "react-icons/fi";
@@ -411,7 +412,7 @@ function Navigation() {
           <Link to="/" className="flex space-x-4 font-poppins">
             <Box className="">
               {" "}
-              <Avatar size={"md"} src={logo} />
+              <Avatar size={"md"} src={logomarket} />
             </Box>
             <Text className="text-sm mt-1.5">
               CTU DANAO <hr /> MARKETPLACE

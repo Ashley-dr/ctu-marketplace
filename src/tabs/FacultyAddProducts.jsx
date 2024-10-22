@@ -34,6 +34,8 @@ function FacultyAddProducts() {
     accountType: "",
     facebook: "",
     marketType: "",
+    sellerPhoneNumber: "",
+    sellerGcashNumber: "",
   });
 
   useEffect(() => {
@@ -76,6 +78,8 @@ function FacultyAddProducts() {
     formData.append("accountType", products.accountType);
     formData.append("facebook", products.facebook);
     formData.append("marketType", products.marketType);
+    formData.append("sellerPhoneNumber", products.sellerPhoneNumber);
+    formData.append("sellerGcashNumber", products.sellerGcashNumber);
     productImage.forEach((image) => {
       formData.append("image", image);
     });
@@ -100,6 +104,8 @@ function FacultyAddProducts() {
         accountType: "",
         facebook: "",
         marketType: "",
+        sellerPhoneNumber: "",
+        sellerGcashNumber: "",
       });
       setProductImage([]);
     } catch (error) {
@@ -194,6 +200,24 @@ function FacultyAddProducts() {
                       type="text"
                       value={(products.sellerId = isFaculty.id)}
                       name="sellerId"
+                      onChange={productHandler}
+                      hidden
+                    />
+                    <input
+                      type="number"
+                      value={
+                        (products.sellerPhoneNumber = isFaculty.phoneNumber)
+                      }
+                      name="phoneNumber"
+                      onChange={productHandler}
+                      hidden
+                    />
+                    <input
+                      type="number"
+                      value={
+                        (products.sellerGcashNumber = isFaculty.gcashNumber)
+                      }
+                      name="gcashNumber"
                       onChange={productHandler}
                       hidden
                     />

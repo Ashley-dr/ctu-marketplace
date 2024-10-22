@@ -89,6 +89,7 @@ function ProductId() {
     message: "",
     sellerEmail: "",
     accountType: "",
+    buyerType: "",
     sellerName: "",
     quantity: "",
     price: "",
@@ -97,9 +98,14 @@ function ProductId() {
     status: "",
     total: "",
     types: "",
+    marketType: "",
     image: "",
     sellerFacebook: "",
     buyerFacebook: "",
+    sellerPhoneNumber: "",
+    buyerPhoneNumber: "",
+    sellerGcashNumber: "",
+    buyerGcashNumber: "",
   });
   useEffect(() => {
     const verifyCookie = async () => {
@@ -178,6 +184,7 @@ function ProductId() {
           message: "",
           sellerEmail: "",
           accountType: "",
+          buyerType: "",
           sellerName: "",
           quantity: "",
           price: "",
@@ -186,9 +193,14 @@ function ProductId() {
           status: "",
           total: "",
           types: "",
+          marketType: "",
           image: "",
           sellerFacebook: "",
           buyerFacebook: "",
+          sellerPhoneNumber: "",
+          buyerPhoneNumber: "",
+          sellerGcashNumber: "",
+          buyerGcashNumber: "",
         });
         navigate(`/Orders/${purchasedSchema.userId}`);
       })
@@ -623,6 +635,16 @@ function ProductId() {
                   />
                   <input
                     type="text"
+                    name="marketType"
+                    value={
+                      (purchasedSchema.marketType =
+                        UserSelectedProduct.marketType)
+                    }
+                    onChange={purchasedOnChange}
+                  />
+
+                  <input
+                    type="text"
                     name="prodName"
                     value={
                       (purchasedSchema.prodName = UserSelectedProduct.prodName)
@@ -635,6 +657,42 @@ function ProductId() {
                     value={(purchasedSchema.buyerName = isUsers.fullname)}
                     onChange={purchasedOnChange}
                   />
+
+                  <input
+                    type="number"
+                    name="buyerPhoneNumber"
+                    value={
+                      (purchasedSchema.buyerPhoneNumber = isUsers.phoneNumber)
+                    }
+                    onChange={purchasedOnChange}
+                  />
+                  <input
+                    type="number"
+                    name="buyerGcashNumber"
+                    value={
+                      (purchasedSchema.buyerGcashNumber = isUsers.gcashNumber)
+                    }
+                    onChange={purchasedOnChange}
+                  />
+                  <input
+                    type="number"
+                    name="sellerGcashNumber"
+                    value={
+                      (purchasedSchema.sellerGcashNumber =
+                        UserSelectedProduct.sellerGcashNumber)
+                    }
+                    onChange={purchasedOnChange}
+                  />
+                  <input
+                    type="number"
+                    name="sellerPhoneNumber"
+                    value={
+                      (purchasedSchema.sellerPhoneNumber =
+                        UserSelectedProduct.sellerPhoneNumber)
+                    }
+                    onChange={purchasedOnChange}
+                  />
+
                   <input
                     name="buyerFacebook"
                     className="bg-gray-200"
@@ -643,7 +701,6 @@ function ProductId() {
                   />
                   <input
                     name="sellerFacebook"
-                    className="bg-gray-200"
                     value={
                       (purchasedSchema.sellerFacebook =
                         UserSelectedProduct.facebook)
@@ -684,6 +741,12 @@ function ProductId() {
                     onChange={purchasedOnChange}
                   />
                   <input
+                    type="text"
+                    name="buyerType"
+                    value={(purchasedSchema.buyerType = isUsers.isUser)}
+                    onChange={purchasedOnChange}
+                  />
+                  <input
                     type="number"
                     name="price"
                     value={(purchasedSchema.price = UserSelectedProduct.price)}
@@ -718,6 +781,23 @@ function ProductId() {
                     onChange={purchasedOnChange}
                     required
                   />
+                  {/* {isUsers.gcashNumber === null ? (
+                    <>
+                      <label>Input Gcash Number if online payment:</label>
+                      <Input
+                        placeholder="Gcash Number"
+                        type="number"
+                        name="buyerGcashNumber"
+                        value={
+                          (purchasedSchema.buyerGcashNumber =
+                            isUsers.gcashNumber)
+                        }
+                        onChange={purchasedOnChange}
+                      />
+                    </>
+                  ) : (
+                    <></>
+                  )} */}
 
                   <label>Quantity:</label>
                   <NumberInput
@@ -804,6 +884,47 @@ function ProductId() {
                     }
                     onChange={purchasedOnChange}
                   />
+                  <input
+                    type="text"
+                    name="buyerType"
+                    value={(purchasedSchema.buyerType = isFaculty.isFaculty)}
+                    onChange={purchasedOnChange}
+                  />
+                  <input
+                    type="number"
+                    name="buyerPhoneNumber"
+                    value={
+                      (purchasedSchema.buyerPhoneNumber = isFaculty.phoneNumber)
+                    }
+                    onChange={purchasedOnChange}
+                  />
+                  <input
+                    type="number"
+                    name="buyerGcashNumber"
+                    value={
+                      (purchasedSchema.buyerGcashNumber = isFaculty.gcashNumber)
+                    }
+                    onChange={purchasedOnChange}
+                  />
+                  <input
+                    type="number"
+                    name="sellerGcashNumber"
+                    value={
+                      (purchasedSchema.sellerGcashNumber =
+                        FacultySelectedProduct.sellerGcashNumber)
+                    }
+                    onChange={purchasedOnChange}
+                  />
+                  <input
+                    type="number"
+                    name="sellerPhoneNumber"
+                    value={
+                      (purchasedSchema.sellerPhoneNumber =
+                        FacultySelectedProduct.sellerPhoneNumber)
+                    }
+                    onChange={purchasedOnChange}
+                  />
+
                   <input
                     name="userId"
                     value={(purchasedSchema.userId = isFaculty.id)}

@@ -2,68 +2,84 @@
 /* eslint-disable no-undef */
 import mongoose from "mongoose";
 
-
 const purchasedSchema = new mongoose.Schema({
-//  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
- userId: { type: String },
- sellerId: {
+  //  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  userId: { type: String },
+  sellerId: {
     type: String,
- },
-  productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
-prodName: {
-    type: String,
-},
-sellerName: {
-    type: String,
-},
-sellerEmail: {
-    type: String,
-},
-accountType: {
-    type: String,
-},
-message: {
-    type: String,
-},
-quantity: {
-    type: Number,
-},
-price: {
-    type: Number,
-},
-buyerName: {
-    type: String,
-},
-buyerEmail: {
-    type: String,
-},
-image: {
-    type: String ,
-  
   },
-status: {
+  productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+  prodName: {
     type: String,
-},
-total: {
+  },
+  sellerName: {
+    type: String,
+  },
+  sellerEmail: {
+    type: String,
+  },
+  accountType: {
+    type: String,
+  },
+  buyerType: {
+    type: String,
+  },
+  message: {
+    type: String,
+  },
+  quantity: {
     type: Number,
-},
-types: {
+  },
+  price: {
+    type: Number,
+  },
+  buyerName: {
     type: String,
-},
-sellerFacebook: {
+  },
+  buyerEmail: {
     type: String,
-},
-buyerFacebook: {
+  },
+  image: {
     type: String,
-},
-chat: [
+  },
+  status: {
+    type: String,
+  },
+  total: {
+    type: Number,
+  },
+  types: {
+    type: String,
+  },
+  sellerFacebook: {
+    type: String,
+  },
+  buyerFacebook: {
+    type: String,
+  },
+  buyerPhoneNumber: {
+    type: Number,
+  },
+  buyerGcashNumber: {
+    type: Number,
+  },
+  sellerPhoneNumber: {
+    type: Number,
+  },
+  sellerGcashNumber: {
+    type: Number,
+  },
+  marketType: {
+    type: String,
+  },
+  chat: [
     {
       chats: { type: String },
-      chats2: {type: String},
+      chats2: { type: String },
       senderName: { type: String },
-         senderName2: { type: String },
-      createdAt: { type: Date, default: Date.now }
-    }
+      senderName2: { type: String },
+      createdAt: { type: Date, default: Date.now },
+    },
   ],
 });
 

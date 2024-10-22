@@ -100,7 +100,9 @@ function AdminDashboard() {
                     <Th>Department</Th>
                     <Th>Facebook</Th>
                     <Th>Course</Th>
-                    <Th>Phone</Th>
+                    <Th>
+                      Phone Number <br /> Gcash Number
+                    </Th>
                     <Th>Created At</Th>
                     <Th>Action</Th>
                   </Tr>
@@ -116,7 +118,13 @@ function AdminDashboard() {
                       <Td>{user.department}</Td>
                       <Td>{user.facebook}</Td>
                       <Td>{user.course}</Td>
-                      <Td>{user.phoneNumber}</Td>
+                      <Td>
+                        {user.phoneNumber} <br />
+                        <p className="flex bg-blue-200 rounded-md text-black font-poppins gap-1">
+                          <p className="text-blue-700 ml-2">G</p>{" "}
+                          {user.gcashNumber}
+                        </p>
+                      </Td>
                       <Td>{new Date(user.createdAt).toLocaleDateString()}</Td>
                       <Td>
                         <IconButton
