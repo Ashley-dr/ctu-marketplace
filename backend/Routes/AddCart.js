@@ -29,27 +29,44 @@ router.post("/api/purchasedItem", (req, res) => {
       console.log("error", err);
     });
 });
+router.get("/api/user-orders/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await PurchasedModel.aggregate(
+      [
+        { $match: { userId: id } },
+        { $group: { _id: "$userId", count: { $sum: 1 } } },
+      ],
+      { maxTimeMS: 60000, allowDiskUse: true }
+    );
+    if (result.length === 0) {
+      return res.status(200).json({ count: 0 });
+    }
+
+    res.status(200).json({ count: result[0].count });
+  } catch (error) {
+    res.status(500).json({ message: "Error in fetching order count", error });
+  }
+});
 router.get("/api/user-orders", async (req, res) => {
   try {
-    const orderCount = await PurchasedModel.aggregate([
-      {
-        $group: {
-          _id: "$userId", // Group by userId
-          totalOrders: { $sum: 1 }, // Count the number of orders for each user
-          totalQuantity: { $sum: "$quantity" }, // Sum the total quantity of products
-          totalSpent: { $sum: "$total" }, // Sum the total amount spent by each user
+    const result = await PurchasedModel.aggregate(
+      [
+        {
+          $group: {
+            _id: "$userId",
+            count: { $sum: 1 },
+          },
         },
-      },
-      {
-        $sort: { totalOrders: -1 }, // Optional: Sort by number of orders
-      },
-    ]);
-
-    // Send the aggregated result as a response
-    res.json(orderCount);
-  } catch (err) {
-    console.error("Error aggregating orders per user:", err);
-    res.status(500).send("Server Error");
+      ],
+      { maxTimeMS: 60000, allowDiskUse: true }
+    );
+    if (result.length === 0) {
+      return res.status(200).json({ count: 0 });
+    }
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: "Error in fetching order count", error });
   }
 });
 router.put("/api/purchasedItem/:id", upload.single("image"), (req, res) => {
@@ -68,6 +85,24 @@ router.get("/api/transactions/:sellerId", (req, res) => {
     })
     .catch((err) => {
       res.status(404).json(err);
+    });
+});
+router.get("/api/transaction-count/:id", async (req, res) => {
+  PurchasedModel.aggregate(
+    [
+      { $match: { sellerId: req.params.id } },
+      { $group: { _id: "$sellerId", count: { $sum: 1 } } },
+    ],
+    { maxTimeMS: 60000, allowDiskUse: true }
+  )
+    .then((result) => {
+      if (result.length === 0) {
+        return res.status(200).json({ count: 0 });
+      }
+      res.status(200).json({ count: result[0].count });
+    })
+    .catch((err) => {
+      res.status(500).json({ message: "Error in fetching order count", err });
     });
 });
 router.get("/api/orders/:userId", (req, res) => {

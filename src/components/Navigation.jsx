@@ -65,6 +65,8 @@ import { UserContext } from "../../backend/Context/userContext";
 import { CiLogout } from "react-icons/ci";
 import { PiPasswordBold, PiShoppingCartDuotone } from "react-icons/pi";
 import { AiOutlineUpload } from "react-icons/ai";
+import OrdersCount from "../context/OrdersCount";
+import TransactionCount from "../context/TransactionCount";
 function Navigation() {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -477,12 +479,6 @@ function Navigation() {
                     </Center>
                     <MenuDivider />
 
-                    <Link to={`/Orders/${isUsers.id}`}>
-                      {" "}
-                      <MenuItem className="gap-2 ">
-                        <PiShoppingCartDuotone /> Orders
-                      </MenuItem>
-                    </Link>
                     <MenuItem className="gap-2 ">
                       {" "}
                       <MdNotifications /> Notification
@@ -493,19 +489,27 @@ function Navigation() {
                         <MdAccountBox /> Account Settings
                       </MenuItem>
                     </Link>
+
+                    <Link to={`/Orders/${isUsers.id}`}>
+                      {" "}
+                      <MenuItem className="gap-2 ">
+                        <PiShoppingCartDuotone /> Orders
+                        <OrdersCount id={isUsers.id} />
+                      </MenuItem>
+                    </Link>
                     {isUsers.isSeller === true ? (
                       <div>
-                        <Link to={`/AddProducts/${isUsers.id}`}>
-                          <MenuItem className="gap-2 ">
-                            {" "}
-                            <MdAddBox /> Add Products
-                          </MenuItem>
-                        </Link>
-
                         <Link to={`/Transactions/${isUsers.id}`}>
                           <MenuItem className="gap-2 ">
                             {" "}
                             <GrTransaction /> Transactions
+                            <TransactionCount id={isUsers.id} />
+                          </MenuItem>
+                        </Link>
+                        <Link to={`/AddProducts/${isUsers.id}`}>
+                          <MenuItem className="gap-2 ">
+                            {" "}
+                            <MdAddBox /> Add Products
                           </MenuItem>
                         </Link>
                       </div>
@@ -567,13 +571,7 @@ function Navigation() {
                       <p>Faculty Member</p>
                     </Center>
                     <MenuDivider />
-                    <Link to={`/Orders/${isFaculty.id}`}>
-                      {" "}
-                      <MenuItem className="gap-2 ">
-                        {" "}
-                        <PiShoppingCartDuotone /> Orders
-                      </MenuItem>
-                    </Link>
+
                     <MenuItem className="gap-2 ">
                       {" "}
                       <MdNotifications /> Notification
@@ -585,20 +583,27 @@ function Navigation() {
                         Account Settings
                       </MenuItem>
                     </Link>
-
+                    <Link to={`/Orders/${isFaculty.id}`}>
+                      {" "}
+                      <MenuItem className="gap-2 ">
+                        {" "}
+                        <PiShoppingCartDuotone /> Orders
+                        <OrdersCount id={isFaculty.id} />
+                      </MenuItem>
+                    </Link>
                     {isFaculty.isSeller === true ? (
                       <div>
-                        <Link to={`/FacultyAddProducts/${isFaculty.id}`}>
-                          <MenuItem className="gap-2 ">
-                            <MdAddBox /> Add Products
-                          </MenuItem>
-                        </Link>
-
                         <Link to={`/Transactions/${isFaculty.id}`}>
                           <MenuItem className="gap-2 ">
                             {" "}
                             <GrTransaction />
                             Transactions
+                            <TransactionCount id={isFaculty.id} />
+                          </MenuItem>
+                        </Link>
+                        <Link to={`/FacultyAddProducts/${isFaculty.id}`}>
+                          <MenuItem className="gap-2 ">
+                            <MdAddBox /> Add Products
                           </MenuItem>
                         </Link>
                       </div>

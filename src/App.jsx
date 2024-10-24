@@ -22,6 +22,10 @@ import Inventory from "./tabs/Inventory";
 import Transactions from "./tabs/Transactions";
 import Footer from "./components/Footer";
 import MainDashboard from "./adminpanel/MainDashboard";
+import UserAccount from "./tabs/UserAccount";
+import UserInventory from "./tabs/UserInventory";
+
+import FacultyAccount from "./tabs/FacultyAccount";
 
 function App() {
   return (
@@ -34,6 +38,8 @@ function App() {
           <Route path="/" element={<Home />} />
 
           <Route path="/Account" element={<Account />} />
+          <Route path="/UserAccount/:email" element={<UserAccount />} />
+          <Route path="/FacultyAccount/:email" element={<FacultyAccount />} />
           <Route path="/MainAdmDash/*" element={<MainDashboard />} />
           <Route path="/BecomeSeller/:id" element={<BecomeSeller />} />
           {/* <Route path="/SellerApproval/:id" element={<SellerApproval />} /> */}
@@ -43,6 +49,8 @@ function App() {
           /> */}
           <Route path="/Transactions/:id" element={<Transactions />} />
           <Route path="/Inventory/:id" element={<Inventory />} />
+          <Route path="/UserInventory/:id" element={<UserInventory />} />
+
           <Route path="/Orders/:id" element={<Orders />} />
           <Route path="/AddProducts/:id" element={<AddProducts />} />
           <Route

@@ -39,6 +39,8 @@ import { FiEdit3, FiEyeOff } from "react-icons/fi";
 import Inventory from "./Inventory";
 import { FaFacebook } from "react-icons/fa";
 import Orders from "./Orders";
+import InventoryCounts from "../context/InventoryCount";
+import ItemSold from "../context/ItemSold";
 
 function Account() {
   const [cookies, removeCookies] = useCookies([]);
@@ -583,11 +585,16 @@ function Account() {
 
           <figure className="flex gap-16 relative bottom-16 mb-5 text-center">
             <label className="grid">
-              <p>218</p>
+              <InventoryCounts id={isFaculty.id} />
               <p>ITEM SELL</p>
             </label>
             <label className="grid">
-              <p>218</p>
+              <p>
+                {" "}
+                <p>
+                  <ItemSold id={isFaculty.id} />
+                </p>
+              </p>
               <p>ITEM SOLD</p>
             </label>
             <label className="grid">
@@ -1040,11 +1047,15 @@ function Account() {
 
           <figure className="flex gap-16 relative bottom-16 mb-5 text-center">
             <label className="grid">
-              <p>218</p>
+              <p>
+                <InventoryCounts id={isUsers.id} />
+              </p>
               <p>ITEM SELL</p>
             </label>
             <label className="grid">
-              <p>218</p>
+              <p>
+                <ItemSold id={isUsers.id} />
+              </p>
               <p>ITEM SOLD</p>
             </label>
             <label className="grid">

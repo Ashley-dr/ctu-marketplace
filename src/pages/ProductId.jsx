@@ -309,7 +309,7 @@ function ProductId() {
     setOpen(true); // Open the lightbox
   };
   return (
-    <div className="rounded-md  pb-4 max-w-full max-h-full justify-items-center grid bg-gradient-to-tr from-[#0e0e2e2d] via-[#0834f523] to-[#087bff1a]">
+    <div className="rounded-md  pb-4 max-w-full max-h-full justify-items-center grid mb-10 mt-10">
       <figure className=" justify-items-center grid max-w-full w-full">
         <article>
           {productData ? (
@@ -375,10 +375,35 @@ function ProductId() {
                             <LinkIcon className="mr-1" />
                             {productData.sellerName}
                           </p>
-                          <p className="truncate w-96">
-                            <AtSignIcon className="" />{" "}
-                            {productData.sellerEmail}
-                          </p>
+                          {productData.accountType === "Student" && (
+                            <>
+                              {" "}
+                              <p className="truncate w-96">
+                                <AtSignIcon className="" />{" "}
+                                {productData.sellerEmail}
+                                <Link
+                                  to={`/UserAccount/${productData.sellerEmail}`}
+                                >
+                                  View
+                                </Link>
+                              </p>
+                            </>
+                          )}
+                          {productData.accountType === "Faculty" && (
+                            <>
+                              {" "}
+                              <p className="truncate w-96">
+                                <AtSignIcon className="" />{" "}
+                                {productData.sellerEmail}
+                                <Link
+                                  to={`/FacultyAccount/${productData.sellerEmail}`}
+                                >
+                                  View
+                                </Link>
+                              </p>
+                            </>
+                          )}
+
                           <div className="mt-3 grid grid-cols-2">
                             <p className="flex  mr-5">
                               {productData && productData.price
@@ -530,7 +555,7 @@ function ProductId() {
                       .map((comment) => (
                         <article
                           key={comment._id}
-                          className="grid mr-2 mt-2 mb-4 bg-[#554f4f33] rounded-md font-poppins"
+                          className="grid mx-2 mt-2 mb-4 bg-[#554f4f18] rounded-md font-poppins"
                         >
                           <div className="flex">
                             <span className="flex underline font-extralight pt-1 mb-1">
@@ -551,9 +576,12 @@ function ProductId() {
                               <AccordionItem>
                                 <h2>
                                   <AccordionButton>
-                                    <Box as="span" flex="1" textAlign="right">
-                                      <MdDelete className="text-base" />
-                                    </Box>
+                                    <Box
+                                      as="span"
+                                      flex="1"
+                                      textAlign="right"
+                                    ></Box>
+                                    <MdDelete className="text-base" />
                                     <AccordionIcon />
                                   </AccordionButton>
                                 </h2>

@@ -44,6 +44,15 @@ router.get("/api/users/:id", (req, res) => {
       console.log("Error");
     });
 });
+router.get("/api/user-account/:email", async (req, res) => {
+  UserModel.findOne({ email: req.params.email })
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log("Error to fetch this account", err);
+    });
+});
 
 router.put("/api/userEmail/:id", async (req, res) => {
   try {

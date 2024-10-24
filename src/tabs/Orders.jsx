@@ -21,22 +21,17 @@ import {
   useDisclosure,
   Button,
   Card,
+  Img,
 } from "@chakra-ui/react";
 import { MdDelete } from "react-icons/md";
 import { FaFacebookF } from "react-icons/fa6";
-import { RiSendPlane2Fill } from "react-icons/ri";
-import { CgNametag } from "react-icons/cg";
-import { CiBoxes } from "react-icons/ci";
-import { formatDate, formatDistanceToNow } from "date-fns";
+import logo from "../assets/ctu-logo.jpg";
+import logomarket from "../assets/ctu-logo-marketplace.jpg";
 import { AtSignIcon, CalendarIcon, LinkIcon } from "@chakra-ui/icons";
-import { RiAccountCircleLine } from "react-icons/ri";
-import { IoPricetagOutline } from "react-icons/io5";
-import { TbLetterT, TbSquareLetterS } from "react-icons/tb";
-import { CiShoppingCart } from "react-icons/ci";
-import { BsBox2 } from "react-icons/bs";
+
 function Orders() {
   const [orders, setOrders] = useState([]);
-  const [orderCounts, setOrderCounts] = useState([]);
+
   const [cookies, removeCookies] = useCookies([]);
   const { id } = useParams();
   const [isUsers, setisUser] = useState("");
@@ -122,17 +117,6 @@ function Orders() {
     const interval = setInterval(fetchTransactions, 1000);
     return () => clearInterval(interval);
   }, [id]);
-
-  // useEffect(() => {
-  //   axios
-  //     .get("http://localhost:4000/api/users-orders")
-  //     .then((result) => {
-  //       setOrderCounts(result);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // });
 
   const removeItemClick = (id) => {
     axios
@@ -240,10 +224,14 @@ function Orders() {
       {" "}
       <div className="mx-2 mt-2 mb-14  px-4 rounded-md pt-3 pb-4 max-w-full max-h-full ">
         <div className=" md:shrink-0 grid justify-items-center grid-cols-1 ssm:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 ">
+          {/* <OrdersCount id={id} /> */}
           {orders.length === 0 ? (
-            <p className="text-center text-gray-600 font-semibold">
-              No data available
-            </p>
+            <div className="flex text-center justify-center mb-10 relative  lg:left-24 mt-20">
+              <div className="animate-pulse rounded-full   border-gray-900">
+                <Img src={logomarket} className="rounded-full h-60" />
+                <p className=" font-quicksand mt-2">Empty Orders</p>
+              </div>
+            </div>
           ) : (
             orders.map((order) => (
               <div

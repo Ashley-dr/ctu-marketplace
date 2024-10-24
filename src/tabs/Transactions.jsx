@@ -21,7 +21,9 @@ import {
   Button,
   visuallyHiddenStyle,
   Input,
+  Img,
 } from "@chakra-ui/react";
+import logomarket from "../assets/ctu-logo-marketplace.jpg";
 import { AddIcon, CloseIcon, CheckIcon } from "@chakra-ui/icons";
 function Transactions() {
   const [orders, setOrders] = useState([]);
@@ -318,88 +320,97 @@ function Transactions() {
   const tax = total * 0.01;
   const totalWithTax = total + tax;
   return (
-    <div className="mx-2 px-4 rounded-md pt-3 pb-4 max-w-full  max-h-full bg-slate-700">
+    <div className="mx-2  rounded-md pt-3 pb-4 max-w-full  max-h-full">
       <div className=" md:shrink-0 grid grid-cols-1 ssm:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 ">
-        {myTransactions.map((item) => (
-          <div
-            className="border-solid border-2 border-black px-2 rounded-2xl p-2  max-w-full w-96  mb-5 bg-slate-400"
-            key={item._id}
-          >
-            <div className="">
-              <img
-                className=" block ml-auto mr-auto rounded-2xl max-w-full max-h-full w-full h-56 object-cover bg-fixed"
-                src={item.image}
-                alt=""
-              />
-              <div className="flex  justify-center ">
-                <button
-                  className=" p-1 bg-[#b40e0e9d] rounded-md  float-right mr-2"
-                  onClick={() => {
-                    removeItemClick(item._id);
-                  }}
-                >
-                  Cancel Transaction <CloseIcon />
-                </button>
-                <button
-                  onClick={() => markTransactions(item)}
-                  className=" p-1 bg-[#4dbe86] rounded-md  float-right mr-2"
-                >
-                  Mark Done Transaction <CheckIcon />
-                </button>
-              </div>
-              <figure className=" bg-slate-500 rounded-2xl  p-1 mt-2 ">
-                <p>
-                  <label>Buyer Name: </label>
-                  {item.buyerName}
-                </p>
-                <p>
-                  <label>Buyer Email: </label>
-                  {item.buyerEmail}
-                </p>
-                <p className=" h-20 overflow-y-auto px-2 mt-1 mb-2 border-solid border-2 rounded-lg">
-                  <label className=" font-semibold">Message: </label>
-                  {item.message}
-                </p>
-                <figure className="flex ">
-                  <div>
-                    <p className="mx-3">Contact on</p>
-                    <button className="px-4 p-3 mx-2 rounded-lg bg-teal-400">
-                      <MdEmail className="text-2xl" />
-                    </button>
-                    <button className="px-4 p-3 mx-2 rounded-lg bg-teal-400">
-                      <FaFacebookSquare className="text-2xl" />
-                    </button>
-                    <button
-                      className="px-4 p-3 mx-2 rounded-lg bg-teal-400"
-                      onClick={() => chatButton(item)}
-                    >
-                      <FaRegMessage className="text-2xl" />
-                    </button>
-                  </div>
-
-                  <div className="grid text-sm">
-                    <p>
-                      <label>Status: </label>
-                      {!item.status ? <>Pending</> : <>{item.status}</>}
-                    </p>
-                    <p>
-                      <label>Item Price: </label>
-                      {item.price}
-                    </p>
-                    <p>
-                      <label>Quantity of: </label>
-                      {item.quantity}
-                    </p>
-                    <p>
-                      <label>Total: </label>
-                      {item.total}
-                    </p>
-                  </div>
-                </figure>
-              </figure>
+        {myTransactions.length === 0 ? (
+          <div className="flex text-center justify-center mb-10 relative  lg:left-24 mt-20">
+            <div className="animate-pulse rounded-full   border-gray-900">
+              <Img src={logomarket} className="rounded-full h-60" />
+              <p className=" font-quicksand mt-2">Empty Transactions</p>
             </div>
           </div>
-        ))}
+        ) : (
+          myTransactions.map((item) => (
+            <div
+              className="border-solid border-2 border-black px-2 rounded-2xl p-2  max-w-full w-96  mb-5 bg-slate-400"
+              key={item._id}
+            >
+              <div className="">
+                <img
+                  className=" block ml-auto mr-auto rounded-2xl max-w-full max-h-full w-full h-56 object-cover bg-fixed"
+                  src={item.image}
+                  alt=""
+                />
+                <div className="flex  justify-center ">
+                  <button
+                    className=" p-1 bg-[#b40e0e9d] rounded-md  float-right mr-2"
+                    onClick={() => {
+                      removeItemClick(item._id);
+                    }}
+                  >
+                    Cancel Transaction <CloseIcon />
+                  </button>
+                  <button
+                    onClick={() => markTransactions(item)}
+                    className=" p-1 bg-[#4dbe86] rounded-md  float-right mr-2"
+                  >
+                    Mark Done Transaction <CheckIcon />
+                  </button>
+                </div>
+                <figure className=" bg-slate-500 rounded-2xl  p-1 mt-2 ">
+                  <p>
+                    <label>Buyer Name: </label>
+                    {item.buyerName}
+                  </p>
+                  <p>
+                    <label>Buyer Email: </label>
+                    {item.buyerEmail}
+                  </p>
+                  <p className=" h-20 overflow-y-auto px-2 mt-1 mb-2 border-solid border-2 rounded-lg">
+                    <label className=" font-semibold">Message: </label>
+                    {item.message}
+                  </p>
+                  <figure className="flex ">
+                    <div>
+                      <p className="mx-3">Contact on</p>
+                      <button className="px-4 p-3 mx-2 rounded-lg bg-teal-400">
+                        <MdEmail className="text-2xl" />
+                      </button>
+                      <button className="px-4 p-3 mx-2 rounded-lg bg-teal-400">
+                        <FaFacebookSquare className="text-2xl" />
+                      </button>
+                      <button
+                        className="px-4 p-3 mx-2 rounded-lg bg-teal-400"
+                        onClick={() => chatButton(item)}
+                      >
+                        <FaRegMessage className="text-2xl" />
+                      </button>
+                    </div>
+
+                    <div className="grid text-sm">
+                      <p>
+                        <label>Status: </label>
+                        {!item.status ? <>Pending</> : <>{item.status}</>}
+                      </p>
+                      <p>
+                        <label>Item Price: </label>
+                        {item.price}
+                      </p>
+                      <p>
+                        <label>Quantity of: </label>
+                        {item.quantity}
+                      </p>
+                      <p>
+                        <label>Total: </label>
+                        {item.total}
+                      </p>
+                    </div>
+                  </figure>
+                </figure>
+              </div>
+            </div>
+          ))
+        )}
       </div>
       {statusData && (
         <Modal onClose={onClosedSecond} size={size} isOpen={isOpenSecond}>

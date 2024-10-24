@@ -52,10 +52,13 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { MdOutlineModeComment } from "react-icons/md";
 import ProductId from "../pages/ProductId";
 import { FiDelete } from "react-icons/fi";
-import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import { DeleteIcon, EditIcon, ExternalLinkIcon } from "@chakra-ui/icons";
 import { IoChevronBack } from "react-icons/io5";
 import logo from "../assets/ctu-logo.jpg";
-function Inventory({ userId }) {
+import Lightbox from "yet-another-react-lightbox";
+import { Zoom } from "yet-another-react-lightbox/plugins";
+import "yet-another-react-lightbox/styles.css";
+function UserInventory({ userId }) {
   const [cookies, removeCookies] = useCookies([]);
   const [myProducts, setMyProducts] = useState([]);
   const [viewModal, setViewModal] = useState("");
@@ -68,7 +71,6 @@ function Inventory({ userId }) {
   const [isFaculty, setisFaculty] = useState("");
   const [selectedProductId, setSelectedProductId] = useState(null);
 
-  const [isEditing, setIsEditing] = useState(false);
   const [stocks, setStocks] = useState("");
   const [price, setPrice] = useState("");
   const navigate = useNavigate();
@@ -198,40 +200,17 @@ function Inventory({ userId }) {
     }
   }, [userId]);
 
-  const deleteProduct = async (id) => {
-    try {
-      await axios.delete(
-        `http://localhost:4000/api/inventory/${viewModal._id}`
-      );
-
-      onClose();
-    } catch (error) {
-      console.error("Error deleting product:", error);
-      // Optionally, display an error message to the user
-    }
-  };
-
-  const handleEditSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.put(
-        `http://localhost:4000/api/inventory/${viewModal._id}`,
-        { stocks, price },
-        { headers: { "Content-Type": "application/json" } }
-      );
-
-      setIsEditing(false);
-      onClose();
-    } catch (error) {
-      console.error("Error updating product:", error);
-      // Optionally, display an error message to the user
-    }
-  };
-
   const handleModal = (item) => {
     setViewModal(item);
     setSelectedProductId(item._id);
     onOpen();
+  };
+  const [open, setOpen] = useState(false); // Lightbox open state
+  const [currentImage, setCurrentImage] = useState(0); // Track current image index
+
+  const handleOpenLightbox = (index) => {
+    setCurrentImage(index); // Set the clicked image index
+    setOpen(true); // Open the lightbox
   };
   return (
     <div className="max-w-full max-h-full ">
@@ -319,19 +298,14 @@ function Inventory({ userId }) {
                     {item.image && item.image.length > 0 && (
                       <div className="">
                         {item.image.slice(0, 1).map((image, index) => (
-                          <a
-                            key={index}
-                            target="_blank"
-                            href={image}
-                            rel="noreferrer"
-                          >
+                          <p key={index}>
                             <Image
                               objectFit="cover"
                               className="w-full h-64"
                               src={image}
                               alt={`Image ${index + 1}`}
                             />
-                          </a>
+                          </p>
                         ))}
                       </div>
                     )}
@@ -356,7 +330,6 @@ function Inventory({ userId }) {
           size={"lg"}
           isOpen={isOpen}
           onClose={() => {
-            setIsEditing(false);
             onClose();
           }}
         >
@@ -381,209 +354,125 @@ function Inventory({ userId }) {
 
             <ModalCloseButton />
             <ModalBody className="space-y-1">
-              {isEditing ? (
-                <form onSubmit={handleEditSubmit}>
-                  <Box mb={4}>
-                    <Text fontWeight="bold" mb={2}>
-                      Product Name:
-                    </Text>
-                    <Input type="text" value={viewModal.prodName} disabled />
-                  </Box>
-                  <Box mb={4}>
-                    <Text fontWeight="bold" mb={2}>
-                      Stocks:
-                    </Text>
-                    {/* <NumberInputField
-                      type="number"
-                      value={stocks}
-                      onChange={(e) => setStocks(e.target.value)}
-                      required
-                    /> */}
-                    <NumberInput
-                      defaultValue={viewModal.stocks}
-                      onChange={(value) => setStocks(value)}
-                    >
-                      <NumberInputField />
-                      <NumberInputStepper>
-                        <NumberIncrementStepper />
-                        <NumberDecrementStepper />
-                      </NumberInputStepper>
-                    </NumberInput>
-                  </Box>
-                  <Box mb={4}>
-                    <Text fontWeight="bold" mb={2}>
-                      Price:
-                    </Text>
-                    {/* <Input
-                      type="number"
-                      value={price}
-                      onChange={(e) => setPrice(e.target.value)}
-                      required
-                    /> */}
-                    <NumberInput
-                      defaultValue={viewModal.price}
-                      onChange={(value) => setPrice(value)}
-                    >
-                      <NumberInputField />
-                      <NumberInputStepper>
-                        <NumberIncrementStepper />
-                        <NumberDecrementStepper />
-                      </NumberInputStepper>
-                    </NumberInput>
-                  </Box>
-                  {/* Add other editable fields as necessary */}
-                  <Box className="text-center">
-                    <Button type="submit" mr={3}>
-                      Update
-                    </Button>
-                    <Button
-                      onClick={() => setIsEditing(false)}
-                      variant="ghost"
-                      colorScheme="red"
-                    >
-                      <IoChevronBack />
-                    </Button>
-                  </Box>
-                </form>
-              ) : (
-                <>
-                  {" "}
-                  <Accordion allowToggle className="">
-                    <AccordionItem>
-                      <AccordionButton>
-                        <Box as="span" flex="1" textAlign="left">
-                          <Text ml={2} className="font-bold grid">
-                            <label className="font-thin text-xs">
-                              <Text className="text-xs font-thin">
-                                {formatDateToNow(viewModal.createdAt)}
-                              </Text>
-                            </label>
-                            {viewModal.prodName}
-                          </Text>
-                        </Box>
-
-                        <DeleteIcon />
-                        <AccordionIcon />
-                      </AccordionButton>
-
-                      <AccordionPanel
-                        pb={4}
-                        className="grid grid-cols-2 w-full"
-                      >
-                        <p className="text-sm justify-center">
-                          {" "}
-                          Do you want to remove this item?
-                        </p>
-                        <Button
-                          className="justify-self-end"
-                          onClick={() => deleteProduct(viewModal._id)}
-                        >
-                          Confirm
-                        </Button>
-                      </AccordionPanel>
-                    </AccordionItem>
-                  </Accordion>
-                  <figure className="grid grid-cols-2 pt-2 font-quicksand pb-2">
-                    <Text ml={2} className="font-semibold ">
-                      <label className="text-sm font-thin">Stocks:</label>{" "}
-                      {viewModal.stocks}
-                    </Text>
-
-                    <button
-                      className="justify-self-end"
-                      onClick={() => setIsEditing(true)}
-                    >
-                      <EditIcon />
-                    </button>
-                    <Text ml={2} className="font-semibold text-xs ">
-                      {new Intl.NumberFormat("en-PH", {
-                        style: "currency",
-                        currency: "PHP",
-                      }).format(viewModal.price)}
-                    </Text>
-                  </figure>
-                  <hr />
-                  <br />
-                  <Text
-                    ml={2}
-                    className="font-semibold text-xs relative bottom-3"
-                  >
-                    {viewModal.marketType === "Selling" && "Trading" ? (
-                      <p className="text-green-200">{viewModal.marketType}</p>
-                    ) : (
-                      <p className="text-orange-200">{viewModal.marketType}</p>
-                    )}
+              <>
+                {" "}
+                <Box as="span" flex="1" textAlign="left">
+                  <Text ml={2} className="font-bold grid">
+                    <label className="font-thin text-xs">
+                      <Text className="text-xs font-thin">
+                        {formatDateToNow(viewModal.createdAt)}
+                      </Text>
+                    </label>
+                    {viewModal.prodName}
                   </Text>
-                  <Text
-                    ml={2}
-                    className="font-semibold text-xs relative bottom-3"
-                  >
-                    {viewModal.categories.join(", ")}
+                </Box>
+                <figure className="grid grid-cols-1 pt-2 font-quicksand pb-2">
+                  <Text ml={2} className="font-semibold ">
+                    <label className="text-sm font-thin">Stocks:</label>{" "}
+                    {viewModal.stocks}
                   </Text>
-                  <Text
-                    overflowY={"scroll"}
-                    className="h-20 mb-4 shadow-inner   w-full px-1"
-                  >
-                    {viewModal.description}
+
+                  <Text ml={2} className="font-semibold text-xs ">
+                    {new Intl.NumberFormat("en-PH", {
+                      style: "currency",
+                      currency: "PHP",
+                    }).format(viewModal.price)}
                   </Text>
-                  {viewModal.image && viewModal.image.length > 0 && (
-                    <Carousel
-                      infiniteLoop
-                      showThumbs={false}
-                      stopOnHover
-                      swipeable={true}
-                      autoPlay
-                      emulateTouch={true}
-                      className="pt-5 relative rounded-lg"
-                      showArrows={true}
-                      slideInterval={5000}
-                    >
-                      {viewModal.image.map((image, index) => (
-                        <div key={index} className="">
-                          <a
-                            target="_blank"
-                            href={image}
-                            rel="noopener noreferrer"
-                          >
-                            <img
-                              className="shadow-inner hover:shadow-xl size-96  rounded-md"
-                              src={image}
-                              alt={`Image ${index + 1}`}
-                            />
-                            <button className="relative bg-[#0c0a0a54] bottom-20 font-poppins p-1.5 text-white rounded-lg font-bold hover:bg-[#000000c4]">
-                              Show Image ( {`${index + 1}`} )
-                            </button>
-                          </a>
-                        </div>
-                      ))}
-                    </Carousel>
+                </figure>
+                <hr />
+                <br />
+                <Text
+                  ml={2}
+                  className="font-semibold text-xs relative bottom-3"
+                >
+                  {viewModal.marketType === "Selling" && "Trading" ? (
+                    <p className="text-green-200">{viewModal.marketType}</p>
+                  ) : (
+                    <p className="text-orange-200">{viewModal.marketType}</p>
                   )}
-                  {/* Comment Section */}
-                  {isUsers || isFaculty ? (
-                    <div className="    text-sm  rounded-sm p-2 grid ">
-                      <form onSubmit={commentHandler} className="flex">
-                        <textarea
-                          className=" w-full text-black rounded-sm px-2  font-quicksand bg-[#e4eaec]"
-                          type="text"
-                          value={newComment}
-                          onChange={(event) =>
-                            setNewComments(event.target.value)
-                          }
-                          placeholder="Add a comment"
+                </Text>
+                <Text
+                  ml={2}
+                  className="font-semibold text-xs relative bottom-3"
+                >
+                  Categories: {viewModal.categories.join(", ")},
+                </Text>
+                <Text
+                  overflowY={"scroll"}
+                  className="h-20 mb-4 shadow-inner   w-full px-1"
+                >
+                  {viewModal.description}
+                </Text>
+                {viewModal.image && viewModal.image.length > 0 && (
+                  <Carousel
+                    infiniteLoop
+                    showThumbs={false}
+                    stopOnHover
+                    swipeable={true}
+                    autoPlay
+                    emulateTouch={true}
+                    className="pt-5 relative rounded-lg"
+                    showArrows={true}
+                    slideInterval={5000}
+                  >
+                    {viewModal.image.map((image, index) => (
+                      <div key={index}>
+                        <img
+                          className="shadow-inner hover:shadow-xl size-96 rounded-md cursor-pointer"
+                          src={image}
+                          alt={`Image ${index + 1}`}
+                          onClick={() => handleOpenLightbox(index)} // Open lightbox on click
                         />
-
                         <button
-                          className="flex float-right px-2 border rounded-md p-1 pl-4 pt-2 hover:bg-[#c1cec633] pr-3 h-10"
-                          type="submit"
+                          className="relative bg-[#0c0a0a54] bottom-20 font-poppins p-1.5 text-white rounded-lg font-bold hover:bg-[#000000c4]"
+                          onClick={() => handleOpenLightbox(index)} // Open lightbox on button click
                         >
-                          Comment{" "}
-                          <RiSendPlane2Fill className="mt-0.5 ml-2 text-base" />
+                          Show Image ( {`${index + 1}`} )
                         </button>
-                      </form>
-                    </div>
-                  ) : null}
-                </>
-              )}
+                      </div>
+                    ))}
+                  </Carousel>
+                )}
+                <Lightbox
+                  open={open}
+                  close={() => setOpen(false)} // Close lightbox
+                  slides={viewModal.image.map((image) => ({
+                    src: image,
+                  }))} // Map images for lightbox
+                  index={currentImage} // Start from the clicked image
+                  plugins={[Zoom]}
+                />
+                <Link
+                  to={`/ProductId/${viewModal._id}`}
+                  className="bg-gray-900 mt-2 pt-1 pb-1 text-white text-center text-sm  rounded-sm p-2 grid hover:bg-gray-950 "
+                >
+                  <button className="m-1 font-quicksand">
+                    View this Item <ExternalLinkIcon />
+                  </button>
+                </Link>
+                {/* Comment Section */}
+                {isUsers || isFaculty ? (
+                  <div className="  pt-5 text-sm  rounded-sm p-2 grid ">
+                    <form onSubmit={commentHandler} className="flex">
+                      <textarea
+                        className=" w-full text-black rounded-sm px-2  font-quicksand bg-[#e4eaec]"
+                        type="text"
+                        value={newComment}
+                        onChange={(event) => setNewComments(event.target.value)}
+                        placeholder="Comment"
+                      />
+
+                      <button
+                        className="flex float-right px-2 border rounded-md p-1 pl-4 pt-2 hover:bg-[#c1cec633] pr-3 h-10"
+                        type="submit"
+                      >
+                        Comment{" "}
+                        <RiSendPlane2Fill className="mt-0.5 ml-2 text-base" />
+                      </button>
+                    </form>
+                  </div>
+                ) : null}
+              </>
             </ModalBody>
 
             <ModalFooter>
@@ -611,12 +500,33 @@ function Inventory({ userId }) {
                           <p className="font-quicksand mb-2 pl-1 w-96">
                             {comment.comment}
                           </p>
-                          <button
-                            className="justify-self-start mb-1"
-                            onClick={() => commentDelete(comment._id)}
-                          >
-                            <MdDelete className="text-base" />
-                          </button>
+                          {(isUsers?.id === comment.commenterId ||
+                            isFaculty?.id === comment.commenterId) && (
+                            <Accordion defaultIndex={[1]} allowMultiple>
+                              <AccordionItem>
+                                <h2>
+                                  <AccordionButton>
+                                    <Box
+                                      as="span"
+                                      flex="1"
+                                      textAlign="right"
+                                    ></Box>
+                                    <MdDelete className="text-base" />
+                                    <AccordionIcon />
+                                  </AccordionButton>
+                                </h2>
+                                <AccordionPanel textAlign={"center"} pb={4}>
+                                  <p>Do you want to remove this comment?</p>
+                                  <Button
+                                    className="justify-self-start mb-1 flex"
+                                    onClick={() => commentDelete(comment._id)}
+                                  >
+                                    Confirm
+                                  </Button>
+                                </AccordionPanel>
+                              </AccordionItem>
+                            </Accordion>
+                          )}
                         </article>
                       ))
                       .reverse()}
@@ -633,4 +543,4 @@ function Inventory({ userId }) {
   );
 }
 
-export default Inventory;
+export default UserInventory;

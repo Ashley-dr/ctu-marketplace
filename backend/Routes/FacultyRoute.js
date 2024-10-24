@@ -188,7 +188,15 @@ router.put("/api/facultyNumbers/:id", async (req, res) => {
     res.status(400).json({ message: "Cannot update user data" });
   }
 });
-
+router.get("/api/faculty-account/:email", async (req, res) => {
+  FacultyModel.findOne({ email: req.params.email })
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log("Error to fetch this account", err);
+    });
+});
 // Faculty users Model //
 
 export default router;

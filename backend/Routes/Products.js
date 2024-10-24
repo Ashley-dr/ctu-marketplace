@@ -141,6 +141,39 @@ router.get("/api/comments/:productId", async (req, res) => {
     res.status(500).json({ message: "Error fetching comments", error });
   }
 });
+router.get("/api/user-products/:id", async (req, res) => {
+  ProductModel.aggregate(
+    [
+      { $match: { sellerId: req.params.id } },
+      { $group: { _id: "$sellerId", count: { $sum: 1 } } },
+    ],
+    { maxTimeMS: 60000, allowDiskUse: true }
+  )
+    .then((result) => {
+      if (result.length === 0) {
+        return res.status(200).json({ count: 0 });
+      }
+      res.status(200).json({ count: result[0].count });
+    })
+    .catch((err) => {
+      res.status(500).json({ message: "Error in fetching order count", err });
+    });
+});
+router.get("/api/count-products", async (req, res) => {
+  ProductModel.aggregate([{ $group: { _id: "_id", count: { $sum: 1 } } }], {
+    maxTimeMS: 60000,
+    allowDiskUse: true,
+  })
+    .then((result) => {
+      if (result.length === 0) {
+        return res.status(200).json({ count: 0 });
+      }
+      res.status(200).json({ count: result[0].count });
+    })
+    .catch((err) => {
+      res.status(500).json({ message: "Error in fetching order count", err });
+    });
+});
 // Add Products //
 
 export default router;
