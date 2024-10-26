@@ -68,6 +68,7 @@ import Lightbox from "yet-another-react-lightbox";
 import { Zoom } from "yet-another-react-lightbox/plugins";
 import "yet-another-react-lightbox/styles.css";
 function ProductId() {
+  const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [cookies, removeCookies] = useCookies([]);
   const [productData, setProductData] = useState([]);
   const [comments, setComments] = useState([]);
@@ -113,7 +114,7 @@ function ProductId() {
         navigate("/");
       }
       const { data } = await axios.post(
-        "http://localhost:4000/facultypost",
+        `${baseUrl}/facultypost`,
         {},
         { withCredentials: true }
       );
@@ -123,7 +124,7 @@ function ProductId() {
       return status;
     };
     verifyCookie();
-  }, [cookies, navigate, removeCookies]);
+  }, [baseUrl, cookies, navigate, removeCookies]);
 
   useEffect(() => {
     const verifyCookie = async () => {
@@ -131,7 +132,7 @@ function ProductId() {
         navigate("/");
       }
       const { data } = await axios.post(
-        "http://localhost:4000/userspost",
+        `${baseUrl}/userspost`,
         {},
         { withCredentials: true }
       );
@@ -141,12 +142,12 @@ function ProductId() {
       return status;
     };
     verifyCookie();
-  }, [cookies, navigate, removeCookies]);
+  }, [baseUrl, cookies, navigate, removeCookies]);
 
   useEffect(() => {
     const fetchData = async () => {
       axios
-        .get(`http://localhost:4000/api/products/${id}`)
+        .get(`${baseUrl}/api/products/${id}`)
         .then((result) => {
           setProductData(result.data);
         })
@@ -157,7 +158,7 @@ function ProductId() {
     fetchData();
     const interval = setInterval(fetchData, 1000);
     return () => clearInterval(interval);
-  }, [id]);
+  }, [baseUrl, id]);
 
   const handleUserModal = (products) => {
     UsersetSelectedProduct(products);
@@ -174,7 +175,7 @@ function ProductId() {
   const productPurchased = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:4000/api/purchasedItem", purchasedSchema)
+      .post(`${baseUrl}/api/purchasedItem`, purchasedSchema)
       .then((result) => {
         setPurchasedSchema({
           sellerId: "",
@@ -212,17 +213,25 @@ function ProductId() {
     e.preventDefault();
 
     let commenterName = "";
+    let commenterEmail = "";
     let commenterId = "";
+    let commenterAccountType = "";
     if (isUsers) {
       commenterName = isUsers.fullname;
+      commenterAccountType = isUsers.isUser;
+      commenterEmail = isUsers.email;
       commenterId = isUsers.id;
     } else if (isFaculty) {
       commenterName = isFaculty.fullname;
+      commenterEmail = isFaculty.email;
+      commenterAccountType = isFaculty.isFaculty;
       commenterId = isFaculty.id;
     }
     axios
-      .post(`http://localhost:4000/api/comments/${id}`, {
+      .post(`${baseUrl}/api/comments/${id}`, {
         comment: newComment,
+        commenterEmail: commenterEmail,
+        commenterAccountType: commenterAccountType,
         commenterId: commenterId,
         commenterName: commenterName,
       })
@@ -236,7 +245,7 @@ function ProductId() {
   };
   const commentDelete = (commentId) => {
     axios
-      .delete(`http://localhost:4000/api/comments/${id}/${commentId}`)
+      .delete(`${baseUrl}api/comments/${id}/${commentId}`)
       .then((result) => {
         setComments(comments.filter((comment) => comment._id !== commentId));
       })
@@ -250,9 +259,7 @@ function ProductId() {
 
     const fetchComments = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:4000/api/comments/${id}`
-        );
+        const response = await axios.get(`${baseUrl}/api/comments/${id}`);
         setComments(response.data);
       } catch (error) {
         console.error("Error fetching comments", error);
@@ -370,37 +377,40 @@ function ProductId() {
                     <Stack divider={<StackDivider />} spacing="4">
                       <Box>
                         <Heading size="xs">
-                          <p className="truncate  w-96">
-                            {" "}
-                            <LinkIcon className="mr-1" />
-                            {productData.sellerName}
-                          </p>
                           {productData.accountType === "Student" && (
                             <>
                               {" "}
-                              <p className="truncate w-96">
-                                <AtSignIcon className="" />{" "}
-                                {productData.sellerEmail}
-                                <Link
-                                  to={`/UserAccount/${productData.sellerEmail}`}
-                                >
-                                  View
-                                </Link>
-                              </p>
+                              <Link
+                                to={`/UserAccount/${productData.sellerEmail}`}
+                              >
+                                <p className="truncate  w-96 underline">
+                                  {" "}
+                                  <LinkIcon className="mr-1" />
+                                  {productData.sellerName}
+                                </p>
+                                <p className="truncate w-96 underline">
+                                  <AtSignIcon className="" />{" "}
+                                  {productData.sellerEmail}
+                                </p>
+                              </Link>
                             </>
                           )}
                           {productData.accountType === "Faculty" && (
                             <>
                               {" "}
-                              <p className="truncate w-96">
-                                <AtSignIcon className="" />{" "}
-                                {productData.sellerEmail}
-                                <Link
-                                  to={`/FacultyAccount/${productData.sellerEmail}`}
-                                >
-                                  View
-                                </Link>
-                              </p>
+                              <Link
+                                to={`/FacultyAccount/${productData.sellerEmail}`}
+                              >
+                                <p className="truncate  w-96 underline">
+                                  {" "}
+                                  <LinkIcon className="mr-1" />
+                                  {productData.sellerName}
+                                </p>
+                                <p className="truncate w-96 underline">
+                                  <AtSignIcon className="" />{" "}
+                                  {productData.sellerEmail}
+                                </p>
+                              </Link>
                             </>
                           )}
 
@@ -558,10 +568,33 @@ function ProductId() {
                           className="grid mx-2 mt-2 mb-4 bg-[#554f4f18] rounded-md font-poppins"
                         >
                           <div className="flex">
-                            <span className="flex underline font-extralight pt-1 mb-1">
-                              <CgNametag className="mt-0.5 mr-1 text-base" />{" "}
-                              {comment.commenterName}
-                            </span>
+                            {comment.commenterAccountType === "Student" && (
+                              <>
+                                {" "}
+                                <Link
+                                  to={`/UserAccount/${comment.commenterEmail}`}
+                                >
+                                  <span className="flex underline font-extralight pt-1 mb-1">
+                                    <CgNametag className="mt-0.5 mr-1 text-base" />{" "}
+                                    {comment.commenterName}
+                                  </span>
+                                </Link>
+                              </>
+                            )}
+                            {comment.commenterAccountType === "Faculty" && (
+                              <>
+                                {" "}
+                                <Link
+                                  to={`/FacultyAccount/${comment.commenterEmail}`}
+                                >
+                                  <span className="flex underline font-extralight pt-1 mb-1">
+                                    <CgNametag className="mt-0.5 mr-1 text-base" />{" "}
+                                    {comment.commenterName}
+                                  </span>
+                                </Link>
+                              </>
+                            )}
+
                             <span className="ml-2 text-xs mt-1 flex">
                               <LuDot className="mr-1 text-base" />{" "}
                               {formatDateToNow(comment.createdAt)}

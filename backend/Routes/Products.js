@@ -110,7 +110,9 @@ router.post("/api/comments/:id", async (req, res) => {
   const product = await ProductModel.findById(req.params.id);
   const newComment = {
     comment: req.body.comment,
+    commenterAccountType: req.body.commenterAccountType,
     commenterId: req.body.commenterId,
+    commenterEmail: req.body.commenterEmail,
     commenterName: req.body.commenterName,
     createdAt: new Date(),
   };

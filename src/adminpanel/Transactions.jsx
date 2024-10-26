@@ -33,6 +33,7 @@ import { Zoom } from "yet-another-react-lightbox/plugins";
 import "yet-another-react-lightbox/styles.css";
 
 function Transactions() {
+  const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [data, setData] = useState([]);
   const [areOpen, setIsOpen] = useState(false); // For image lightbox
   const { isOpen, onOpen, onClose } = useDisclosure(); // Primary Modal
@@ -47,7 +48,7 @@ function Transactions() {
   // Fetch data function
   const fetchData = async () => {
     try {
-      const result = await axios.get("http://localhost:4000/api/DonePurchased");
+      const result = await axios.get(`${baseUrl}/api/DonePurchased`);
       setData(result.data);
     } catch (err) {
       console.log(err);
@@ -67,7 +68,7 @@ function Transactions() {
   // Delete transaction row
   const deleteRow = (id) => {
     axios
-      .delete(`http://localhost:4000/api/DonePurchased/${id}`)
+      .delete(`${baseUrl}api/DonePurchased/${id}`)
       .then(() => {
         setData(data.filter((data) => data._id !== id));
       })

@@ -46,6 +46,7 @@ import ItemSold from "../context/ItemSold";
 import UserInventory from "./UserInventory";
 
 function FacultyAccount() {
+  const baseUrl = import.meta.env.VITE_SERVER_URL;
   const { email } = useParams();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -54,7 +55,7 @@ function FacultyAccount() {
     const fetchUser = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:4000/api/faculty-account/${email}`
+          `${baseUrl}/api/faculty-account/${email}`
         );
         setUser(response.data);
         setLoading(false);
@@ -117,10 +118,10 @@ function FacultyAccount() {
             </p>
             <p>ITEM SOLD</p>
           </label>
-          <label className="grid">
+          {/* <label className="grid">
             <p>218</p>
             <p>RATE</p>
-          </label>
+          </label> */}
         </figure>
 
         <Tabs

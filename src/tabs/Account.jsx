@@ -43,6 +43,7 @@ import InventoryCounts from "../context/InventoryCount";
 import ItemSold from "../context/ItemSold";
 
 function Account() {
+  const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [cookies, removeCookies] = useCookies([]);
   const [isUsers, setisUser] = useState("");
   const [isFaculty, setisFaculty] = useState("");
@@ -118,7 +119,7 @@ function Account() {
       }
       try {
         const { data } = await axios.post(
-          "http://localhost:4000/facultypost",
+          `${baseUrl}/facultypost`,
           {},
           { withCredentials: true }
         );
@@ -129,7 +130,7 @@ function Account() {
       }
     };
     verifyCookie();
-  }, [cookies, navigate, removeCookies]);
+  }, [baseUrl, cookies, navigate, removeCookies]);
 
   // Fetch Regular User
   useEffect(() => {
@@ -139,7 +140,7 @@ function Account() {
       }
       try {
         const { data } = await axios.post(
-          "http://localhost:4000/userspost",
+          `${baseUrl}/userspost`,
           {},
           { withCredentials: true }
         );
@@ -150,7 +151,7 @@ function Account() {
       }
     };
     verifyCookie();
-  }, [cookies, navigate, removeCookies]);
+  }, [baseUrl, cookies, navigate, removeCookies]);
 
   // Handle Input Changes
   const userOnChange = (e) => {
@@ -206,7 +207,7 @@ function Account() {
 
     try {
       const result = await axios.put(
-        `http://localhost:4000/api/users/${users._id || users.id}`,
+        `${baseUrl}/api/users/${users._id || users.id}`,
         formData,
         {
           headers: {
@@ -245,7 +246,7 @@ function Account() {
 
     try {
       const result = await axios.put(
-        `http://localhost:4000/api/userEmail/${users._id || users.id}`,
+        `${baseUrl}/api/userEmail/${users._id || users.id}`,
         { email }, // Wrap email in an object
         {
           headers: {
@@ -273,7 +274,7 @@ function Account() {
 
     try {
       const result = await axios.put(
-        `http://localhost:4000/api/userNumbers/${users._id || users.id}`,
+        `${baseUrl}/api/userNumbers/${users._id || users.id}`,
         { phoneNumber, gcashNumber },
         {
           headers: {
@@ -300,7 +301,7 @@ function Account() {
 
     try {
       const result = await axios.put(
-        `http://localhost:4000/api/ctuId/${users._id || users.id}`,
+        `${baseUrl}/api/ctuId/${users._id || users.id}`,
         { idNumber },
         {
           headers: {
@@ -344,7 +345,7 @@ function Account() {
 
     try {
       const result = await axios.put(
-        `http://localhost:4000/api/faculty/${isFaculty._id || isFaculty.id}`,
+        `${baseUrl}/api/faculty/${isFaculty._id || isFaculty.id}`,
         formData,
         {
           headers: {
@@ -373,7 +374,7 @@ function Account() {
 
     try {
       const result = await axios.put(
-        `http://localhost:4000/api/facultyEmail/${users._id || users.id}`,
+        `${baseUrl}/api/facultyEmail/${users._id || users.id}`,
         { email }, // Wrap email in an object
         {
           headers: {
@@ -401,7 +402,7 @@ function Account() {
 
     try {
       const result = await axios.put(
-        `http://localhost:4000/api/facultyNumbers/${users._id || users.id}`,
+        `${baseUrl}/api/facultyNumbers/${users._id || users.id}`,
         { phoneNumber, gcashNumber },
         {
           headers: {
@@ -437,7 +438,7 @@ function Account() {
     setLoading(true);
     try {
       const res = await axios.post(
-        `http://localhost:4000/userForgotPassword`,
+        `${baseUrl}/userForgotPassword`,
         { email: email },
         {
           headers: {
@@ -511,7 +512,7 @@ function Account() {
 
     try {
       const response = await axios.post(
-        `http://localhost:4000/userResetPassword`,
+        `${baseUrl}/userResetPassword`,
         { token, password },
         {
           headers: {
@@ -1058,10 +1059,10 @@ function Account() {
               </p>
               <p>ITEM SOLD</p>
             </label>
-            <label className="grid">
+            {/* <label className="grid">
               <p>218</p>
               <p>RATE</p>
-            </label>
+            </label> */}
           </figure>
 
           <Tabs

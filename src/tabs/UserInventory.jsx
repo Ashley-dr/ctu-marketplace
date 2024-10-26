@@ -59,6 +59,7 @@ import Lightbox from "yet-another-react-lightbox";
 import { Zoom } from "yet-another-react-lightbox/plugins";
 import "yet-another-react-lightbox/styles.css";
 function UserInventory({ userId }) {
+  const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [cookies, removeCookies] = useCookies([]);
   const [myProducts, setMyProducts] = useState([]);
   const [viewModal, setViewModal] = useState("");
@@ -79,14 +80,26 @@ function UserInventory({ userId }) {
     e.preventDefault();
 
     let commenterName = "";
+    let commenterEmail = "";
+    let commenterId = "";
+    let commenterAccountType = "";
     if (isUsers) {
       commenterName = isUsers.fullname;
+      commenterAccountType = isUsers.isUser;
+      commenterEmail = isUsers.email;
+      commenterId = isUsers.id;
     } else if (isFaculty) {
       commenterName = isFaculty.fullname;
+      commenterEmail = isFaculty.email;
+      commenterAccountType = isFaculty.isFaculty;
+      commenterId = isFaculty.id;
     }
     axios
-      .post(`http://localhost:4000/api/comments/${viewModal._id}`, {
+      .post(`${baseUrl}/api/comments/${viewModal._id}`, {
         comment: newComment,
+        commenterEmail: commenterEmail,
+        commenterAccountType: commenterAccountType,
+        commenterId: commenterId,
         commenterName: commenterName,
       })
       .then((result) => {
@@ -100,9 +113,7 @@ function UserInventory({ userId }) {
 
   const commentDelete = (commentId) => {
     axios
-      .delete(
-        `http://localhost:4000/api/comments/${viewModal._id}/${commentId}`
-      )
+      .delete(`${baseUrl}/api/comments/${viewModal._id}/${commentId}`)
       .then((result) => {
         setComments(comments.filter((comment) => comment._id !== commentId));
       })
@@ -117,7 +128,7 @@ function UserInventory({ userId }) {
     const fetchComments = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:4000/api/comments/${selectedProductId}`
+          `${baseUrl}/api/comments/${selectedProductId}`
         );
         setComments(response.data);
       } catch (error) {
@@ -143,7 +154,7 @@ function UserInventory({ userId }) {
         navigate("/");
       }
       const { data } = await axios.post(
-        "http://localhost:4000/facultypost",
+        `${baseUrl}/facultypost`,
         {},
         { withCredentials: true }
       );
@@ -153,7 +164,7 @@ function UserInventory({ userId }) {
       return status;
     };
     verifyCookie();
-  }, [cookies, navigate, removeCookies]);
+  }, [baseUrl, cookies, navigate, removeCookies]);
 
   useEffect(() => {
     const verifyCookie = async () => {
@@ -161,7 +172,7 @@ function UserInventory({ userId }) {
         navigate("/");
       }
       const { data } = await axios.post(
-        "http://localhost:4000/userspost",
+        `${baseUrl}/userspost`,
         {},
         { withCredentials: true }
       );
@@ -171,14 +182,14 @@ function UserInventory({ userId }) {
       return status;
     };
     verifyCookie();
-  }, [cookies, navigate, removeCookies]);
+  }, [baseUrl, cookies, navigate, removeCookies]);
 
   useEffect(() => {
     try {
       if (userId) {
         const interval = setInterval(() => {
           axios
-            .get(`http://localhost:4000/api/inventory/${userId}`)
+            .get(`${baseUrl}/api/inventory/${userId}`)
             .then((result) => {
               setMyProducts(result.data);
               setLoading(false);
@@ -488,10 +499,32 @@ function UserInventory({ userId }) {
                           className="grid mr-2 mt-2 mb-4 bg-[#554f4f33] rounded-md font-poppins"
                         >
                           <div className="flex">
-                            <span className="flex underline font-extralight pt-1 mb-1">
-                              <CgNametag className="mt-0.5 mr-1 text-base" />{" "}
-                              {comment.commenterName}
-                            </span>
+                            {comment.commenterAccountType === "Student" && (
+                              <>
+                                {" "}
+                                <Link
+                                  to={`/UserAccount/${comment.commenterEmail}`}
+                                >
+                                  <span className="flex underline font-extralight pt-1 mb-1">
+                                    <CgNametag className="mt-0.5 mr-1 text-base" />{" "}
+                                    {comment.commenterName}
+                                  </span>
+                                </Link>
+                              </>
+                            )}
+                            {comment.commenterAccountType === "Faculty" && (
+                              <>
+                                {" "}
+                                <Link
+                                  to={`/FacultyAccount/${comment.commenterEmail}`}
+                                >
+                                  <span className="flex underline font-extralight pt-1 mb-1">
+                                    <CgNametag className="mt-0.5 mr-1 text-base" />{" "}
+                                    {comment.commenterName}
+                                  </span>
+                                </Link>
+                              </>
+                            )}
                             <span className="ml-2 text-xs mt-1 flex">
                               <LuDot className="mr-1 text-base" />{" "}
                               {formatDateToNow(comment.createdAt)}

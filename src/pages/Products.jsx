@@ -43,6 +43,7 @@ export const formatDateToNow = (date) => {
 import logo from "../assets/ctu-logo.jpg";
 import logomarket from "../assets/ctu-logo-marketplace.jpg";
 function Products() {
+  const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [search, setSearch] = useState("");
   const [productsData, setProductsData] = useState([]);
   const [countProducts, setCountProducts] = useState(null);
@@ -55,7 +56,7 @@ function Products() {
   useEffect(() => {
     const fetchData = async () => {
       axios
-        .get("http://localhost:4000/api/products")
+        .get(`${baseUrl}/api/products`)
         .then((result) => {
           setProductsData(result.data);
         })
@@ -70,9 +71,7 @@ function Products() {
   useEffect(() => {
     const fetchProductsCount = async () => {
       try {
-        const result = await axios.get(
-          "http://localhost:4000/api/count-products"
-        );
+        const result = await axios.get(`${baseUrl}/api/count-products`);
         setCountProducts(result.data.count);
       } catch (error) {
         console.log("Error fetching the Orders Count.", error);
@@ -86,7 +85,7 @@ function Products() {
   const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:4000/api/products");
+      const response = await axios.get(`${baseUrl}/api/products`);
       setProductsData(response.data);
       setError(null);
     } catch (err) {

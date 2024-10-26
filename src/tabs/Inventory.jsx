@@ -55,7 +55,11 @@ import { FiDelete } from "react-icons/fi";
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import { IoChevronBack } from "react-icons/io5";
 import logo from "../assets/ctu-logo.jpg";
+import Lightbox from "yet-another-react-lightbox";
+import { Zoom } from "yet-another-react-lightbox/plugins";
+import "yet-another-react-lightbox/styles.css";
 function Inventory({ userId }) {
+  const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [cookies, removeCookies] = useCookies([]);
   const [myProducts, setMyProducts] = useState([]);
   const [viewModal, setViewModal] = useState("");
@@ -77,14 +81,26 @@ function Inventory({ userId }) {
     e.preventDefault();
 
     let commenterName = "";
+    let commenterEmail = "";
+    let commenterId = "";
+    let commenterAccountType = "";
     if (isUsers) {
       commenterName = isUsers.fullname;
+      commenterAccountType = isUsers.isUser;
+      commenterEmail = isUsers.email;
+      commenterId = isUsers.id;
     } else if (isFaculty) {
       commenterName = isFaculty.fullname;
+      commenterEmail = isFaculty.email;
+      commenterAccountType = isFaculty.isFaculty;
+      commenterId = isFaculty.id;
     }
     axios
-      .post(`http://localhost:4000/api/comments/${viewModal._id}`, {
+      .post(`${baseUrl}/api/comments/${viewModal._id}`, {
         comment: newComment,
+        commenterEmail: commenterEmail,
+        commenterAccountType: commenterAccountType,
+        commenterId: commenterId,
         commenterName: commenterName,
       })
       .then((result) => {
@@ -98,9 +114,7 @@ function Inventory({ userId }) {
 
   const commentDelete = (commentId) => {
     axios
-      .delete(
-        `http://localhost:4000/api/comments/${viewModal._id}/${commentId}`
-      )
+      .delete(`${baseUrl}/api/comments/${viewModal._id}/${commentId}`)
       .then((result) => {
         setComments(comments.filter((comment) => comment._id !== commentId));
       })
@@ -115,7 +129,7 @@ function Inventory({ userId }) {
     const fetchComments = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:4000/api/comments/${selectedProductId}`
+          `${baseUrl}/api/comments/${selectedProductId}`
         );
         setComments(response.data);
       } catch (error) {
@@ -141,7 +155,7 @@ function Inventory({ userId }) {
         navigate("/");
       }
       const { data } = await axios.post(
-        "http://localhost:4000/facultypost",
+        `${baseUrl}/facultypost`,
         {},
         { withCredentials: true }
       );
@@ -151,7 +165,7 @@ function Inventory({ userId }) {
       return status;
     };
     verifyCookie();
-  }, [cookies, navigate, removeCookies]);
+  }, [baseUrl, cookies, navigate, removeCookies]);
 
   useEffect(() => {
     const verifyCookie = async () => {
@@ -159,7 +173,7 @@ function Inventory({ userId }) {
         navigate("/");
       }
       const { data } = await axios.post(
-        "http://localhost:4000/userspost",
+        `${baseUrl}/userspost`,
         {},
         { withCredentials: true }
       );
@@ -169,14 +183,14 @@ function Inventory({ userId }) {
       return status;
     };
     verifyCookie();
-  }, [cookies, navigate, removeCookies]);
+  }, [baseUrl, cookies, navigate, removeCookies]);
 
   useEffect(() => {
     try {
       if (userId) {
         const interval = setInterval(() => {
           axios
-            .get(`http://localhost:4000/api/inventory/${userId}`)
+            .get(`${baseUrl}/api/inventory/${userId}`)
             .then((result) => {
               setMyProducts(result.data);
               setLoading(false);
@@ -200,9 +214,7 @@ function Inventory({ userId }) {
 
   const deleteProduct = async (id) => {
     try {
-      await axios.delete(
-        `http://localhost:4000/api/inventory/${viewModal._id}`
-      );
+      await axios.delete(`${baseUrl}/api/inventory/${viewModal._id}`);
 
       onClose();
     } catch (error) {
@@ -215,7 +227,7 @@ function Inventory({ userId }) {
     e.preventDefault();
     try {
       const response = await axios.put(
-        `http://localhost:4000/api/inventory/${viewModal._id}`,
+        `${baseUrl}/api/inventory/${viewModal._id}`,
         { stocks, price },
         { headers: { "Content-Type": "application/json" } }
       );
@@ -232,6 +244,13 @@ function Inventory({ userId }) {
     setViewModal(item);
     setSelectedProductId(item._id);
     onOpen();
+  };
+  const [open, setOpen] = useState(false); // Lightbox open state
+  const [currentImage, setCurrentImage] = useState(0); // Track current image index
+
+  const handleOpenLightbox = (index) => {
+    setCurrentImage(index); // Set the clicked image index
+    setOpen(true); // Open the lightbox
   };
   return (
     <div className="max-w-full max-h-full ">
@@ -319,22 +338,18 @@ function Inventory({ userId }) {
                     {item.image && item.image.length > 0 && (
                       <div className="">
                         {item.image.slice(0, 1).map((image, index) => (
-                          <a
-                            key={index}
-                            target="_blank"
-                            href={image}
-                            rel="noreferrer"
-                          >
+                          <p key={index}>
                             <Image
                               objectFit="cover"
                               className="w-full h-64"
                               src={image}
                               alt={`Image ${index + 1}`}
                             />
-                          </a>
+                          </p>
                         ))}
                       </div>
                     )}
+
                     <div className="bg-gray-900  text-white text-center text-sm  rounded-sm p-2 grid hover:bg-gray-950">
                       <button
                         className="flex w-full justify-center"
@@ -539,25 +554,32 @@ function Inventory({ userId }) {
                       slideInterval={5000}
                     >
                       {viewModal.image.map((image, index) => (
-                        <div key={index} className="">
-                          <a
-                            target="_blank"
-                            href={image}
-                            rel="noopener noreferrer"
+                        <div key={index}>
+                          <img
+                            className="shadow-inner hover:shadow-xl size-96 rounded-md cursor-pointer"
+                            src={image}
+                            alt={`Image ${index + 1}`}
+                            onClick={() => handleOpenLightbox(index)} // Open lightbox on click
+                          />
+                          <button
+                            className="relative bg-[#0c0a0a54] bottom-20 font-poppins p-1.5 text-white rounded-lg font-bold hover:bg-[#000000c4]"
+                            onClick={() => handleOpenLightbox(index)} // Open lightbox on button click
                           >
-                            <img
-                              className="shadow-inner hover:shadow-xl size-96  rounded-md"
-                              src={image}
-                              alt={`Image ${index + 1}`}
-                            />
-                            <button className="relative bg-[#0c0a0a54] bottom-20 font-poppins p-1.5 text-white rounded-lg font-bold hover:bg-[#000000c4]">
-                              Show Image ( {`${index + 1}`} )
-                            </button>
-                          </a>
+                            Show Image ( {`${index + 1}`} )
+                          </button>
                         </div>
                       ))}
                     </Carousel>
                   )}
+                  <Lightbox
+                    open={open}
+                    close={() => setOpen(false)} // Close lightbox
+                    slides={viewModal.image.map((image) => ({
+                      src: image,
+                    }))} // Map images for lightbox
+                    index={currentImage} // Start from the clicked image
+                    plugins={[Zoom]}
+                  />
                   {/* Comment Section */}
                   {isUsers || isFaculty ? (
                     <div className="    text-sm  rounded-sm p-2 grid ">
@@ -599,10 +621,32 @@ function Inventory({ userId }) {
                           className="grid mr-2 mt-2 mb-4 bg-[#554f4f33] rounded-md font-poppins"
                         >
                           <div className="flex">
-                            <span className="flex underline font-extralight pt-1 mb-1">
-                              <CgNametag className="mt-0.5 mr-1 text-base" />{" "}
-                              {comment.commenterName}
-                            </span>
+                            {comment.commenterAccountType === "Student" && (
+                              <>
+                                {" "}
+                                <Link
+                                  to={`/UserAccount/${comment.commenterEmail}`}
+                                >
+                                  <span className="flex underline font-extralight pt-1 mb-1">
+                                    <CgNametag className="mt-0.5 mr-1 text-base" />{" "}
+                                    {comment.commenterName}
+                                  </span>
+                                </Link>
+                              </>
+                            )}
+                            {comment.commenterAccountType === "Faculty" && (
+                              <>
+                                {" "}
+                                <Link
+                                  to={`/FacultyAccount/${comment.commenterEmail}`}
+                                >
+                                  <span className="flex underline font-extralight pt-1 mb-1">
+                                    <CgNametag className="mt-0.5 mr-1 text-base" />{" "}
+                                    {comment.commenterName}
+                                  </span>
+                                </Link>
+                              </>
+                            )}
                             <span className="ml-2 text-xs mt-1 flex">
                               <LuDot className="mr-1 text-base" />{" "}
                               {formatDateToNow(comment.createdAt)}
@@ -611,12 +655,30 @@ function Inventory({ userId }) {
                           <p className="font-quicksand mb-2 pl-1 w-96">
                             {comment.comment}
                           </p>
-                          <button
-                            className="justify-self-start mb-1"
-                            onClick={() => commentDelete(comment._id)}
-                          >
-                            <MdDelete className="text-base" />
-                          </button>
+                          <Accordion defaultIndex={[1]} allowMultiple>
+                            <AccordionItem>
+                              <h2>
+                                <AccordionButton>
+                                  <Box
+                                    as="span"
+                                    flex="1"
+                                    textAlign="right"
+                                  ></Box>
+                                  <MdDelete className="text-base" />
+                                  <AccordionIcon />
+                                </AccordionButton>
+                              </h2>
+                              <AccordionPanel textAlign={"center"} pb={4}>
+                                <p>Do you want to remove this comment?</p>
+                                <Button
+                                  className="justify-self-start mb-1 flex"
+                                  onClick={() => commentDelete(comment._id)}
+                                >
+                                  Confirm
+                                </Button>
+                              </AccordionPanel>
+                            </AccordionItem>
+                          </Accordion>
                         </article>
                       ))
                       .reverse()}

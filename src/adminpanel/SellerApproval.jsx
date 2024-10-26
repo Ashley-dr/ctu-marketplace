@@ -10,6 +10,7 @@ import Lightbox from "yet-another-react-lightbox";
 import { Zoom } from "yet-another-react-lightbox/plugins";
 import "yet-another-react-lightbox/styles.css";
 function SellerApproval() {
+  const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [userData, setUserData] = useState({});
   const { id } = useParams();
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ function SellerApproval() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:4000/api/users/${id}`)
+      .get(`${baseUrl}/api/users/${id}`)
       .then((result) => {
         setUserData(result.data);
         console.log(result.data);
@@ -39,7 +40,7 @@ function SellerApproval() {
       isSeller: userData.isSeller,
     };
     axios
-      .put(`http://localhost:4000/api/usersSellerUpdate/${id}`, data)
+      .put(`${baseUrl}/api/usersSellerUpdate/${id}`, data)
       .then((result) => {
         navigate("/MainAdmDash/AccountToBeSeller");
       })

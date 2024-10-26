@@ -11,6 +11,7 @@ import { Zoom } from "yet-another-react-lightbox/plugins";
 import "yet-another-react-lightbox/styles.css";
 
 function SellerFacultyApproval() {
+  const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [facultyData, setFacultyData] = useState([]);
   const { id } = useParams();
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ function SellerFacultyApproval() {
   const [currentImage, setCurrentImage] = useState(""); // Track current image
   useEffect(() => {
     axios
-      .get(`http://localhost:4000/api/faculty/${id}`)
+      .get(`${baseUrl}/api/faculty/${id}`)
       .then((result) => {
         setFacultyData(result.data);
         console.log(result.data);
@@ -39,7 +40,7 @@ function SellerFacultyApproval() {
       isSeller: facultyData.isSeller,
     };
     axios
-      .put(`http://localhost:4000/api/facultySellerUpdate/${id}`, data)
+      .put(`${baseUrl}/api/facultySellerUpdate/${id}`, data)
       .then((result) => {
         navigate("/MainAdmDash/AccountToBeSeller");
       })

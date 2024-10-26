@@ -68,6 +68,7 @@ import { AiOutlineUpload } from "react-icons/ai";
 import OrdersCount from "../context/OrdersCount";
 import TransactionCount from "../context/TransactionCount";
 function Navigation() {
+  const baseUrl = import.meta.env.VITE_SERVER_URL;
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [cookies, removeCookies] = useCookies([]);
@@ -95,7 +96,7 @@ function Navigation() {
     setLoading(true);
     try {
       const res = await axios.post(
-        `http://localhost:4000/userForgotPassword`,
+        `${baseUrl}/userForgotPassword`,
         { email: email },
         {
           headers: {
@@ -169,7 +170,7 @@ function Navigation() {
 
     try {
       const response = await axios.post(
-        `http://localhost:4000/userResetPassword`,
+        `${baseUrl}/userResetPassword`,
         { token, password },
         {
           headers: {
@@ -255,7 +256,7 @@ function Navigation() {
     e.preventDefault();
 
     axios
-      .post("http://localhost:4000/signup", SignupInputValue)
+      .post(`${baseUrl}/signup`, SignupInputValue)
       .then((result) => {
         setSignUpInputValue({
           email: "",
@@ -295,7 +296,7 @@ function Navigation() {
     e.preventDefault();
 
     axios
-      .post("http://localhost:4000/facultysignup", FacultySignupInputValue)
+      .post(`${baseUrl}/facultysignup`, FacultySignupInputValue)
       .then((result) => {
         setFacultySignupInputValue({
           email: "",
@@ -334,7 +335,7 @@ function Navigation() {
     e.preventDefault();
     try {
       const { data } = await axios.post(
-        "http://localhost:4000/login",
+        `${baseUrl}/login`,
         {
           ...inputLogin,
         },
@@ -367,7 +368,7 @@ function Navigation() {
         navigate("/");
       }
       const { data } = await axios.post(
-        "http://localhost:4000/facultypost",
+        `${baseUrl}/facultypost`,
         {},
         { withCredentials: true }
       );
@@ -377,7 +378,7 @@ function Navigation() {
       return status;
     };
     verifyCookie();
-  }, [cookies, navigate, removeCookies]);
+  }, [baseUrl, cookies, navigate, removeCookies]);
 
   useEffect(() => {
     const verifyCookie = async () => {
@@ -385,7 +386,7 @@ function Navigation() {
         navigate("/");
       }
       const { data } = await axios.post(
-        "http://localhost:4000/userspost",
+        `${baseUrl}/userspost`,
         {},
         { withCredentials: true }
       );
@@ -395,7 +396,7 @@ function Navigation() {
       return status;
     };
     verifyCookie();
-  }, [cookies, navigate, removeCookies]);
+  }, [baseUrl, cookies, navigate, removeCookies]);
 
   const logout = () => {
     removeCookies("token");

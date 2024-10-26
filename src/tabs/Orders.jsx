@@ -31,7 +31,7 @@ import { AtSignIcon, CalendarIcon, LinkIcon } from "@chakra-ui/icons";
 
 function Orders() {
   const [orders, setOrders] = useState([]);
-
+  const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [cookies, removeCookies] = useCookies([]);
   const { id } = useParams();
   const [isUsers, setisUser] = useState("");
@@ -54,7 +54,7 @@ function Orders() {
         navigate("/");
       }
       const { data } = await axios.post(
-        "http://localhost:4000/facultypost",
+        `${baseUrl}/facultypost`,
         {},
         { withCredentials: true }
       );
@@ -72,7 +72,7 @@ function Orders() {
         navigate("/");
       }
       const { data } = await axios.post(
-        "http://localhost:4000/userspost",
+        `${baseUrl}/userspost`,
         {},
         { withCredentials: true }
       );
@@ -103,7 +103,7 @@ function Orders() {
 
   const fetchTransactions = () => {
     axios
-      .get(`http://localhost:4000/api/orders/${id}`)
+      .get(`${baseUrl}/api/orders/${id}`)
       .then((result) => {
         setOrders(result.data);
       })
@@ -120,7 +120,7 @@ function Orders() {
 
   const removeItemClick = (id) => {
     axios
-      .delete(`http://localhost:4000/api/orders/${id}`)
+      .delete(`${baseUrl}/api/orders/${id}`)
       .then((result) => {
         navigate("/");
       })
@@ -146,7 +146,7 @@ function Orders() {
       commenterName = isFaculty.fullname;
     }
     axios
-      .post(`http://localhost:4000/api/chats/${statusData._id}`, {
+      .post(`${baseUrl}/api/chats/${statusData._id}`, {
         chats: newChats,
         senderName: commenterName,
       })
@@ -180,7 +180,7 @@ function Orders() {
       status: purchasedSchema.status,
     };
     axios
-      .put(`http://localhost:4000/api/purchasedItem/${statusData._id}`, data)
+      .put(`${baseUrl}/api/purchasedItem/${statusData._id}`, data)
       .then((result) => {
         alert("Done");
         window.location.reload();
@@ -192,7 +192,7 @@ function Orders() {
   // const productPurchased = (e) => {
   //   e.preventDefault();
   //   axios
-  //     .put(`http://localhost:4000/api/purchasedItem/${id}`, {
+  //     .put(`${baseUrl}/api/purchasedItem/${id}`, {
   //       status: purchasedSchema.status,
   //     }) // Update only the status
   //     .then((result) => {

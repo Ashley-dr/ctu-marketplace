@@ -8,6 +8,7 @@ import axios from "axios";
 import { useCookies } from "react-cookie";
 function InventoryCounts({ id }) {
   const [inventorySellCounts, setInventorySellCounts] = useState(null);
+  const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [cookies, removeCookies] = useCookies([]);
   const [isUsers, setisUser] = useState("");
   const [isFaculty, setisFaculty] = useState("");
@@ -18,7 +19,7 @@ function InventoryCounts({ id }) {
         navigate("/");
       }
       const { data } = await axios.post(
-        "http://localhost:4000/facultypost",
+        `${baseUrl}/facultypost`,
         {},
         { withCredentials: true }
       );
@@ -36,7 +37,7 @@ function InventoryCounts({ id }) {
         navigate("/");
       }
       const { data } = await axios.post(
-        "http://localhost:4000/userspost",
+        `${baseUrl}/userspost`,
         {},
         { withCredentials: true }
       );
@@ -51,9 +52,7 @@ function InventoryCounts({ id }) {
   useEffect(() => {
     const fetchInventorySellCount = async () => {
       try {
-        const result = await axios.get(
-          `http://localhost:4000/api/user-products/${id}`
-        );
+        const result = await axios.get(`${baseUrl}/api/user-products/${id}`);
         setInventorySellCounts(result.data.count);
       } catch (error) {
         console.log("Error fetching the Orders Count.", error);

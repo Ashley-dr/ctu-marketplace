@@ -19,6 +19,7 @@ import {
 import { AddIcon, CheckIcon } from "@chakra-ui/icons";
 import { AiOutlineUpload } from "react-icons/ai";
 function AddProducts() {
+  const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [cookies, removeCookies] = useCookies([]);
   const [isUsers, setisUser] = useState("");
   const [facultysData, setFacultyData] = useState([]);
@@ -47,7 +48,7 @@ function AddProducts() {
         navigate("/");
       }
       const { data } = await axios.post(
-        "http://localhost:4000/userspost",
+        `${baseUrl}/userspost`,
         {},
         { withCredentials: true }
       );
@@ -88,13 +89,9 @@ function AddProducts() {
       formData.append("image", image);
     });
     try {
-      const response = await axios.post(
-        "http://localhost:4000/api/products",
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
+      const response = await axios.post(`${baseUrl}/api/products`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
       console.log("Image Uploaded", response.data.image);
       setProducts({

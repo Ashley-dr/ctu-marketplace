@@ -26,13 +26,14 @@ import { DeleteIcon } from "@chakra-ui/icons";
 import { AppShell } from "@saas-ui/react";
 
 function AdminDashboard() {
+  const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [usersData, setUsersData] = useState([]);
   const [facultysData, setFacultyData] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     axios
-      .get("http://localhost:4000/api/users")
+      .get(`${baseUrl}/api/users`)
       .then((result) => {
         setUsersData(result.data);
       })
@@ -43,7 +44,7 @@ function AdminDashboard() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:4000/api/faculty")
+      .get(`${baseUrl}/api/faculty`)
       .then((result) => {
         setFacultyData(result.data);
       })
@@ -54,7 +55,7 @@ function AdminDashboard() {
 
   const userDelete = (id) => {
     axios
-      .delete(`http://localhost:4000/api/users/${id}`)
+      .delete(`${baseUrl}/api/users/${id}`)
       .then(() => {
         setUsersData(usersData.filter((user) => user._id !== id));
       })
@@ -65,7 +66,7 @@ function AdminDashboard() {
 
   const facultyDelete = (id) => {
     axios
-      .delete(`http://localhost:4000/api/faculty/${id}`)
+      .delete(`${baseUrl}/api/faculty/${id}`)
       .then(() => {
         setFacultyData(facultysData.filter((faculty) => faculty._id !== id));
       })

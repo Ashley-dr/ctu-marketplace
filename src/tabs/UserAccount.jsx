@@ -47,6 +47,7 @@ import UserInventory from "./UserInventory";
 
 function UserAccount() {
   const { email } = useParams();
+  const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -54,7 +55,7 @@ function UserAccount() {
     const fetchUser = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:4000/api/user-account/${email}`
+          `${baseUrl}/api/user-account/${email}`
         );
         setUser(response.data);
         setLoading(false);
@@ -116,10 +117,6 @@ function UserAccount() {
               <ItemSold id={user._id} />
             </p>
             <p>ITEM SOLD</p>
-          </label>
-          <label className="grid">
-            <p>218</p>
-            <p>RATE</p>
           </label>
         </figure>
 

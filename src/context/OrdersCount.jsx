@@ -7,6 +7,7 @@ import { Link, useParams, useNavigate, Navigate } from "react-router-dom";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 function OrdersCount({ id }) {
+  const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [orderCounts, setOrderCounts] = useState(null);
   const [cookies, removeCookies] = useCookies([]);
   const [isUsers, setisUser] = useState("");
@@ -19,7 +20,7 @@ function OrdersCount({ id }) {
         navigate("/");
       }
       const { data } = await axios.post(
-        "http://localhost:4000/facultypost",
+        `${baseUrl}/facultypost`,
         {},
         { withCredentials: true }
       );
@@ -37,7 +38,7 @@ function OrdersCount({ id }) {
         navigate("/");
       }
       const { data } = await axios.post(
-        "http://localhost:4000/userspost",
+        `${baseUrl}/userspost`,
         {},
         { withCredentials: true }
       );
@@ -51,9 +52,7 @@ function OrdersCount({ id }) {
   useEffect(() => {
     const fetchOrderCount = async () => {
       try {
-        const result = await axios.get(
-          `http://localhost:4000/api/user-orders/${id}`
-        );
+        const result = await axios.get(`${baseUrl}/api/user-orders/${id}`);
         setOrderCounts(result.data.count);
       } catch (error) {
         console.log("Error fetching the Orders Count.", error);

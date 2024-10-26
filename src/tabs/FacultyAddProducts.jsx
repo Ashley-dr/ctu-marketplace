@@ -16,6 +16,7 @@ import {
 import { AddIcon } from "@chakra-ui/icons";
 import { AiOutlineUpload } from "react-icons/ai";
 function FacultyAddProducts() {
+  const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [cookies, removeCookies] = useCookies([]);
 
   const [isFaculty, setisFaculty] = useState("");
@@ -44,7 +45,7 @@ function FacultyAddProducts() {
         navigate("/");
       }
       const { data } = await axios.post(
-        "http://localhost:4000/facultypost",
+        `${baseUrl}/facultypost`,
         {},
         { withCredentials: true }
       );
@@ -54,7 +55,7 @@ function FacultyAddProducts() {
       return status;
     };
     verifyCookie();
-  }, [cookies, navigate, removeCookies]);
+  }, [baseUrl, cookies, navigate, removeCookies]);
   const productHandler = (e) => {
     setProducts({ ...products, [e.target.name]: e.target.value });
   };
@@ -84,13 +85,9 @@ function FacultyAddProducts() {
       formData.append("image", image);
     });
     try {
-      const response = await axios.post(
-        "http://localhost:4000/api/products",
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
+      const response = await axios.post(`${baseUrl}/api/products`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       console.log("Image Uploaded", response.data.image);
       setProducts({
         sellerName: "",

@@ -5,13 +5,14 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 
 function AccountsToBeSeller() {
   const [usersData, setUsersData] = useState([]);
+  const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [facultysData, setFacultyData] = useState([]);
   const { id } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
     axios
-      .get("http://localhost:4000/api/users")
+      .get(`${baseUrl}/api/users`)
       .then((result) => {
         setUsersData(result.data);
       })
@@ -22,7 +23,7 @@ function AccountsToBeSeller() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:4000/api/faculty")
+      .get(`${baseUrl}/api/faculty`)
       .then((result) => {
         setFacultyData(result.data);
       })

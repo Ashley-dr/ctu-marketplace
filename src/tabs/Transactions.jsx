@@ -27,6 +27,7 @@ import logomarket from "../assets/ctu-logo-marketplace.jpg";
 import { AddIcon, CloseIcon, CheckIcon } from "@chakra-ui/icons";
 function Transactions() {
   const [orders, setOrders] = useState([]);
+  const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [cookies, removeCookies] = useCookies([]);
 
   const [isUsers, setisUser] = useState("");
@@ -105,7 +106,7 @@ function Transactions() {
         navigate("/");
       }
       const { data } = await axios.post(
-        "http://localhost:4000/facultypost",
+        `${baseUrl}/facultypost`,
         {},
         { withCredentials: true }
       );
@@ -123,7 +124,7 @@ function Transactions() {
         navigate("/");
       }
       const { data } = await axios.post(
-        "http://localhost:4000/userspost",
+        `${baseUrl}/userspost`,
         {},
         { withCredentials: true }
       );
@@ -139,7 +140,7 @@ function Transactions() {
   const { id } = useParams();
   // useEffect(() => {
   //   axios
-  //     .get(`http://localhost:4000/api/transactions/${id}`)
+  //     .get(`${baseUrl}/api/transactions/${id}`)
   //     .then((result) => {
   //       setTransactions(result.data);
   //       console.log(result.data);
@@ -153,7 +154,7 @@ function Transactions() {
 
   const fetchTransactions = () => {
     axios
-      .get(`http://localhost:4000/api/transactions/${id}`)
+      .get(`${baseUrl}/api/transactions/${id}`)
       .then((result) => {
         setTransactions(result.data);
       })
@@ -177,7 +178,7 @@ function Transactions() {
       commenterName = isFaculty.fullname;
     }
     axios
-      .post(`http://localhost:4000/api/chats/${statusData._id}`, {
+      .post(`${baseUrl}/api/chats/${statusData._id}`, {
         chats2: newChats,
         senderName2: commenterName,
       })
@@ -196,7 +197,7 @@ function Transactions() {
   };
   const removeItemClick = (id) => {
     axios
-      .delete(`http://localhost:4000/api/orders/${id}`)
+      .delete(`${baseUrl}/api/orders/${id}`)
       .then((result) => {
         navigate("/");
       })
@@ -214,7 +215,7 @@ function Transactions() {
       status: purchasedSchema.status,
     };
     axios
-      .put(`http://localhost:4000/api/purchasedItem/${statusData._id}`, data)
+      .put(`${baseUrl}/api/purchasedItem/${statusData._id}`, data)
       .then((result) => {
         alert("Done");
         navigate("/");
@@ -275,13 +276,9 @@ function Transactions() {
       formData.append("picture", pictures);
     });
     try {
-      const res = await axios.post(
-        "http://localhost:4000/api/DonePurchased",
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
+      const res = await axios.post(`${baseUrl}/api/DonePurchased`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       console.log("Uploaded", res.data.picture);
       setDoneTransactSchema({
         userId: "",

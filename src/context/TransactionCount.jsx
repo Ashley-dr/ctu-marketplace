@@ -8,6 +8,7 @@ import axios from "axios";
 import { useCookies } from "react-cookie";
 function TransactionCount({ id }) {
   const [transactionCounts, setTransactionCounts] = useState(null);
+  const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [cookies, removeCookies] = useCookies([]);
   const [isUsers, setisUser] = useState("");
   const [isFaculty, setisFaculty] = useState("");
@@ -18,7 +19,7 @@ function TransactionCount({ id }) {
         navigate("/");
       }
       const { data } = await axios.post(
-        "http://localhost:4000/facultypost",
+        `${baseUrl}/facultypost`,
         {},
         { withCredentials: true }
       );
@@ -36,7 +37,7 @@ function TransactionCount({ id }) {
         navigate("/");
       }
       const { data } = await axios.post(
-        "http://localhost:4000/userspost",
+        `${baseUrl}/userspost`,
         {},
         { withCredentials: true }
       );
@@ -52,7 +53,7 @@ function TransactionCount({ id }) {
     const fetchTransactionCount = async () => {
       try {
         const result = await axios.get(
-          `http://localhost:4000/api/transaction-count/${id}`
+          `${baseUrl}/api/transaction-count/${id}`
         );
         setTransactionCounts(result.data.count);
       } catch (error) {

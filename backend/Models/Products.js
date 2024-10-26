@@ -46,6 +46,8 @@ const productSchema = new mongoose.Schema({
     {
       comment: { type: String },
       commenterId: { type: String },
+      commenterAccountType: { type: String },
+      commenterEmail: { type: String },
       commenterName: { type: String, required: true },
       createdAt: { type: Date, default: new Date() },
     },

@@ -16,6 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { AiOutlineUpload } from "react-icons/ai";
 function BecomeSeller(props) {
+  const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [cookies, removeCookies] = useCookies([]);
   const [isUsers, setisUser] = useState("");
   const [isFaculty, setisFaculty] = useState("");
@@ -69,7 +70,7 @@ function BecomeSeller(props) {
         navigate("/");
       }
       const { data } = await axios.post(
-        "http://localhost:4000/facultypost",
+        `${baseUrl}/facultypost`,
         {},
         { withCredentials: true }
       );
@@ -79,7 +80,7 @@ function BecomeSeller(props) {
       return status;
     };
     verifyCookie();
-  }, [cookies, navigate, removeCookies]);
+  }, [baseUrl, cookies, navigate, removeCookies]);
 
   useEffect(() => {
     const verifyCookie = async () => {
@@ -87,7 +88,7 @@ function BecomeSeller(props) {
         navigate("/");
       }
       const { data } = await axios.post(
-        "http://localhost:4000/userspost",
+        `${baseUrl}/userspost`,
         {},
         { withCredentials: true }
       );
@@ -97,11 +98,11 @@ function BecomeSeller(props) {
       return status;
     };
     verifyCookie();
-  }, [cookies, navigate, removeCookies]);
+  }, [baseUrl, cookies, navigate, removeCookies]);
 
   useEffect(() => {
     axios
-      .get(`http://localhost:4000/api/users/${id}`)
+      .get(`${baseUrl}/api/users/${id}`)
       .then((result) => {
         setUsers({
           email: result.data.email,
@@ -129,7 +130,7 @@ function BecomeSeller(props) {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:4000/api/faculty/${id}`)
+      .get(`${baseUrl}/api/faculty/${id}`)
       .then((result) => {
         setFaculty({
           email: result.data.email,
@@ -189,7 +190,7 @@ function BecomeSeller(props) {
     formData.append("address", users.address);
 
     axios
-      .put(`http://localhost:4000/api/users/${isUsers.id}`, formData, {
+      .put(`${baseUrl}/api/users/${isUsers.id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -219,7 +220,7 @@ function BecomeSeller(props) {
     formData.append("isSeller", faculty.isSeller);
     formData.append("address", faculty.address);
     axios
-      .put(`http://localhost:4000/api/faculty/${isFaculty.id}`, formData, {
+      .put(`${baseUrl}/api/faculty/${isFaculty.id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
