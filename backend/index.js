@@ -12,7 +12,7 @@ import DonePurchasedRoute from "./Routes/DonePurchased.js";
 import FacultyRoute from "./Routes/FacultyRoute.js";
 import UserRoute from "./Routes/UsersRoute.js";
 import ProductRoute from "./Routes/Products.js";
-import path from "path";
+
 dotenv.config();
 mongoose
   .connect(process.env.MONGODB_URI)
@@ -30,9 +30,7 @@ const app = express();
 //     credentials: true,
 //   })
 // );
-app.get("*", (req, res) => {
-  res.sendFile(path.resolve("index.html"));
-});
+
 app.use(
   cors({
     origin: ["https://marketplace-ctu.onrender.com"],
