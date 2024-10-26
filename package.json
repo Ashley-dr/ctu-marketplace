@@ -11,10 +11,7 @@
     "preview": "vite preview",
     "start": "nodemon backend/index.js"
   },
-  "engines": {
-  "node": "18.x"
-},
-
+  
   "dependencies": {
     "@chakra-ui/icons": "^2.2.4",
     "@chakra-ui/next-js": "^2.2.0",
