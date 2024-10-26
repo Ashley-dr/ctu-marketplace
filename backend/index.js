@@ -23,20 +23,20 @@ mongoose
 
 const PORT = process.env.PORT || 4000;
 const app = express();
-// app.use(
-//   cors({
-//     origin: ["http://localhost:5173"],
-//     methods: ["GET", "POST", "PUT", "DELETE"],
-//     credentials: true,
-//   })
-// );
 app.use(
   cors({
-    origin: ["https://marketplace-ctu.onrender.com"],
+    origin: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
+// app.use(
+//   cors({
+//     origin: ["https://marketplace-ctu.onrender.com"],
+//     methods: ["GET", "POST", "PUT", "DELETE"],
+//     credentials: true,
+//   })
+// );
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("dist"));
 
