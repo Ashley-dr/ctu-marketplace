@@ -1,239 +1,86 @@
 {
-  
   "name": "marketplace",
-  
   "private": true,
-  
   "version": "0.0.0",
-  
   "type": "module",
-  
   "scripts": {
-  
-    
-  "dev": "vite",
-  
-    
-  "build": "vite build",
-  
-    
-  "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-  
-    
-  "preview": "vite preview",
-  
-    
-  "start": "nodemon backend/index.js"
-  
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
+    "start": "nodemon backend/index.js"
   },
-  
   "dependencies": {
-  
-    
-  "@chakra-ui/icons": "^2.2.4",
-  
-    
-  "@chakra-ui/next-js": "^2.2.0",
-  
-    
-  "@chakra-ui/react": "^2.8.2",
-  
-    
-  "@emotion/react": "^11.11.4",
-  
-    
-  "@emotion/styled": "^11.11.5",
-  
-    
-  "@mui/material": "^5.15.12",
-  
-    
-  "@saas-ui/react": "^2.7.2",
-  
-    
-  "@tamagui/vite-plugin": "^1.110.2",
-  
-    
-  "@tanstack/react-table": "^8.20.5",
-  
-    
-  "axios": "^1.6.8",
-  
-    
-  "bcrypt": "^5.1.1",
-  
-    
-  "bcryptjs": "^2.4.3",
-  
-    
-  "cloudinary": "^2.0.3",
-  
-    
-  "cookie-parser": "^1.4.6",
-  
-    
-  "cors": "^2.8.5",
-  
-    
-  "crypto": "^1.0.1",
-  
-    
-  "date-fns": "^3.6.0",
-  
-    
-  "dotenv": "^16.4.5",
-  
-    
-  "express": "^4.18.3",
-  
-    
-  "flowbite-react": "^0.10.1",
-  
-    
-  "framer-motion": "^11.0.25",
-  
-    
-  "fslightbox-react": "^1.7.6",
-  
-    
-  "jsonwebtoken": "^9.0.2",
-  
-    
-  "lightbox.js-react": "^1.1.7",
-  
-    
-  "mongodb": "^6.4.0",
-  
-    
-  "mongoose": "^8.2.1",
-  
-    
-  "multer": "^1.4.5-lts.1",
-  
-    
-  "multer-storage-cloudinary": "^4.0.0",
-  
-    
-  "node": "^21.7.1",
-  
-    
-  "nodemailer": "^6.9.15",
-  
-    
-  "nodemon": "^3.1.0",
-  
-    
-  "pure-react-carousel": "^1.30.1",
-  
-    
-  "react": "^18.2.0",
-  
-    
-  "react-cookie": "^7.1.0",
-  
-    
-  "react-dom": "^18.2.0",
-  
-    
-  "react-dropzone": "^14.2.3",
-  
-    
-  "react-icons": "^5.0.1",
-  
-    
-  "react-image-lightbox": "^5.1.4",
-  
-    
-  "react-multi-carousel": "^2.8.5",
-  
-    
-  "react-responsive-carousel": "^3.2.23",
-  
-    
-  "react-router-dom": "^6.22.3",
-  
-    
-  "react-select": "^5.8.0",
-  
-    
-  "react-slick": "^0.30.2",
-  
-    
-  "react-toastify": "^10.0.4",
-  
-    
-  "slick-carousel": "^1.8.1",
-  
-    
-  "socket.io": "^4.7.5",
-  
-    
-  "socket.io-client": "^4.7.5",
-  
-    
-  "yet-another-react-lightbox": "^3.21.6"
-  
+    "@chakra-ui/icons": "^2.2.4",
+    "@chakra-ui/next-js": "^2.2.0",
+    "@chakra-ui/react": "^2.8.2",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@mui/material": "^5.15.12",
+    "@saas-ui/react": "^2.7.2",
+    "@tamagui/vite-plugin": "^1.110.2",
+    "@tanstack/react-table": "^8.20.5",
+    "axios": "^1.6.8",
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.0.3",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "date-fns": "^3.6.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.3",
+    "flowbite-react": "^0.10.1",
+    "framer-motion": "^11.0.25",
+    "fslightbox-react": "^1.7.6",
+    "jsonwebtoken": "^9.0.2",
+    "lightbox.js-react": "^1.1.7",
+    "mongodb": "^6.4.0",
+    "mongoose": "^8.2.1",
+    "multer": "^1.4.5-lts.1",
+    "multer-storage-cloudinary": "^4.0.0",
+    "node": "^21.7.1",
+    "nodemailer": "^6.9.15",
+    "nodemon": "^3.1.0",
+    "pure-react-carousel": "^1.30.1",
+    "react": "^18.2.0",
+    "react-cookie": "^7.1.0",
+    "react-dom": "^18.2.0",
+    "react-dropzone": "^14.2.3",
+    "react-icons": "^5.0.1",
+    "react-image-lightbox": "^5.1.4",
+    "react-multi-carousel": "^2.8.5",
+    "react-responsive-carousel": "^3.2.23",
+    "react-router-dom": "^6.22.3",
+    "react-select": "^5.8.0",
+    "react-slick": "^0.30.2",
+    "react-toastify": "^10.0.4",
+    "slick-carousel": "^1.8.1",
+    "socket.io": "^4.7.5",
+    "socket.io-client": "^4.7.5",
+    "yet-another-react-lightbox": "^3.21.6"
   },
-  
   "devDependencies": {
-  
-    
-  "@types/bcryptjs": "^2.4.6",
-  
-    
-  "@types/cookie-parser": "^1.4.7",
-  
-    
-  "@types/cors": "^2.8.17",
-  
-    
-  "@types/express": "^4.17.21",
-  
-    
-  "@types/jsonwebtoken": "^9.0.6",
-  
-    
-  "@types/react": "^18.2.56",
-  
-    
-  "@types/react-dom": "^18.2.19",
-  
-    
-  "@vitejs/plugin-react": "^4.2.1",
-  
-    
-  "autoprefixer": "^10.4.18",
-  
-    
-  "eslint": "^8.57.0",
-  
-    
-  "eslint-plugin-react": "^7.33.2",
-  
-    
-  "eslint-plugin-react-hooks": "^4.6.0",
-  
-    
-  "eslint-plugin-react-refresh": "^0.4.5",
-  
-    
-  "postcss": "^8.4.35",
-  
-    
-  "tailwindcss": "^3.4.1",
-  
-    
-  "vite": "^5.1.4"
-  
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cookie-parser": "^1.4.7",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/react": "^18.2.56",
+    "@types/react-dom": "^18.2.19",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.18",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.1",
+    "vite": "^5.1.4"
   },
-  
   "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
-  
   "main": "vite.config.js",
-  
   "keywords": [],
-  
   "author": "",
-  
   "license": "ISC"
 }
