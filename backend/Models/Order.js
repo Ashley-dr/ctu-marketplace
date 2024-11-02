@@ -1,36 +1,33 @@
 /* eslint-disable no-undef */
 import mongoose from "mongoose";
 
-
 const OrderSchema = new mongoose.Schema({
-userId: {
+  userId: {
     type: String,
     required: [true, "Input User Id"],
     unique: true,
   },
   products: [
     {
-        productId: {
-            type: String,
-        },
-        quantity: {
-            type: Number,
-            default: 1,
-        },
-    }
+      productId: {
+        type: String,
+      },
+      quantity: {
+        type: Number,
+        default: 1,
+      },
+    },
   ],
-amount: {
+  amount: {
     type: Number,
     required: true,
-},
-address: { type: Object},
+  },
+  address: { type: Object },
 
   createdAt: {
     type: Date,
     default: new Date(),
   },
 });
-
-
 
 export const OrderModel = mongoose.model("Order", OrderSchema);

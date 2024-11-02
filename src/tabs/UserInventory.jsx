@@ -530,7 +530,7 @@ function UserInventory({ userId }) {
                               {formatDateToNow(comment.createdAt)}
                             </span>
                           </div>
-                          <p className="font-quicksand mb-2 pl-1 w-96">
+                          <p className="font-quicksand mb-2 pl-1 ssm:w-80 lg:w-96">
                             {comment.comment}
                           </p>
                           {(isUsers?.id === comment.commenterId ||

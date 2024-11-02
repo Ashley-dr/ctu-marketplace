@@ -619,53 +619,56 @@ function Account() {
                 <Inventory userId={isFaculty.id} />
               </TabPanel>
               <TabPanel>
-                <figure className="font-poppins  shadow-2xl space-y-2 border bg-[#ebe6e60a] grid mb-16 p-5 ssm:w-96 lg:w-128 text-sm rounded-2xl">
+                <Box
+                  w={{ base: "xs", md: "md", lg: "lg" }}
+                  className="font-poppins shadow-2xl space-y-2 border bg-[#ebe6e60a] grid mb-16 p-5 text-sm rounded-2xl"
+                >
                   <button
                     onClick={() => handleUpdateAccount(isFaculty)}
-                    className="   text-2xl text-white justify-self-end px-4"
+                    className="text-2xl text-white justify-self-end px-4"
                   >
                     <FiEdit3 />
                   </button>
                   {isFaculty.isSeller ? (
                     <>
-                      <p className="text-center mb-2  ssm:w-80 ssm:mx-3 lg:mx-0 lg:w-full  text-lg">
+                      <p className="ssm:w-72 lg:w-full text-center mb-2 text-lg">
                         {isFaculty.shopDescription}
                       </p>
-                      <hr className=" ssm:w-80 ssm:mx-3 lg:mx-0 lg:w-full" />
+                      <hr className=" w-full mx-auto" />
                     </>
                   ) : (
                     <p className="text-center mb-2 text-lg">Become a Seller</p>
                   )}
                   <label className="text-xs">
                     Email:
-                    <p className="text-base truncate  ssm:w-80 lg:w-100 font-semibold">
+                    <p className="text-base ssm:w-72 lg:w-full truncate font-semibold w-full">
                       {isFaculty.email}
                     </p>
                   </label>
 
                   <label className="text-xs">
                     Address:
-                    <p className="text-base truncate  ssm:w-80 lg:w-100 font-semibold">
+                    <p className="ssm:w-72 lg:w-full text-base truncate font-semibold w-full">
                       {isFaculty.address}
                     </p>
                   </label>
 
                   <label className="text-xs">
                     Username:
-                    <p className="text-base truncate ssm:w-80 lg:w-100 font-semibold">
+                    <p className="ssm:w-72 lg:w-full text-base truncate font-semibold w-full">
                       {isFaculty.username}
                     </p>
                   </label>
 
                   <label className="text-xs">
                     Phone Number:
-                    <p className="text-base truncate  ssm:w-80 lg:w-100 font-semibold">
+                    <p className="ssm:w-72 lg:w-full text-base truncate font-semibold w-full">
                       {isFaculty.phoneNumber}
                     </p>
                   </label>
                   <label className="text-xs">
                     Gender:
-                    <p className="text-base truncate font-semibold">
+                    <p className="text-base truncate font-semibold w-full">
                       {isFaculty.gender}
                     </p>
                   </label>
@@ -678,15 +681,20 @@ function Account() {
                     <label className="text-xs grid">
                       <a
                         href={isFaculty.facebook}
-                        className="text-base grid  truncate underline font-semibold"
+                        className="text-base truncate underline font-semibold w-full flex justify-center"
                       >
-                        <Button className=" ssm:w-80 ssm:mx-3 lg:mx-0 lg:w-full">
-                          <FaFacebook />
+                        <Button
+                          className="w-full"
+                          size="sm"
+                          variant="outline"
+                          leftIcon={<FaFacebook />}
+                        >
+                          Facebook
                         </Button>
                       </a>
                     </label>
                   </article>
-                </figure>
+                </Box>
               </TabPanel>
             </TabPanels>
           </Tabs>
@@ -862,7 +870,7 @@ function Account() {
             blockScrollOnMount={false}
             isOpen={forgotPasswordModal.isOpen}
             onClose={forgotPasswordModal.onClose}
-            size={"lg"}
+            size={{ base: "xs", md: "md", lg: "lg" }}
           >
             <ModalOverlay />
             <ModalContent>
@@ -1080,19 +1088,22 @@ function Account() {
                 <Inventory userId={isUsers.id} />
               </TabPanel>
               <TabPanel>
-                <figure className="font-poppins shadow-2xl space-y-2 border bg-[#ebe6e60a] grid mb-16 p-5 ssm:w-96 lg:w-128 text-sm rounded-2xl">
+                <Box
+                  w={{ base: "xs", md: "md", lg: "lg" }}
+                  className="font-poppins shadow-2xl space-y-2 border bg-[#ebe6e60a] grid mb-16 p-5 text-sm rounded-2xl"
+                >
                   <button
                     onClick={() => handleUpdateAccount(isUsers)}
-                    className="   text-2xl text-white justify-self-end px-4"
+                    className="text-2xl text-white justify-self-end px-4"
                   >
                     <FiEdit3 />
                   </button>
                   {isUsers.isSeller ? (
                     <>
-                      <p className="text-center mb-2  ssm:w-80 ssm:mx-3 lg:mx-0 lg:w-full  text-lg">
+                      <p className="ssm:w-72 lg:w-full text-center mb-2 text-lg">
                         {isUsers.shopDescription}
                       </p>
-                      <hr className=" ssm:w-80 ssm:mx-3 lg:mx-0 lg:w-full" />
+                      <hr className="w-full mx-auto" />
                     </>
                   ) : (
                     <p className="text-center mb-2 text-lg">Become a Seller</p>
@@ -1100,72 +1111,84 @@ function Account() {
 
                   <label className="text-xs">
                     Email:
-                    <p className="text-base truncate  ssm:w-80 lg:w-100 font-semibold">
+                    <p className="text-base ssm:w-72 lg:w-full truncate font-semibold w-full">
                       {isUsers.email}
                     </p>
                   </label>
 
                   <label className="text-xs">
                     Address:
-                    <p className="text-base truncate  ssm:w-80 lg:w-100 font-semibold">
+                    <p className="ssm:w-72 lg:w-full text-base truncate font-semibold w-full">
                       {isUsers.address}
                     </p>
                   </label>
+
                   <label className="text-xs">
                     CTU ID:
-                    <p className="text-base truncate  ssm:w-80 lg:w-100 font-semibold">
+                    <p className="ssm:w-72 lg:w-full text-base truncate font-semibold w-full">
                       {isUsers.idNumber}
                     </p>
                   </label>
-                  <label className="text-xs">
+
+                  <label className="ssm:w-72 lg:w-full text-xs">
                     Username:
-                    <p className="text-base truncate  ssm:w-80 lg:w-100 font-semibold">
+                    <p className="ssm:w-72 lg:w-full text-base truncate font-semibold w-full">
                       {isUsers.username}
                     </p>
                   </label>
 
                   <label className="text-xs">
                     Department:
-                    <p className="text-base truncate  ssm:w-80 lg:w-100 font-semibold">
+                    <p className=" text-base truncate font-semibold w-full">
                       {isUsers.department}
                     </p>
                   </label>
+
                   <label className="text-xs">
                     Course:
-                    <p className="text-base truncate  ssm:w-80 lg:w-100 font-semibold">
+                    <p className="ssm:w-72 lg:w-full text-base truncate font-semibold w-full">
                       {isUsers.course}
                     </p>
                   </label>
+
                   <label className="text-xs">
                     Phone Number:
-                    <p className="text-base truncate  ssm:w-80 lg:w-100 font-semibold">
+                    <p className="ssm:w-72 lg:w-full text-base truncate font-semibold w-full">
                       {isUsers.phoneNumber}
                     </p>
                   </label>
+
                   <label className="text-xs">
                     Gender:
-                    <p className="text-base truncate font-semibold">
+                    <p className="text-base truncate font-semibold w-full">
                       {isUsers.gender}
                     </p>
                   </label>
+
                   <label className="text-xs">
-                    <p className="text-base truncate  font-semibold">
+                    <p className="text-base truncate font-semibold w-full">
                       {isUsers.isUser} Member
                     </p>
                   </label>
+
                   <article>
                     <label className="text-xs grid">
                       <a
                         href={isUsers.facebook}
-                        className="text-base grid  truncate underline font-semibold"
+                        className="text-base truncate underline font-semibold w-full flex justify-center"
                       >
-                        <Button className=" ssm:w-80 ssm:mx-3 lg:mx-0 lg:w-full">
-                          <FaFacebook />
+                        <Button
+                          className="w-full"
+                          size="sm"
+                          variant="outline"
+                          leftIcon={<FaFacebook />}
+                        >
+                          Facebook
                         </Button>
                       </a>
                     </label>
                   </article>
-                </figure>
+                </Box>
               </TabPanel>
             </TabPanels>
           </Tabs>
@@ -1390,7 +1413,7 @@ function Account() {
             blockScrollOnMount={false}
             isOpen={forgotPasswordModal.isOpen}
             onClose={forgotPasswordModal.onClose}
-            size={"lg"}
+            size={{ base: "xs", md: "md", lg: "lg" }}
           >
             <ModalOverlay />
             <ModalContent>

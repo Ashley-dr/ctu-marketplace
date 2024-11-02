@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useCookies } from "react-cookie";
+import CopyToClipboard from "react-copy-to-clipboard";
 import {
   Modal,
   ModalOverlay,
@@ -35,10 +36,18 @@ import {
   AccordionButton,
   AccordionPanel,
   AccordionIcon,
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  Avatar,
 } from "@chakra-ui/react";
 import { RiSendPlane2Fill } from "react-icons/ri";
 import { CgNametag } from "react-icons/cg";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdMessage } from "react-icons/md";
 import { FaFacebookSquare } from "react-icons/fa";
 import { formatDate, formatDistanceToNow } from "date-fns";
 import { AtSignIcon, CalendarIcon, LinkIcon } from "@chakra-ui/icons";
@@ -67,6 +76,7 @@ import { SlideshowLightbox } from "lightbox.js-react";
 import Lightbox from "yet-another-react-lightbox";
 import { Zoom } from "yet-another-react-lightbox/plugins";
 import "yet-another-react-lightbox/styles.css";
+import ChatPage from "../tabs/ChatPage";
 function ProductId() {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [cookies, removeCookies] = useCookies([]);
@@ -80,8 +90,19 @@ function ProductId() {
   const [FacultySelectedProduct, FacultysetSelectedProduct] = useState("");
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [quantity, setQuantity] = useState(1);
+  const {
+    isOpen: isOpenDrawer,
+    onOpen: onOpenDrawer,
+    onClose: onCloseDrawer,
+  } = useDisclosure();
+  const [textToCopy, setTextToCopy] = useState(""); // The text you want to copy
+  const [copyStatus, setCopyStatus] = useState(false);
 
+  const onCopyText = () => {
+    setCopyStatus(true);
+    setTimeout(() => setCopyStatus(false), 2000); // Reset status after 2 seconds
+  };
+  const [quantity, setQuantity] = useState(1);
   const [purchasedSchema, setPurchasedSchema] = useState({
     sellerId: "",
     userId: "",
@@ -245,7 +266,7 @@ function ProductId() {
   };
   const commentDelete = (commentId) => {
     axios
-      .delete(`${baseUrl}api/comments/${id}/${commentId}`)
+      .delete(`${baseUrl}/api/comments/${id}/${commentId}`)
       .then((result) => {
         setComments(comments.filter((comment) => comment._id !== commentId));
       })
@@ -308,6 +329,9 @@ function ProductId() {
       },
     ],
   };
+  const drawer = () => {
+    onOpenDrawer();
+  };
   const [open, setOpen] = useState(false); // Lightbox open state
   const [currentImage, setCurrentImage] = useState(0); // Track current image index
 
@@ -316,13 +340,13 @@ function ProductId() {
     setOpen(true); // Open the lightbox
   };
   return (
-    <div className="rounded-md  pb-4 max-w-full max-h-full justify-items-center grid mb-10 mt-10">
-      <figure className=" justify-items-center grid max-w-full w-full">
+    <div className="rounded-md  pb-4 max-w-full max-h-full lg:justify-items-center lg:grid mb-10  lg:mt-10">
+      <figure className=" lg:justify-items-center lg:grid max-w-full w-full">
         <article>
           {productData ? (
             <div>
-              <div className="mt-5   grid  ssm:grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2 justify-items-center ">
-                <div className="max-w-96 max-h-96 lg:mr-16 ssm:mb-20 lg:mb-0 mt-5 rounded-lg">
+              <div className="mt-5    grid  ssm:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 justify-items-center ">
+                <div className="max-w-96    max-h-96 lg:mr-16 ssm:mb-20 lg:mb-0 lg:mt-5 rounded-lg">
                   {productData.image && productData.image.length > 0 && (
                     <>
                       <Carousel
@@ -367,10 +391,16 @@ function ProductId() {
                     </>
                   )}
                 </div>
-                <Card mt={5} shadow={"xl"}>
+                <Card
+                  mt={5}
+                  shadow={"xl"}
+                  w={{ base: "xs", md: "md", lg: "lg" }}
+                >
                   <CardHeader>
                     <Heading size="md">
-                      <p className="w-96">{productData.prodName}</p>
+                      <p className="ssm:w-64 break-words lg:w-96 ">
+                        {productData.prodName}
+                      </p>
                     </Heading>
                   </CardHeader>
                   <CardBody>
@@ -383,12 +413,12 @@ function ProductId() {
                               <Link
                                 to={`/UserAccount/${productData.sellerEmail}`}
                               >
-                                <p className="truncate  w-96 underline">
+                                <p className="ssm:w-64 truncate lg:w-96  underline">
                                   {" "}
                                   <LinkIcon className="mr-1" />
                                   {productData.sellerName}
                                 </p>
-                                <p className="truncate w-96 underline">
+                                <p className="ssm:w-64 truncate lg:w-96  underline">
                                   <AtSignIcon className="" />{" "}
                                   {productData.sellerEmail}
                                 </p>
@@ -401,12 +431,12 @@ function ProductId() {
                               <Link
                                 to={`/FacultyAccount/${productData.sellerEmail}`}
                               >
-                                <p className="truncate  w-96 underline">
+                                <p className="ssm:w-64 truncate lg:w-96  underline">
                                   {" "}
                                   <LinkIcon className="mr-1" />
                                   {productData.sellerName}
                                 </p>
-                                <p className="truncate w-96 underline">
+                                <p className="ssm:w-64 truncate lg:w-96  underline">
                                   <AtSignIcon className="" />{" "}
                                   {productData.sellerEmail}
                                 </p>
@@ -470,7 +500,9 @@ function ProductId() {
                           Categories
                         </Heading>
                         <Text pt="2" fontSize="sm">
-                          <p className=" w-96">{productData.categories}</p>
+                          <p className="ssm:w-64  lg:w-96">
+                            {productData.categories}
+                          </p>
                         </Text>
                       </Box>
                       <Box>
@@ -478,7 +510,7 @@ function ProductId() {
                           Description
                         </Heading>
                         <Text pt="2" fontSize="sm">
-                          <p className="ssm:w-96 lg:w-100">
+                          <p className="ssm:w-64 lg:w-96">
                             {productData.description}
                           </p>
                         </Text>
@@ -487,23 +519,27 @@ function ProductId() {
                         {" "}
                         {isUsers && (
                           <>
-                            <div className="bg-gray-900  text-white text-center text-sm  rounded-sm p-2 grid hover:bg-gray-950">
+                            <div className="flex">
                               <button
-                                className="flex w-full justify-center"
+                                className="flex w-full bg-gray-900  text-white text-center text-sm  rounded-sm p-2 justify-center hover:bg-gray-950"
                                 onClick={() => handleUserModal(productData)}
                               >
                                 Add to orders{" "}
                                 <CiShoppingCart className="text-xl ml-2" />
                               </button>
+                              <MdMessage
+                                onClick={drawer}
+                                className=" cursor-pointer mx-2  text-4xl flex  bg-gray-900  text-white text-center w-16  rounded-sm p-2 justify-center hover:bg-gray-950"
+                              />
                             </div>
                           </>
                         )}
                         <div>
                           {isFaculty && (
                             <>
-                              <div className="bg-gray-900  text-white text-center text-sm  rounded-sm p-2 grid hover:bg-gray-950">
+                              <div className="flex">
                                 <button
-                                  className="flex w-full justify-center"
+                                  className="flex w-full bg-gray-900  text-white text-center text-sm  rounded-sm p-2 justify-center hover:bg-gray-950"
                                   onClick={() =>
                                     handleFacultyModal(productData)
                                   }
@@ -511,6 +547,10 @@ function ProductId() {
                                   Add to orders{" "}
                                   <CiShoppingCart className="text-xl ml-2" />
                                 </button>
+                                <MdMessage
+                                  onClick={drawer}
+                                  className=" cursor-pointer mx-2  text-4xl flex  bg-gray-900  text-white text-center w-16  rounded-sm p-2 justify-center hover:bg-gray-950"
+                                />
                               </div>
                             </>
                           )}
@@ -527,6 +567,67 @@ function ProductId() {
                             <></>
                           )}
                         </div>
+                        <Drawer
+                          isOpen={isOpenDrawer}
+                          placement="right"
+                          size={"sm"}
+                          onClose={onCloseDrawer}
+                        >
+                          <DrawerOverlay />
+                          <DrawerContent
+                            rounded={"xl"}
+                            m={{ base: "xs", md: "md", lg: "lg" }}
+                          >
+                            <DrawerCloseButton />
+                            <DrawerHeader>
+                              <div className="flex gap-4 space-y-2">
+                                <div>
+                                  <p className="text-xs font-quicksand">
+                                    Seller {productData.sellerName}
+                                  </p>
+                                  <p className="text-xs font-thin font-quicksand flex gap-1">
+                                    <p>Item: </p>
+                                    {productData.prodName}
+                                  </p>
+                                  <p className="text-xs font-thin font-poppins flex gap-1">
+                                    <p>Price: </p>
+                                    {productData && productData.price
+                                      ? productData.price.toLocaleString(
+                                          "en-PH",
+                                          {
+                                            style: "currency",
+                                            currency: "PHP",
+                                          }
+                                        )
+                                      : "Loading price..."}
+                                  </p>
+                                </div>
+                              </div>
+                            </DrawerHeader>
+
+                            <DrawerBody>
+                              <ChatPage userEmail={productData.sellerEmail} />
+                            </DrawerBody>
+                            {/* <DrawerFooter>
+                              <div>
+                                <Input
+                                  value={textToCopy}
+                                  onChange={(e) =>
+                                    setTextToCopy(e.target.value)
+                                  }
+                                  placeholder="Type or paste text here..."
+                                />
+                                <CopyToClipboard
+                                  text={textToCopy}
+                                  onCopy={onCopyText}
+                                >
+                                  <button>Copy to Clipboard</button>
+                                </CopyToClipboard>
+                                {copyStatus && <p>Text copied to clipboard!</p>}
+                              </div>
+                            </DrawerFooter> */}
+                          </DrawerContent>
+                        </Drawer>
                       </Box>
                     </Stack>
                   </CardBody>
@@ -600,7 +701,7 @@ function ProductId() {
                               {formatDateToNow(comment.createdAt)}
                             </span>
                           </div>
-                          <p className="font-quicksand mb-2 pl-1 w-96">
+                          <p className="font-quicksand mb-2 pl-1 ssm:w-72 lg:w-96">
                             {comment.comment}
                           </p>
                           {(isUsers?.id === comment.commenterId ||

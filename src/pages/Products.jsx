@@ -42,6 +42,7 @@ export const formatDateToNow = (date) => {
 };
 import logo from "../assets/ctu-logo.jpg";
 import logomarket from "../assets/ctu-logo-marketplace.jpg";
+import Loader from "../components/Loader";
 function Products() {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [search, setSearch] = useState("");
@@ -137,7 +138,7 @@ function Products() {
     return (
       <div
         key={item._id}
-        className="   mx-6 ssm:w-48 md:w-56 lg:w-80 shadow-inner hover:shadow-2xl mb-5 bg-[#8583830a] hover:bg-[#ffffff28]"
+        className=" ssm:mb-7 ssm:mx-6 ssm:w-64 md:w-56 lg:w-80 shadow-inner hover:shadow-2xl mb-5 bg-[#8583830a] hover:bg-[#ffffff28]"
       >
         <div className="relative isolate flex flex-col justify-end overflow-hidden   max-w-sm ">
           <div className="grid grid-cols-2 mt-1 font-quicksand">
@@ -232,9 +233,9 @@ function Products() {
 
   if (loading && productsData.length === 0) {
     return (
-      <div className="flex text-center justify-center mb-10 relative  mt-20">
-        <div className="animate-pulse rounded-full   border-gray-900">
-          <Img src={logomarket} className="rounded-full h-60" />
+      <div className="flex text-center justify-center mb-10 relative h-96 mt-20">
+        <div className="absolute mt-32">
+          <Loader />
         </div>
       </div>
     );
@@ -249,17 +250,17 @@ function Products() {
   }
 
   return (
-    <div className="rounded-md  pb-4 max-w-full max-h-full justify-items-center grid  ">
+    <div className="rounded-md   pb-4 max-w-full max-h-full justify-items-center grid  ">
       <div className="bg-[#79787809] justify-items-center grid max-w-full w-full  pr-5">
         <form className="">
-          <figure className="grid ">
+          <figure className="grid">
             <Input
               ml={5}
-              w={96}
               borderColor={"black.900"}
               className="pl-5 w-96 mt-5 pt-1 rounded-md  border-2 "
               placeholder="Search items here"
               type="text"
+              w={{ base: "xs", md: "md", lg: "lg" }}
               onChange={(e) => setSearch(e.target.value)}
             />
           </figure>
@@ -670,7 +671,7 @@ function Products() {
           </Checkbox>
         </div>
         <div className="">
-          <div className=" md:shrink-0 grid  ssm:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 ">
+          <div className=" md:shrink-0 grid xs:grid-cols-1  ssm:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 ">
             {/* here  */}
             {filteredProducts.length === 0 ? (
               <p className="text-center text-xs mx-6 w-80 font-quicksand mb-5">

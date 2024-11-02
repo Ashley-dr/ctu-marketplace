@@ -6,7 +6,7 @@ import { Link, useParams, useNavigate, Navigate } from "react-router-dom";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import { FaRegMessage } from "react-icons/fa6";
-import { MdEmail } from "react-icons/md";
+import { MdEmail, MdMessage } from "react-icons/md";
 import { FaFacebookSquare } from "react-icons/fa";
 import { BsCashCoin } from "react-icons/bs";
 import { TbCircleLetterG } from "react-icons/tb";
@@ -22,18 +22,29 @@ import {
   Button,
   Card,
   Img,
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  Avatar,
 } from "@chakra-ui/react";
 import { MdDelete } from "react-icons/md";
 import { FaFacebookF } from "react-icons/fa6";
 import logo from "../assets/ctu-logo.jpg";
 import logomarket from "../assets/ctu-logo-marketplace.jpg";
 import { AtSignIcon, CalendarIcon, LinkIcon } from "@chakra-ui/icons";
+import ChatPage from "./ChatPage";
+import Loader from "../components/Loader";
 
 function Orders() {
   const [orders, setOrders] = useState([]);
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [cookies, removeCookies] = useCookies([]);
   const { id } = useParams();
+  const [loading, setLoading] = useState(true);
   const [isUsers, setisUser] = useState("");
   const [isFaculty, setisFaculty] = useState("");
   const navigate = useNavigate();
@@ -41,6 +52,11 @@ function Orders() {
   const [chatMessages, setChatMessages] = useState([]);
   const [statusData, setStatusData] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenDrawer,
+    onOpen: onOpenDrawer,
+    onClose: onCloseDrawer,
+  } = useDisclosure();
   const {
     isOpen: isOpenSecond,
     onOpen: onOpenSecond,
@@ -100,12 +116,15 @@ function Orders() {
     types: "",
     image: "",
   });
-
+  const drawer = () => {
+    onOpenDrawer();
+  };
   const fetchTransactions = () => {
     axios
       .get(`${baseUrl}/api/orders/${id}`)
       .then((result) => {
         setOrders(result.data);
+        setLoading(false);
       })
       .catch((err) => {
         console.log("Error fetching:", err);
@@ -161,7 +180,7 @@ function Orders() {
   };
   const chatButton = (id) => {
     setStatusData(id);
-    onOpenSecond();
+    onOpenDrawer();
   };
   const buttonStatus = (newStatus) => {
     setPurchasedSchema((prevSchema) => ({
@@ -220,139 +239,219 @@ function Orders() {
   //     });
   // };
   return (
-    <main className="rounded-md pb-4 max-w-full max-h-full justify-items-center grid  bg-gradient-to-tr ">
+    <main className="rounded-md pb-4 max-w-full max-h-full justify-items-center grid  bg-gradient-to-tr">
       {" "}
       <div className="mx-2 mt-2 mb-14  px-4 rounded-md pt-3 pb-4 max-w-full max-h-full ">
         <div className=" md:shrink-0 grid justify-items-center grid-cols-1 ssm:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 ">
           {/* <OrdersCount id={id} /> */}
-          {orders.length === 0 ? (
-            <div className="flex text-center justify-center mb-10 relative  lg:left-24 mt-20">
-              <div className="animate-pulse rounded-full   border-gray-900">
-                <Img src={logomarket} className="rounded-full h-60" />
-                <p className=" font-quicksand mt-2">Empty Orders</p>
+          {loading ? (
+            <>
+              {" "}
+              <div className="fixed mt-32 ">
+                <Loader />
               </div>
-            </div>
+            </>
           ) : (
-            orders.map((order) => (
-              <div
-                key={order._id}
-                className="border-solid bg-[#b7b7b81f] px-2 rounded-2xl p-2 max-w-full mb-5 lg:mx-4 shadow-inner hover:shadow-xl"
-              >
-                <div className="md:shrink-0 grid justify-items-center grid-cols-1 ssm:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2">
-                  <figure>
-                    <img
-                      className="mt-2.5 block ml-auto mr-auto rounded-sm max-w-full max-h-full w-96 h-80 object-cover bg-fixed"
-                      src={order.image}
-                      alt={order.prodName}
-                    />
-                    <div className="bg-gray-900 text-white text-center text-sm rounded-sm p-2 grid">
-                      <p>
-                        Payment Method:{" "}
-                        {order.status ? <>{order.status}</> : <>None</>}
-                      </p>
-                      <button
-                        onClick={() => statusHandler(order)}
-                        className="px-6 w-full mt-1 p-1 border-t-2 hover:bg-gray-800"
-                      >
-                        <strong className="text-sm bottom-2 right-7">
-                          Pay via
-                        </strong>
-                        <div className="flex justify-between">
-                          <BsCashCoin className="text-2xl" />
-                          <p className="ml-2 mr-2">or</p>
-                          <TbCircleLetterG className="text-2xl" />
-                        </div>
-                      </button>
-                    </div>
-                  </figure>
-                  <Card className="grid rounded-md px-2 lg:w-72 p-1 mt-2 font-quicksand text-sm space-y-1">
-                    <p className="text-xl grid grid-cols-2">
-                      <Link to={`/ProductId/${order.productId}`}>
-                        <button className="truncate ssm:w-80 lg:w-60 text-start">
-                          {order.prodName}
-                        </button>
-                      </Link>
-                      <button
-                        className="justify-self-end text-2xl hover:shadow-inner hover:scale-110"
-                        onClick={() => removeItemClick(order._id)}
-                      >
-                        <MdDelete />
-                      </button>
-                      <Link to={`/ProductId/${order.productId}`}>
-                        <button className="text-xs underline">View Item</button>
-                      </Link>
-                    </p>
-
-                    <div className="grid grid-cols-2 pt-1">
-                      <p className="truncate w-48 flex">
-                        <LinkIcon className="mr-1 mt-1" />
-                        {order.sellerName}
-                      </p>
-                      <p className="text-xs px-1 mt-1 justify-self-end mr-2 rounded-md bg-[#15f85667]">
-                        {order.accountType}
-                      </p>
-                    </div>
-                    <p className="truncate flex">
-                      <AtSignIcon className="mt-1 mr-1" /> {order.sellerEmail}
-                    </p>
-                    <p className="truncate flex">
-                      <FaFacebookF className="mt-1 mr-1" />{" "}
-                      {order.sellerFacebook}
-                    </p>
-                    <hr />
-                    <p className="flex">
-                      <p>Quantity:</p>
-                      <p className="px-2 font-bold underline">
-                        {order.quantity}
-                      </p>
-                    </p>
-                    <p className="flex mr-5">
-                      <p className="mr-1">Price:</p>
-                      <p className="underline">
-                        {order.price.toLocaleString("en-PH", {
-                          style: "currency",
-                          currency: "PHP",
-                        })}
-                      </p>
-                    </p>
-
-                    <p className="flex mr-5">
-                      <p className="mr-1">Total:</p>
-                      <p className="underline">
-                        {order.total.toLocaleString("en-PH", {
-                          style: "currency",
-                          currency: "PHP",
-                        })}
-                      </p>
-                    </p>
-                    <p className="h-28 overflow-y-auto px-2 mt-1 mb-2 border-solid border-2 rounded-lg ssm:w-96 lg:w-full">
-                      <p className="bg-[#0e4f7728] rounded-md">
-                        Type: {order.types}
-                      </p>
-                      {order.message}
-                    </p>
-                    <figure className="grid justify-items-center">
-                      <div className="mt-2">
-                        <button className="px-4 p-3 mx-2 rounded-lg bg-gray-900 text-white">
-                          <MdEmail className="text-2xl" />
-                        </button>
-                        <button className="px-4 p-3 mx-2 rounded-lg bg-gray-900 text-white">
-                          <FaFacebookSquare className="text-2xl" />
-                        </button>
-                        <button
-                          className="px-4 p-3 mx-2 rounded-lg bg-gray-900 text-white"
-                          onClick={() => chatButton(order)}
-                        >
-                          <FaRegMessage className="text-2xl" />
-                        </button>
-                      </div>
-                    </figure>
-                  </Card>
+            <>
+              {orders.length === 0 ? (
+                <div className=" text-xl font-thin font-quicksand h-32 mt-36">
+                  No Data
                 </div>
-              </div>
-            ))
+              ) : (
+                orders.map((order) => (
+                  <div
+                    key={order._id}
+                    className="border-solid bg-[#b7b7b81f] px-2 rounded-2xl p-2 max-w-full mb-5 lg:mx-4 shadow-inner hover:shadow-xl"
+                  >
+                    <div className="md:shrink-0 grid justify-items-center grid-cols-1 ssm:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 xl:grid-cols-2">
+                      <figure>
+                        <img
+                          className="mt-2.5 block ml-auto mr-auto rounded-sm max-w-full max-h-full w-96 ssm:h-32 lg:h-80 object-cover bg-fixed"
+                          src={order.image}
+                          alt={order.prodName}
+                        />
+                        <div className="bg-gray-900 text-white text-center text-sm rounded-sm p-2 grid">
+                          <p>
+                            Payment Method:{" "}
+                            {order.status ? <>{order.status}</> : <>None</>}
+                          </p>
+                          <button
+                            onClick={() => statusHandler(order)}
+                            className="px-6 w-full mt-1 p-1 border-t-2 hover:bg-gray-800"
+                          >
+                            <strong className="text-sm bottom-2 right-7">
+                              Pay via
+                            </strong>
+                            <div className="flex justify-between">
+                              <BsCashCoin className="text-2xl" />
+                              <p className="ml-2 mr-2">or</p>
+                              <TbCircleLetterG className="text-2xl" />
+                            </div>
+                          </button>
+                        </div>
+                      </figure>
+                      <Card className="grid rounded-md px-2 ssm:w-80 lg:w-72 p-1 mt-2 font-quicksand text-sm space-y-1">
+                        <p className="text-xl grid grid-cols-2">
+                          <Link to={`/ProductId/${order.productId}`}>
+                            <button className="truncate ssm:w-80 lg:w-60 text-start">
+                              {order.prodName}
+                            </button>
+                          </Link>
+                          <button
+                            className="justify-self-end text-2xl hover:shadow-inner hover:scale-110"
+                            onClick={() => removeItemClick(order._id)}
+                          >
+                            <MdDelete />
+                          </button>
+                          <Link to={`/ProductId/${order.productId}`}>
+                            <button className="text-xs underline">
+                              View Item
+                            </button>
+                          </Link>
+                        </p>
+
+                        <div className="grid grid-cols-2 pt-1">
+                          <p className="truncate w-48 flex">
+                            <LinkIcon className="mr-1 mt-1" />
+                            {order.sellerName}
+                          </p>
+                          <p className="text-xs px-1 mt-1 justify-self-end mr-2 rounded-md bg-[#15f85667]">
+                            {order.accountType}
+                          </p>
+                        </div>
+                        <p className="truncate flex">
+                          <AtSignIcon className="mt-1 mr-1" />{" "}
+                          {order.sellerEmail}
+                        </p>
+                        {/* <p className="truncate flex">
+                          <FaFacebookF className="mt-1 mr-1" />{" "}
+                          {order.sellerFacebook}
+                        </p> */}
+                        <hr />
+                        <p className="flex">
+                          <p>Quantity:</p>
+                          <p className="px-2 font-bold underline">
+                            {order.quantity}
+                          </p>
+                        </p>
+                        <p className="flex mr-5">
+                          <p className="mr-1">Price:</p>
+                          <p className="underline">
+                            {order.price.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                          </p>
+                        </p>
+
+                        <p className="flex mr-5">
+                          <p className="mr-1">Total:</p>
+                          <p className="underline">
+                            {order.total.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                          </p>
+                        </p>
+                        <p className="h-28 overflow-y-auto px-2 mt-1 mb-2 border-solid border-2 rounded-lg w-[100%] ">
+                          <p className="bg-[#0e4f7728] rounded-md">
+                            Type: {order.types}
+                          </p>
+                          {order.message}
+                        </p>
+                        <figure className="grid justify-items-center">
+                          <div className="mt-2">
+                            <button className="px-4 p-3 mx-2 rounded-lg bg-gray-900 text-white">
+                              <MdEmail className="text-2xl" />
+                            </button>
+
+                            <a href={order.sellerFacebook} target="_blank">
+                              <button className="px-4 p-3 mx-2 rounded-lg bg-gray-900 text-white">
+                                <FaFacebookSquare className="text-2xl" />
+                              </button>
+                            </a>
+                            <button
+                              onClick={() => chatButton(order)}
+                              className="px-4 p-3 mx-2 rounded-lg bg-gray-900 text-white"
+                            >
+                              <MdMessage className=" cursor-pointer mx-2  text-2xl" />
+                            </button>
+                          </div>
+                        </figure>
+                      </Card>
+                    </div>
+                  </div>
+                ))
+              )}
+            </>
           )}
         </div>
+        {statusData && (
+          <Drawer
+            isOpen={isOpenDrawer}
+            placement="right"
+            size={"sm"}
+            onClose={onCloseDrawer}
+          >
+            <DrawerOverlay />
+            <DrawerContent rounded={"xl"} m={{ base: 0, md: 2, lg: 2 }}>
+              <DrawerCloseButton />
+              <DrawerHeader>
+                {" "}
+                <div className="gap-1.5  text-xs grid grid-cols-2">
+                  <p className=" font-bold">Seller's Info</p>
+
+                  <p className="text-xs font-thin font-quicksand flex gap-2 truncate w-40">
+                    <p>Product: </p>
+                    {statusData.prodName}
+                  </p>
+
+                  {statusData.accountType === "Student" && (
+                    <>
+                      {" "}
+                      <Link to={`/UserAccount/${statusData.sellerEmail}`}>
+                        <p className="text-xs font-thin font-quicksand truncate w-40 underline">
+                          {statusData.sellerEmail}
+                        </p>
+                      </Link>
+                    </>
+                  )}
+                  {statusData.accountType === "Faculty" && (
+                    <>
+                      {" "}
+                      <Link to={`/FacultyAccount/${statusData.sellerEmail}`}>
+                        <p className="text-xs font-thin font-quicksand truncate w-40 underline">
+                          {statusData.sellerEmail}
+                        </p>
+                      </Link>
+                    </>
+                  )}
+                  <p className="text-xs font-thin font-quicksand flex gap-2">
+                    <p>Total: </p>
+                    {statusData.total.toLocaleString("en-PH", {
+                      style: "currency",
+                      currency: "PHP",
+                    })}
+                  </p>
+                  <p className="text-xs font-quicksand truncate w-40">
+                    {statusData.sellerName}
+                  </p>
+                  <p className="text-xs font-thin font-quicksand flex gap-2">
+                    <p>Price: </p>
+                    {statusData.price.toLocaleString("en-PH", {
+                      style: "currency",
+                      currency: "PHP",
+                    })}
+                  </p>
+                </div>
+              </DrawerHeader>
+
+              <DrawerBody>
+                <ChatPage userEmail={statusData.sellerEmail} />
+              </DrawerBody>
+            </DrawerContent>
+          </Drawer>
+        )}
 
         {statusData && (
           <Modal isOpen={isOpen} onClose={onClose}>

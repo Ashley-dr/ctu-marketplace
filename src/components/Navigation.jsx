@@ -42,6 +42,12 @@ import {
   VStack,
   useToast,
   Container,
+  MenuItemOption,
+  MenuGroup,
+  MenuOptionGroup,
+  useBreakpointValue,
+  Divider,
+  RadioGroup,
 } from "@chakra-ui/react";
 import logo from "../assets/ctu-logo.jpg";
 import logomarket from "../assets/ctu-logo-marketplace.jpg";
@@ -52,12 +58,19 @@ import { FaSignInAlt, FaUserCheck } from "react-icons/fa";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
-import { MoonIcon, SunIcon } from "@chakra-ui/icons";
+import {
+  ChevronDownIcon,
+  HamburgerIcon,
+  MoonIcon,
+  SunIcon,
+} from "@chakra-ui/icons";
 import { useCookies } from "react-cookie";
 import {
   MdAccountBox,
   MdAddBox,
   MdDashboard,
+  MdHome,
+  MdMenu,
   MdNotifications,
   MdOutlineAlternateEmail,
 } from "react-icons/md";
@@ -75,6 +88,7 @@ function Navigation() {
   const [isUsers, setisUser] = useState("");
   const [isFaculty, setisFaculty] = useState("");
   const [userData, setUserData] = useState(null);
+  const isMobile = useBreakpointValue({ base: true, md: false });
   const signupModal = useDisclosure();
   const loginModal = useDisclosure();
   const forgotPasswordModal = useDisclosure();
@@ -404,45 +418,86 @@ function Navigation() {
     window.location.reload();
   };
   return (
-    <div className="max-w-full font-quicksand text-sm">
+    <div className="max-w-full font-quicksand text-sm fixed w-screen z-10">
       <ToastContainer />
-      <Box
-        className="max-w-full "
-        bg={useColorModeValue("gray.100", "gray.900")}
-        px={4}
-      >
-        <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
+      <Box className="" bg={useColorModeValue("gray.100", "gray.900")} px={4}>
+        <Flex
+          h={16}
+          className=""
+          alignItems={"center"}
+          justifyContent={"space-between"}
+        >
           <Link to="/" className="flex space-x-4 font-poppins">
             <Box className="">
               {" "}
               <Avatar size={"md"} src={logomarket} />
             </Box>
-            <Text className="text-sm mt-1.5">
+            <Text className="text-xs mt-1.5">
               CTU DANAO <hr /> MARKETPLACE
             </Text>
           </Link>
 
           <Flex zIndex={10} alignItems={"center"}>
-            <Stack direction={"row"} spacing={7}>
+            <Stack direction={"row"} spacing={1}>
               <Button onClick={toggleColorMode} className="mt-1">
                 {" "}
                 {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
               </Button>
-
-              {!isUsers && !isFaculty ? (
+              {isMobile ? (
                 <>
-                  {" "}
-                  <Box className="space-x-2 m-1">
-                    <Button onClick={loginModal.onOpen}>
-                      <p className="text-xs">Login</p>
-                    </Button>
-                    <Button onClick={selectModal.onOpen}>
-                      <p className="text-xs">Signup</p>
-                    </Button>
-                  </Box>
+                  {!isUsers && !isFaculty ? (
+                    <>
+                      <Menu>
+                        <MenuButton mt={1} as={Button}>
+                          <MdMenu />
+                        </MenuButton>
+                        <MenuList>
+                          <MenuItem>
+                            <Button
+                              onClick={loginModal.onOpen}
+                              className="transition ease-in-out shadow-sm w-full  hover:scale-105"
+                            >
+                              <p className="text-xs">Login</p>
+                            </Button>
+                          </MenuItem>
+                          <MenuItem>
+                            <Button
+                              onClick={selectModal.onOpen}
+                              className="transition ease-in-out shadow-sm w-full hover:scale-105"
+                            >
+                              <p className="text-xs">Get Started</p>
+                            </Button>
+                          </MenuItem>
+                        </MenuList>
+                      </Menu>
+                    </>
+                  ) : null}
                 </>
               ) : (
-                <></>
+                <>
+                  {" "}
+                  {!isUsers && !isFaculty ? (
+                    <>
+                      {" "}
+                      <Box className="space-x-2 m-1 ">
+                        <Button
+                          onClick={loginModal.onOpen}
+                          className="transition ease-in-out shadow-sm  hover:scale-105"
+                        >
+                          <p className="text-xs">Login</p>
+                        </Button>
+                        <Button
+                          onClick={selectModal.onOpen}
+                          className="transition ease-in-out shadow-sm  hover:scale-105"
+                        >
+                          <p className="text-xs">Get Started</p>
+                        </Button>
+                      </Box>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </>
               )}
               {/*  Users Data */}
               {isUsers ? (
@@ -479,11 +534,23 @@ function Navigation() {
                       <p>Student Member</p>
                     </Center>
                     <MenuDivider />
-
+                    <Link to="/ChatPage">
+                      {" "}
+                      <MenuItem className="gap-2 ">
+                        <MdHome /> chat
+                      </MenuItem>
+                    </Link>
+                    <Link to="/">
+                      {" "}
+                      <MenuItem className="gap-2 ">
+                        <MdHome /> Home
+                      </MenuItem>
+                    </Link>
                     <MenuItem className="gap-2 ">
                       {" "}
                       <MdNotifications /> Notification
                     </MenuItem>
+
                     <Link to="/Account">
                       {" "}
                       <MenuItem className="gap-2 ">
@@ -515,12 +582,12 @@ function Navigation() {
                         </Link>
                       </div>
                     ) : (
-                      <MenuItem>
-                        {" "}
-                        <Link to={`/BecomeSeller/${isUsers.id}`}>
+                      <Link to={`/BecomeSeller/${isUsers.id}`}>
+                        <MenuItem className="gap-2">
+                          {" "}
                           <FaUserCheck /> Become a Seller
-                        </Link>
-                      </MenuItem>
+                        </MenuItem>
+                      </Link>
                     )}
                     {isUsers.isAdmin === true ? (
                       <Link to="/MainAdmDash">
@@ -572,7 +639,12 @@ function Navigation() {
                       <p>Faculty Member</p>
                     </Center>
                     <MenuDivider />
-
+                    <Link to="/">
+                      {" "}
+                      <MenuItem className="gap-2 ">
+                        <MdHome /> Home
+                      </MenuItem>
+                    </Link>
                     <MenuItem className="gap-2 ">
                       {" "}
                       <MdNotifications /> Notification
@@ -653,7 +725,7 @@ function Navigation() {
           </p>
           <DrawerCloseButton />
           <DrawerBody pb={6} className="grid justify-items-center ">
-            <form onSubmit={handleSignupSubmit} className="w-96">
+            <form onSubmit={handleSignupSubmit} className="ssm:w-64 lg:w-96">
               <FormControl>
                 <label className=" font-poppins font-thick uppercase tracking-widest  text-sm">
                   Fullname
@@ -979,7 +1051,10 @@ function Navigation() {
           </p>
           <DrawerCloseButton />
           <DrawerBody pb={6} className="grid justify-items-center ">
-            <form onSubmit={handleFacultySignupSubmit} className="w-96">
+            <form
+              onSubmit={handleFacultySignupSubmit}
+              className="ssm:w-64 lg:w-96"
+            >
               <FormControl>
                 <label className=" font-poppins font-thick uppercase tracking-widest text-sm">
                   Full name
@@ -1206,11 +1281,11 @@ function Navigation() {
         blockScrollOnMount={false}
         isOpen={loginModal.isOpen}
         onClose={loginModal.onClose}
-        size={"xl"}
+        size={{ base: "xs", md: "md", lg: "lg" }}
       >
         <ModalOverlay />
-        <ModalContent className="border-r-8  border-[#111827]">
-          <p className="mt-10 w-80 uppercase px-7 mb-3 text-xl font-poppins font-bold">
+        <ModalContent className="border-r-8   border-[#111827]">
+          <p className="ssm:text-sm  mt-10 w-80 uppercase px-7 mb-3 lg:text-xl font-poppins font-bold">
             Sign in with CTU - Danao Marketplace
           </p>
 
@@ -1282,7 +1357,7 @@ function Navigation() {
         blockScrollOnMount={false}
         isOpen={selectModal.isOpen}
         onClose={selectModal.onClose}
-        size={"lg"}
+        size={{ base: "xs", sm: "md", lg: "lg" }} // Set responsive sizes for modal
       >
         <ModalOverlay />
         <ModalContent>
@@ -1294,46 +1369,49 @@ function Navigation() {
             <Text className="text-center font-poppins font-thin" mb="1rem">
               Are you a Student or Faculty Member
             </Text>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="h-72 rounded-lg bg-gradient-to-tl from-[#213261fb] via-[#2f617e] to-[#3f35cc] grid items-center justify-items-center content-center justify-center">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {/* Student Registration Card */}
+              <div className="relative h-72 rounded-lg bg-gradient-to-tl from-[#213261fb] via-[#2f617e] to-[#3f35cc] flex items-center justify-center">
                 <button
-                  className="h-72 ssm:w-52 sm:w-56 md:w-56 lg:w-56 z-10 hover:bg-[#ffffff09]"
+                  className="h-full w-full sm:w-56 z-10 hover:bg-[#ffffff09] absolute inset-0"
                   onClick={signupModal.onOpen}
                 ></button>
-                <p className="text-xs w-56  font-poppins text-[#d5f4f5] absolute bottom-72 text-center uppercase">
+                <p className="text-xs font-poppins text-[#d5f4f5] absolute top-4 text-center uppercase">
                   Click here
                 </p>
-                <p className="text-2xl w-56 font-extrabold font-poppins text-[#dcf9fa] absolute bottom-32 px-2 justify-self-start">
+                <p className="text-2xl font-extrabold font-poppins text-[#dcf9fa] absolute bottom-16 px-4 text-center mb-10 sm:text-left">
                   Student Registration
                 </p>
-                <p className="ssm:text-xs lg:text-sm w-56 font-poppins text-[#a5e9fa] absolute bottom-14 px-2 justify-self-start">
-                  Create account as a Student Member here. <br />
-                  You can sell, trade, buy items.
+                <p className="text-xs sm:text-sm font-poppins text-[#a5e9fa] absolute bottom-4 px-4 text-center sm:text-left">
+                  Create account as a Student Member here. You can sell, trade,
+                  and buy items.
                 </p>
               </div>
 
-              <div className="h-72 rounded-lg bg-gradient-to-tr from-[#0d889efb] via-[#4260c4] to-[#be4daf] grid items-center justify-items-center content-center justify-center">
+              {/* Faculty Registration Card */}
+              <div className="relative h-72 rounded-lg bg-gradient-to-tr from-[#0d889efb] via-[#4260c4] to-[#be4daf] flex items-center justify-center">
                 <button
-                  className="h-72 ssm:w-52 sm:w-56 md:w-56 lg:w-56 z-10 hover:bg-[#ffffff09]"
+                  className="h-full w-full sm:w-56 z-10 hover:bg-[#ffffff09] absolute inset-0"
                   onClick={facultysignupModal.onOpen}
                 ></button>
-                <p className="text-xs w-56  font-poppins text-[#d5f4f5] absolute bottom-72 text-center uppercase">
+                <p className="text-xs font-poppins text-[#d5f4f5] absolute top-4 text-center uppercase">
                   Click here
                 </p>
-                <p className="text-2xl w-56 font-extrabold font-poppins text-[#dcf9fa] absolute bottom-32 ssm:px-6 sm:px-3 lg:px-2 justify-self-start  text-right">
+                <p className="text-2xl font-extrabold font-poppins text-[#dcf9fa] absolute bottom-16 px-4 text-center mb-10 sm:text-right">
                   Faculty Registration
                 </p>
-                <p className="ssm:text-xs lg:text-sm w-56 font-poppins text-[#f7e2ff] absolute bottom-14 px-2 justify-self-start">
-                  Create account as a Faculty Member here. <br />
-                  You can sell, trade, buy items.
+                <p className="text-xs sm:text-sm font-poppins text-[#f7e2ff] absolute bottom-4 px-4 text-center sm:text-right">
+                  Create account as a Faculty Member here. You can sell, trade,
+                  and buy items.
                 </p>
               </div>
             </div>
           </ModalBody>
 
-          <ModalFooter></ModalFooter>
+          <ModalFooter />
         </ModalContent>
       </Modal>
+
       {/* Selector Modal */}
 
       {/* Forgot Password reset password */}

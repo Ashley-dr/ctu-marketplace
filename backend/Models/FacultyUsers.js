@@ -61,6 +61,11 @@ const FacultySchema = new mongoose.Schema({
     type: Date,
     default: new Date(),
   },
+  status: {
+    type: String,
+    enum: ["online", "offline"],
+    default: "offline",
+  },
   resetToken: { type: String },
   resetTokenExpiration: { type: String },
 });

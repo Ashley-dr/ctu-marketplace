@@ -75,7 +75,11 @@ const UserSchema = new mongoose.Schema({
   isBuyer: {
     type: Boolean,
   },
-
+  status: {
+    type: String,
+    enum: ["online", "offline"],
+    default: "offline",
+  },
   resetToken: { type: String },
   resetTokenExpiration: { type: String },
 });

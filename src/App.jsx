@@ -27,11 +27,13 @@ import UserInventory from "./tabs/UserInventory";
 
 import FacultyAccount from "./tabs/FacultyAccount";
 
+import ChatPage from "./tabs/ChatPage";
+
 function App() {
   return (
     <UserContextProvider>
       <Router>
-        <header className="w-full">
+        <header className="w-full pb-16">
           <Navigation />
         </header>
         <Routes>
@@ -50,7 +52,7 @@ function App() {
           <Route path="/Transactions/:id" element={<Transactions />} />
           <Route path="/Inventory/:id" element={<Inventory />} />
           <Route path="/UserInventory/:id" element={<UserInventory />} />
-
+          <Route path="/ChatPage" element={<ChatPage />} />
           <Route path="/Orders/:id" element={<Orders />} />
           <Route path="/AddProducts/:id" element={<AddProducts />} />
           <Route

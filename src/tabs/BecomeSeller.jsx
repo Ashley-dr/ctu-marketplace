@@ -13,6 +13,17 @@ import {
   Select,
   Stack,
   Textarea,
+  Step,
+  StepDescription,
+  StepIcon,
+  StepIndicator,
+  StepNumber,
+  StepSeparator,
+  StepStatus,
+  StepTitle,
+  Stepper,
+  useSteps,
+  Box,
 } from "@chakra-ui/react";
 import { AiOutlineUpload } from "react-icons/ai";
 function BecomeSeller(props) {
@@ -232,44 +243,45 @@ function BecomeSeller(props) {
         console.log("Error");
       });
   };
-
+  const steps = [
+    { title: "First", description: "General Details" },
+    { title: "Second", description: "Wait for approval" },
+  ];
   return (
     <div>
       {isUsers ? (
-        <figure className="max-w-full max-h-full bg-gradient-to-tr from-[#00ffdd2d] via-[#0834f515] to-[#08ceff1a] text-center ">
-          <article className="grid justify-items-center">
-            <h1 className="pt-5 font-bebas text-3xl">Let's get you Started!</h1>
-            <h1 className="mb-5 font-bebos">
+        <figure className="max-w-full max-h-full bg-gradient-to-tr from-[#00ffdd2d] via-[#0834f515] to-[#08ceff1a] text-center">
+          <article className="grid justify-items-center ">
+            <h1 className="pt-5 font-bebas text-3xl ">
+              Let's get you Started!
+            </h1>
+            <h1 className="mb-5 font-bebos ssm:text-sm lg:text-md">
               Become a seller, must input the following details.
             </h1>
-            <figure className="flex justify-center mb-8">
-              <ol className="flex ssm:mx-5 ssm:text-xs lg:text-base gap-5">
-                <li className="flex font-poppins">
-                  <p className="pl-2   pr-2 border-[#077b8a] rounded-full  font-montserrat text-sm border-2 relative bottom-0 mr-2 bg-[#077b8a50] text-[#0b9fb3] font-bold text-center">
-                    <p className="ssm:mt-1 lg:mt-0">1</p>
-                  </p>{" "}
-                  General Details
-                </li>
-                <p className="border-[#15a380] rounded-lg border-2 transform rotate-90  mr-2 ml-2"></p>
-                <li className="flex font-poppins">
-                  {" "}
-                  <p className="pl-2 pr-2 border-[#077b8a] rounded-full  font-montserrat text-sm border-2 relative bottom-0 mr-2 bg-[#077b8a50] text-[#0b9fb3] font-bold text-center">
-                    <p className="ssm:mt-1 lg:mt-0">2</p>
-                  </p>{" "}
-                  Confirm your Details
-                </li>
-                <p className="border-[#15a380] rounded-lg border-2 transform rotate-90  mr-2 ml-2"></p>
-                <li className="flex font-poppins">
-                  {" "}
-                  <p className="pl-2   pr-2 border-[#077b8a] rounded-full  font-montserrat text-sm border-2 relative bottom-0 mr-2 bg-[#077b8a50] text-[#0b9fb3] font-bold text-center">
-                    <p className="ssm:mt-1 lg:mt-0">3</p>
-                  </p>{" "}
-                  Wait for approval
-                </li>
-              </ol>
-            </figure>
-            <form onSubmit={usersOnSubmit}>
+
+            <Stepper>
+              {steps.map((step, index) => (
+                <Step key={index}>
+                  <StepIndicator>
+                    <StepStatus
+                      complete={<StepIcon />}
+                      incomplete={<StepNumber />}
+                      active={<StepNumber />}
+                    />
+                  </StepIndicator>
+
+                  <Box flexShrink="0">
+                    <StepTitle>{step.title}</StepTitle>
+                    <StepDescription>{step.description}</StepDescription>
+                  </Box>
+
+                  <StepSeparator />
+                </Step>
+              ))}
+            </Stepper>
+            <form onSubmit={usersOnSubmit} className="">
               <br />
+
               <figure className="grid ssm:grid-cols-1 lg:grid-cols-2 justify-items-center">
                 <article className="grid font-quicksand ">
                   <article className="grid font-quicksand justify-items-start mb-4 ">
@@ -310,172 +322,175 @@ function BecomeSeller(props) {
                       />
                     </label>
                   </article>
-
-                  <label className="grid mb-2">
-                    <p className="justify-self-start text-xs">Gender</p>
-                    <Select
-                      type="text"
-                      name="gender"
-                      borderBottom={"2px"}
-                      borderLeft={"1px"}
-                      borderRight={"1px"}
-                      borderTop={"1px"}
-                      value={users.gender}
-                      onChange={userOnChange}
-                      required
-                    >
-                      <option value=""></option>
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
-                    </Select>
-                  </label>
-                  <br />
-                  <label className="grid mb-2">
-                    <p className="justify-self-start text-xs">Department</p>
-                    <Select
-                      type="text"
-                      borderBottom={"2px"}
-                      borderLeft={"1px"}
-                      borderRight={"1px"}
-                      borderTop={"1px"}
-                      name="department"
-                      value={users.department}
-                      onChange={userOnChange}
-                      required
-                    >
-                      <option value=""></option>
-                      <option value="COLLEGE OF TECHNOLOGY">
-                        COLLEGE OF TECHNOLOGY
-                      </option>
-                      <option value="COLLEGE OF ENGINEERING">
-                        COLLEGE OF ENGINEERING
-                      </option>
-                      <option value="COLLEGE OF EDUCATION">
-                        COLLEGE OF EDUCATION
-                      </option>
-                      <option value="COLLEGE OF MANAGEMENT ENTREPRENEURSHIP">
-                        COLLEGE OF MANAGEMENT ENTREPRENEURSHIP
-                      </option>
-                    </Select>
-                    <p className="justify-self-start text-xs">
-                      What department are you in CTU Danao campus
-                    </p>
-                  </label>
-                  <br />
-                  <label className="grid mb-2">
-                    <p className="justify-self-start text-xs">Facebook</p>
-                    <Input
-                      type="text"
-                      borderBottom={"2px"}
-                      borderLeft={"1px"}
-                      borderRight={"1px"}
-                      borderTop={"1px"}
-                      name="facebook"
-                      placeholder="Input facebook Link"
-                      value={users.facebook}
-                      onChange={userOnChange}
-                    />
-                    <p className="justify-self-start text-xs">
-                      Ex. (https://www.facebook.com/ashleydiligwapo/)
-                    </p>
-                  </label>
-                  <br />
-                  <label className="grid mb-2">
-                    <p className="justify-self-start text-xs">Address</p>
-                    <Input
-                      type="text"
-                      borderBottom={"2px"}
-                      borderLeft={"1px"}
-                      borderRight={"1px"}
-                      borderTop={"1px"}
-                      name="address"
-                      placeholder="Input address"
-                      value={users.address}
-                      onChange={userOnChange}
-                    />
-                  </label>
-                  <br />
-                  <label className="grid mb-2">
-                    <p className="justify-self-start text-xs">Major & Course</p>
-                    <Input
-                      type="text"
-                      borderBottom={"2px"}
-                      borderLeft={"1px"}
-                      borderRight={"1px"}
-                      borderTop={"1px"}
-                      name="course"
-                      placeholder="Input Major and Course"
-                      value={users.course}
-                      onChange={userOnChange}
-                    />
-                    <p className="justify-self-start text-xs">
-                      Ex. (BSIT - Programming, etc.)
-                    </p>
-                  </label>
-                  <br />
-                  <label className="grid mb-2">
-                    <p className="justify-self-start text-xs">Phone number</p>
-                    <Input
-                      type="number"
-                      borderBottom={"2px"}
-                      borderLeft={"1px"}
-                      borderRight={"1px"}
-                      borderTop={"1px"}
-                      name="phoneNumber"
-                      placeholder="Phone #"
-                      value={users.phoneNumber}
-                      onChange={userOnChange}
-                    />
-                  </label>
-                  <br />
-                  <label className="grid mb-2">
-                    <p className="justify-self-start text-xs">Gcash Number</p>
-                    <Input
-                      type="number"
-                      borderBottom={"2px"}
-                      borderLeft={"1px"}
-                      borderRight={"1px"}
-                      borderTop={"1px"}
-                      name="gcashNumber"
-                      placeholder="Gcash #"
-                      value={users.gcashNumber}
-                      onChange={userOnChange}
-                    />
-                    <p className="justify-self-start text-xs">
-                      Please make sure to use verified (GCASH) Number.
-                    </p>
-                    <p className="justify-self-start text-xs">
-                      This is used for online transaction. (Required)
-                    </p>
-                  </label>
-                  <br />
-                  <label className="grid mb-2">
-                    <p className="justify-self-start text-xs">
-                      Shop Description
-                    </p>
-                    <Textarea
-                      type="text"
-                      borderBottom={"2px"}
-                      borderLeft={"1px"}
-                      borderRight={"1px"}
-                      borderTop={"1px"}
-                      name="shopDescription"
-                      placeholder="Shop Description"
-                      value={users.shopDescription}
-                      onChange={userOnChange}
-                    />
-                    <p className="justify-self-start text-xs">
-                      Input your profile or shop description.
-                    </p>
-                  </label>
+                  <figure className="w-80 ">
+                    <label className="grid mb-2">
+                      <p className="justify-self-start text-xs">Gender</p>
+                      <Select
+                        type="text"
+                        name="gender"
+                        borderBottom={"2px"}
+                        borderLeft={"1px"}
+                        borderRight={"1px"}
+                        borderTop={"1px"}
+                        value={users.gender}
+                        onChange={userOnChange}
+                        required
+                      >
+                        <option value=""></option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                      </Select>
+                    </label>
+                    <br />
+                    <label className="grid mb-2">
+                      <p className="justify-self-start text-xs">Department</p>
+                      <Select
+                        type="text"
+                        borderBottom={"2px"}
+                        borderLeft={"1px"}
+                        borderRight={"1px"}
+                        borderTop={"1px"}
+                        name="department"
+                        value={users.department}
+                        onChange={userOnChange}
+                        required
+                      >
+                        <option value=""></option>
+                        <option value="COLLEGE OF TECHNOLOGY">
+                          COLLEGE OF TECHNOLOGY
+                        </option>
+                        <option value="COLLEGE OF ENGINEERING">
+                          COLLEGE OF ENGINEERING
+                        </option>
+                        <option value="COLLEGE OF EDUCATION">
+                          COLLEGE OF EDUCATION
+                        </option>
+                        <option value="COLLEGE OF MANAGEMENT ENTREPRENEURSHIP">
+                          COLLEGE OF MANAGEMENT ENTREPRENEURSHIP
+                        </option>
+                      </Select>
+                      <p className="justify-self-start text-xs">
+                        What department are you in CTU Danao campus
+                      </p>
+                    </label>
+                    <br />
+                    <label className="grid mb-2">
+                      <p className="justify-self-start text-xs">Facebook</p>
+                      <Input
+                        type="text"
+                        borderBottom={"2px"}
+                        borderLeft={"1px"}
+                        borderRight={"1px"}
+                        borderTop={"1px"}
+                        name="facebook"
+                        placeholder="Input facebook Link"
+                        value={users.facebook}
+                        onChange={userOnChange}
+                      />
+                      <p className="justify-self-start text-xs">
+                        Ex. (https://www.facebook.com/ashleydiligwapo/)
+                      </p>
+                    </label>
+                    <br />
+                    <label className="grid mb-2">
+                      <p className="justify-self-start text-xs">Address</p>
+                      <Input
+                        type="text"
+                        borderBottom={"2px"}
+                        borderLeft={"1px"}
+                        borderRight={"1px"}
+                        borderTop={"1px"}
+                        name="address"
+                        placeholder="Input address"
+                        value={users.address}
+                        onChange={userOnChange}
+                      />
+                    </label>
+                    <br />
+                    <label className="grid mb-2">
+                      <p className="justify-self-start text-xs">
+                        Major & Course
+                      </p>
+                      <Input
+                        type="text"
+                        borderBottom={"2px"}
+                        borderLeft={"1px"}
+                        borderRight={"1px"}
+                        borderTop={"1px"}
+                        name="course"
+                        placeholder="Input Major and Course"
+                        value={users.course}
+                        onChange={userOnChange}
+                      />
+                      <p className="justify-self-start text-xs">
+                        Ex. (BSIT - Programming, etc.)
+                      </p>
+                    </label>
+                    <br />
+                    <label className="grid mb-2">
+                      <p className="justify-self-start text-xs">Phone number</p>
+                      <Input
+                        type="number"
+                        borderBottom={"2px"}
+                        borderLeft={"1px"}
+                        borderRight={"1px"}
+                        borderTop={"1px"}
+                        name="phoneNumber"
+                        placeholder="Phone #"
+                        value={users.phoneNumber}
+                        onChange={userOnChange}
+                      />
+                    </label>
+                    <br />
+                    <label className="grid mb-2">
+                      <p className="justify-self-start text-xs">Gcash Number</p>
+                      <Input
+                        type="number"
+                        borderBottom={"2px"}
+                        borderLeft={"1px"}
+                        borderRight={"1px"}
+                        borderTop={"1px"}
+                        name="gcashNumber"
+                        placeholder="Gcash #"
+                        value={users.gcashNumber}
+                        onChange={userOnChange}
+                      />
+                      <p className="justify-self-start text-xs">
+                        Please make sure to use verified (GCASH) Number.
+                      </p>
+                      <p className="justify-self-start text-xs">
+                        This is used for online transaction. (Required)
+                      </p>
+                    </label>
+                    <br />
+                    <label className="grid mb-2">
+                      <p className="justify-self-start text-xs">
+                        Shop Description
+                      </p>
+                      <Textarea
+                        type="text"
+                        borderBottom={"2px"}
+                        borderLeft={"1px"}
+                        borderRight={"1px"}
+                        borderTop={"1px"}
+                        name="shopDescription"
+                        placeholder="Shop Description"
+                        value={users.shopDescription}
+                        onChange={userOnChange}
+                      />
+                      <p className="justify-self-start text-xs">
+                        Input your profile or shop description.
+                      </p>
+                    </label>
+                  </figure>
                   <br />
                 </article>
 
-                <article className="ssm:border-l-0 lg:border-l-2 ssm:pl-0 lg:pl-5 ">
+                <article className=" ssm:border-l-0 lg:border-l-2 ssm:pl-0 lg:pl-5 ">
                   {/* Image here */}
 
                   <div className="flex items-center justify-center w-full">
-                    <label className="flex  flex-col items-center justify-center w-96 h-64 mb-5 border-2 border-gray-900 border-dashed rounded-lg cursor-pointer bg-[#eaf3fffa] hover:bg-[#c5d0f3fa] ">
+                    <label className="flex  flex-col items-center justify-center ssm:w-80 lg:w-96 h-64 mb-5 border-2 border-gray-900 border-dashed rounded-lg cursor-pointer bg-[#eaf3fffa] hover:bg-[#c5d0f3fa] ">
                       <div className="flex flex-col items-center justify-center pt-5 pb-6">
                         <AiOutlineUpload className="text-5xl text-gray-900" />
                         <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
@@ -492,7 +507,7 @@ function BecomeSeller(props) {
                       <input
                         id="dropzone-file"
                         type="file"
-                        className="text-black bg-transparent  relative top-5 mr-16"
+                        className="text-black bg-transparent ssm:w-60 lg:w-80  relative top-5 mr-16"
                         name="validId"
                         accept="image/*"
                         required
@@ -502,7 +517,7 @@ function BecomeSeller(props) {
                   </div>
 
                   <div className="flex items-center justify-center w-full">
-                    <label className="flex  flex-col items-center justify-center w-96 h-64 mb-5 border-2 border-gray-900 border-dashed rounded-lg cursor-pointer bg-[#eaf3fffa] hover:bg-[#c5d0f3fa] ">
+                    <label className="flex  flex-col items-center justify-center ssm:w-80 lg:w-96 h-64 mb-5 border-2 border-gray-900 border-dashed rounded-lg cursor-pointer bg-[#eaf3fffa] hover:bg-[#c5d0f3fa] ">
                       <div className="flex flex-col items-center justify-center pt-5 pb-6">
                         <AiOutlineUpload className="text-5xl text-gray-900" />
                         <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
@@ -520,7 +535,7 @@ function BecomeSeller(props) {
                       <input
                         id="dropzone-file"
                         type="file"
-                        className="text-black bg-transparent  relative top-5 mr-16"
+                        className="text-black bg-transparent ssm:w-60 lg:w-80 relative top-5 mr-16"
                         name="shopImage"
                         accept="image/*"
                         required
@@ -530,7 +545,7 @@ function BecomeSeller(props) {
                   </div>
 
                   <div className="flex items-center justify-center w-full">
-                    <label className="flex  flex-col items-center justify-center w-96 h-64 border-2 border-gray-900 border-dashed rounded-lg cursor-pointer bg-[#eaf3fffa] hover:bg-[#c5d0f3fa] ">
+                    <label className="flex  flex-col items-center justify-center ssm:w-80 lg:w-96 h-64 border-2 border-gray-900 border-dashed rounded-lg cursor-pointer bg-[#eaf3fffa] hover:bg-[#c5d0f3fa] ">
                       <div className="flex flex-col items-center justify-center pt-5 pb-6">
                         <AiOutlineUpload className="text-5xl text-gray-900" />
                         <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
@@ -547,7 +562,7 @@ function BecomeSeller(props) {
                       <input
                         id="dropzone-file"
                         type="file"
-                        className="text-black bg-transparent  relative top-5 mr-16"
+                        className="text-black bg-transparent ssm:w-60 lg:w-80  relative top-5 mr-16"
                         name="image"
                         accept="image/*"
                         required
@@ -559,7 +574,8 @@ function BecomeSeller(props) {
                   <br />
 
                   <Checkbox
-                    className="mb-5 p-2 rounded-md bg-[#06ff9f48] ssm:mr-0 lg:mr-10 grid text-center"
+                    w={{ base: 80, md: 96, lg: 96 }}
+                    className="mb-5 p-2 rounded-md bg-[#06ffa008]   grid text-center "
                     type="checkbox"
                     name="isSeller"
                     colorScheme="teal"
@@ -571,7 +587,7 @@ function BecomeSeller(props) {
                     {" "}
                     <label className="  ">
                       {" "}
-                      <p className="font-poppins text-sm  ssm:w-96 lg:w-100 ">
+                      <p className="font-poppins text-sm  ssm:w-64 lg:w-80 ">
                         {" "}
                         To confirm this account, please click the checkbox and
                         wait for the review for the confirmation of your account
@@ -582,8 +598,8 @@ function BecomeSeller(props) {
 
                   <br />
                   <Button
-                    className="mb-10"
-                    w={96}
+                    className="mb-10 uppercase"
+                    w={{ base: 80, md: 96, lg: 96 }}
                     bgColor={"#06ff9f48"}
                     type="submit"
                   >
@@ -600,46 +616,45 @@ function BecomeSeller(props) {
         <></>
       )}
       {isFaculty ? (
-        <figure className="max-w-full max-h-full bg-gradient-to-tr from-[#00ffdd2d] via-[#0834f515] to-[#08ceff1a] text-center ">
-          <article className="grid justify-items-center">
-            <h1 className="pt-5 font-bebas text-3xl">Let's get you Started!</h1>
-            <h1 className="mb-5 font-bebos">
+        <figure className="max-w-full max-h-full bg-gradient-to-tr from-[#00ffdd2d] via-[#0834f515] to-[#08ceff1a] text-center">
+          <article className="grid justify-items-center ">
+            <h1 className="pt-5 font-bebas text-3xl ">
+              Let's get you Started!
+            </h1>
+            <h1 className="mb-5 font-bebos ssm:text-sm lg:text-md">
               Become a seller, must input the following details.
             </h1>
-            <figure className="flex justify-center mb-8">
-              <ol className="flex ssm:mx-5 ssm:text-xs lg:text-base gap-5">
-                <li className="flex font-poppins">
-                  <p className="pl-2   pr-2 border-[#077b8a] rounded-full  font-montserrat text-sm border-2 relative bottom-0 mr-2 bg-[#077b8a50] text-[#0b9fb3] font-bold text-center">
-                    <p className="ssm:mt-1 lg:mt-0">1</p>
-                  </p>{" "}
-                  General Details
-                </li>
-                <p className="border-[#15a380] rounded-lg border-2 transform rotate-90  mr-2 ml-2"></p>
-                <li className="flex font-poppins">
-                  {" "}
-                  <p className="pl-2 pr-2 border-[#077b8a] rounded-full  font-montserrat text-sm border-2 relative bottom-0 mr-2 bg-[#077b8a50] text-[#0b9fb3] font-bold text-center">
-                    <p className="ssm:mt-1 lg:mt-0">2</p>
-                  </p>{" "}
-                  Confirm your Details
-                </li>
-                <p className="border-[#15a380] rounded-lg border-2 transform rotate-90  mr-2 ml-2"></p>
-                <li className="flex font-poppins">
-                  {" "}
-                  <p className="pl-2   pr-2 border-[#077b8a] rounded-full  font-montserrat text-sm border-2 relative bottom-0 mr-2 bg-[#077b8a50] text-[#0b9fb3] font-bold text-center">
-                    <p className="ssm:mt-1 lg:mt-0">3</p>
-                  </p>{" "}
-                  Wait for approval
-                </li>
-              </ol>
-            </figure>
-            <form onSubmit={facultyOnSubmit}>
+            <Stepper>
+              {steps.map((step, index) => (
+                <Step key={index}>
+                  <StepIndicator>
+                    <StepStatus
+                      complete={<StepIcon />}
+                      incomplete={<StepNumber />}
+                      active={<StepNumber />}
+                    />
+                  </StepIndicator>
+
+                  <Box flexShrink="0">
+                    <StepTitle>{step.title}</StepTitle>
+                    <StepDescription>{step.description}</StepDescription>
+                  </Box>
+
+                  <StepSeparator />
+                </Step>
+              ))}
+            </Stepper>
+            <form onSubmit={facultyOnSubmit} className="">
+              <br />
+
               <figure className="grid ssm:grid-cols-1 lg:grid-cols-2 justify-items-center">
                 <article className="grid font-quicksand ">
                   <article className="grid font-quicksand justify-items-start mb-4 ">
+                    {" "}
                     <label className="grid mb-2">
                       <p className="justify-self-start text-xs">Email:</p>
                       <input
-                        className=" bg-transparent w-96"
+                        className=" bg-transparent"
                         type="text"
                         name="email"
                         placeholder={faculty.email}
@@ -651,7 +666,7 @@ function BecomeSeller(props) {
                     <label className="grid mb-2">
                       <p className="justify-self-start text-xs">Username:</p>
                       <input
-                        className="bg-transparent w-96"
+                        className=" bg-transparent"
                         type="text"
                         name="username"
                         placeholder={faculty.username}
@@ -673,119 +688,122 @@ function BecomeSeller(props) {
                       />
                     </label>
                   </article>
-                  <label className="grid mb-2">
-                    <p className="justify-self-start text-xs">Gender</p>
-                    <Select
-                      type="text"
-                      name="gender"
-                      borderBottom={"2px"}
-                      borderLeft={"1px"}
-                      borderRight={"1px"}
-                      borderTop={"1px"}
-                      value={faculty.gender}
-                      onChange={facultyOnChange}
-                      required
-                    >
-                      <option value=""></option>
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
-                    </Select>
-                  </label>
-                  <br />
-                  <label className="grid mb-2">
-                    <p className="justify-self-start text-xs">Facebook</p>
-                    <Input
-                      type="text"
-                      borderBottom={"2px"}
-                      borderLeft={"1px"}
-                      borderRight={"1px"}
-                      borderTop={"1px"}
-                      name="facebook"
-                      placeholder="Input facebook Link"
-                      value={faculty.facebook}
-                      onChange={facultyOnChange}
-                    />
-                    <p className="justify-self-start text-xs">
-                      Ex. (https://www.facebook.com/ashleydiligwapo/)
-                    </p>
-                  </label>
-                  <br />
-                  <label className="grid mb-2">
-                    <p className="justify-self-start text-xs">Address</p>
-                    <Input
-                      type="text"
-                      name="address"
-                      borderBottom={"2px"}
-                      borderLeft={"1px"}
-                      borderRight={"1px"}
-                      borderTop={"1px"}
-                      placeholder="Input address"
-                      value={faculty.address}
-                      onChange={facultyOnChange}
-                    />
-                  </label>
-                  <br />
-                  <label className="grid mb-2">
-                    <p className="justify-self-start text-xs">Phone number</p>
-                    <Input
-                      type="number"
-                      borderBottom={"2px"}
-                      borderLeft={"1px"}
-                      borderRight={"1px"}
-                      borderTop={"1px"}
-                      name="phoneNumber"
-                      placeholder="Phone #"
-                      value={faculty.phoneNumber}
-                      onChange={facultyOnChange}
-                    />
-                  </label>
-                  <br />
-                  <label className="grid mb-2">
-                    <p className="justify-self-start text-xs">Gcash Number</p>
-                    <Input
-                      borderBottom={"2px"}
-                      borderLeft={"1px"}
-                      borderRight={"1px"}
-                      borderTop={"1px"}
-                      type="number"
-                      name="gcashNumber"
-                      placeholder="Gcash #"
-                      value={faculty.gcashNumber}
-                      onChange={facultyOnChange}
-                    />
-                    <p className="justify-self-start text-xs">
-                      Please make sure to use verified (GCASH) Number.
-                    </p>
-                    <p className="justify-self-start text-xs">
-                      This is used for online transaction. (Required)
-                    </p>
-                  </label>
-                  <br />
-                  <label className="grid mb-2">
-                    <p className="justify-self-start text-xs">
-                      Shop Description
-                    </p>
-                    <Textarea
-                      type="text"
-                      borderBottom={"2px"}
-                      borderLeft={"1px"}
-                      borderRight={"1px"}
-                      borderTop={"1px"}
-                      name="shopDescription"
-                      placeholder="Shop Description"
-                      value={faculty.shopDescription}
-                      onChange={facultyOnChange}
-                    />
-                    <p className="justify-self-start text-xs">
-                      Input your profile or shop description.
-                    </p>
-                  </label>
+                  <figure className="w-80 ">
+                    <label className="grid mb-2">
+                      <p className="justify-self-start text-xs">Gender</p>
+                      <Select
+                        type="text"
+                        name="gender"
+                        borderBottom={"2px"}
+                        borderLeft={"1px"}
+                        borderRight={"1px"}
+                        borderTop={"1px"}
+                        value={faculty.gender}
+                        onChange={facultyOnChange}
+                        required
+                      >
+                        <option value=""></option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                      </Select>
+                    </label>
+                    <br />
+                    <label className="grid mb-2">
+                      <p className="justify-self-start text-xs">Facebook</p>
+                      <Input
+                        type="text"
+                        borderBottom={"2px"}
+                        borderLeft={"1px"}
+                        borderRight={"1px"}
+                        borderTop={"1px"}
+                        name="facebook"
+                        placeholder="Input facebook Link"
+                        value={faculty.facebook}
+                        onChange={facultyOnChange}
+                      />
+                      <p className="justify-self-start text-xs">
+                        Ex. (https://www.facebook.com/ashleydiligwapo/)
+                      </p>
+                    </label>
+                    <br />
+                    <label className="grid mb-2">
+                      <p className="justify-self-start text-xs">Address</p>
+                      <Input
+                        type="text"
+                        name="address"
+                        borderBottom={"2px"}
+                        borderLeft={"1px"}
+                        borderRight={"1px"}
+                        borderTop={"1px"}
+                        placeholder="Input address"
+                        value={faculty.address}
+                        onChange={facultyOnChange}
+                      />
+                    </label>
+                    <br />
+                    <label className="grid mb-2">
+                      <p className="justify-self-start text-xs">Phone number</p>
+                      <Input
+                        type="number"
+                        borderBottom={"2px"}
+                        borderLeft={"1px"}
+                        borderRight={"1px"}
+                        borderTop={"1px"}
+                        name="phoneNumber"
+                        placeholder="Phone #"
+                        value={faculty.phoneNumber}
+                        onChange={facultyOnChange}
+                      />
+                    </label>
+                    <br />
+                    <label className="grid mb-2">
+                      <p className="justify-self-start text-xs">Gcash Number</p>
+                      <Input
+                        borderBottom={"2px"}
+                        borderLeft={"1px"}
+                        borderRight={"1px"}
+                        borderTop={"1px"}
+                        type="number"
+                        name="gcashNumber"
+                        placeholder="Gcash #"
+                        value={faculty.gcashNumber}
+                        onChange={facultyOnChange}
+                      />
+                      <p className="justify-self-start text-xs">
+                        Please make sure to use verified (GCASH) Number.
+                      </p>
+                      <p className="justify-self-start text-xs">
+                        This is used for online transaction. (Required)
+                      </p>
+                    </label>
+                    <br />
+                    <label className="grid mb-2">
+                      <p className="justify-self-start text-xs">
+                        Shop Description
+                      </p>
+                      <Textarea
+                        type="text"
+                        borderBottom={"2px"}
+                        borderLeft={"1px"}
+                        borderRight={"1px"}
+                        borderTop={"1px"}
+                        name="shopDescription"
+                        placeholder="Shop Description"
+                        value={faculty.shopDescription}
+                        onChange={facultyOnChange}
+                      />
+                      <p className="justify-self-start text-xs">
+                        Input your profile or shop description.
+                      </p>
+                    </label>
+                  </figure>
                   <br />
                 </article>
-                <article className="ssm:border-l-0 lg:border-l-2 ssm:pl-0 lg:pl-5 ">
+                <article className=" ssm:border-l-0 lg:border-l-2 ssm:pl-0 lg:pl-5 ">
+                  {" "}
                   {/* Image here */}
                   <div className="flex items-center justify-center w-full">
-                    <label className="flex  flex-col items-center justify-center w-96 h-64 mb-5 border-2 border-gray-900 border-dashed rounded-lg cursor-pointer bg-[#eaf3fffa] hover:bg-[#c5d0f3fa] ">
+                    <label className="flex  flex-col items-center justify-center ssm:w-80 lg:w-96 h-64 mb-5 border-2 border-gray-900 border-dashed rounded-lg cursor-pointer bg-[#eaf3fffa] hover:bg-[#c5d0f3fa] ">
                       <div className="flex flex-col items-center justify-center pt-5 pb-6">
                         <AiOutlineUpload className="text-5xl text-gray-900" />
                         <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
@@ -802,7 +820,7 @@ function BecomeSeller(props) {
                       <input
                         id="dropzone-file"
                         type="file"
-                        className="text-black bg-transparent  relative top-5 mr-16"
+                        className="text-black bg-transparent ssm:w-60 lg:w-80  relative top-5 mr-16"
                         name="validId"
                         accept="image/*"
                         required
@@ -811,7 +829,7 @@ function BecomeSeller(props) {
                     </label>
                   </div>
                   <div className="flex items-center justify-center w-full">
-                    <label className="flex  flex-col items-center justify-center w-96 h-64 mb-5 border-2 border-gray-900 border-dashed rounded-lg cursor-pointer bg-[#eaf3fffa] hover:bg-[#c5d0f3fa] ">
+                    <label className="flex  flex-col items-center justify-center ssm:w-80 lg:w-96 h-64 mb-5 border-2 border-gray-900 border-dashed rounded-lg cursor-pointer bg-[#eaf3fffa] hover:bg-[#c5d0f3fa] ">
                       <div className="flex flex-col items-center justify-center pt-5 pb-6">
                         <AiOutlineUpload className="text-5xl text-gray-900" />
                         <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
@@ -828,7 +846,7 @@ function BecomeSeller(props) {
                       <input
                         id="dropzone-file"
                         type="file"
-                        className="text-black bg-transparent  relative top-5 mr-16"
+                        className="text-black bg-transparent ssm:w-60 lg:w-80 relative top-5 mr-16"
                         name="shopImage"
                         accept="image/*"
                         required
@@ -837,7 +855,7 @@ function BecomeSeller(props) {
                     </label>
                   </div>
                   <div className="flex items-center justify-center w-full">
-                    <label className="flex  flex-col items-center justify-center w-96 h-64 border-2 border-gray-900 border-dashed rounded-lg cursor-pointer bg-[#eaf3fffa] hover:bg-[#c5d0f3fa] ">
+                    <label className="flex  flex-col items-center justify-center ssm:w-80 lg:w-96  h-64 border-2 border-gray-900 border-dashed rounded-lg cursor-pointer bg-[#eaf3fffa] hover:bg-[#c5d0f3fa] ">
                       <div className="flex flex-col items-center justify-center pt-5 pb-6">
                         <AiOutlineUpload className="text-5xl text-gray-900" />
                         <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
@@ -854,7 +872,7 @@ function BecomeSeller(props) {
                       <input
                         id="dropzone-file"
                         type="file"
-                        className="text-black bg-transparent  relative top-5 mr-16"
+                        className="text-black bg-transparent ssm:w-60 lg:w-80  relative top-5 mr-16"
                         name="image"
                         accept="image/*"
                         required
@@ -862,12 +880,11 @@ function BecomeSeller(props) {
                       />
                     </label>
                   </div>
-
                   {/* Image here */}
                   <br />
-
                   <Checkbox
-                    className="mb-5 p-2 rounded-md bg-[#06ff9f48] ssm:mr-0 lg:mr-10 grid text-center"
+                    w={{ base: 80, md: 96, lg: 96 }}
+                    className="mb-5 p-2 rounded-md bg-[#06ffa008]   grid text-center "
                     type="checkbox"
                     name="isSeller"
                     colorScheme="teal"
@@ -878,7 +895,7 @@ function BecomeSeller(props) {
                   >
                     <label className="  ">
                       {" "}
-                      <p className="font-poppins text-sm  ssm:w-96 lg:w-100 ">
+                      <p className="font-poppins text-sm  ssm:w-64 lg:w-80 ">
                         {" "}
                         To confirm this account, please click the checkbox and
                         wait for the review for the confirmation of your account
@@ -888,8 +905,8 @@ function BecomeSeller(props) {
                   </Checkbox>
                   <br />
                   <Button
-                    className="mb-10"
-                    w={96}
+                    className="mb-10 uppercase"
+                    w={{ base: 80, md: 96, lg: 96 }}
                     bgColor={"#06ff9f48"}
                     type="submit"
                   >
