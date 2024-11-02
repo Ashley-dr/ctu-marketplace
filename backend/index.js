@@ -13,9 +13,12 @@ import FacultyRoute from "./Routes/FacultyRoute.js";
 import UserRoute from "./Routes/UsersRoute.js";
 import ProductRoute from "./Routes/Products.js";
 
+<<<<<<< HEAD
 import MessageRoute from "./Routes/MessageRoute.js";
 import { createServer } from "http";
 
+=======
+>>>>>>> d17886601206db42920ed9879099a13f81d22792
 dotenv.config();
 mongoose
   .connect(process.env.MONGODB_URI)
@@ -26,7 +29,18 @@ mongoose
 
 const PORT = process.env.PORT || 4000;
 const app = express();
+<<<<<<< HEAD
 const httpServer = createServer(app);
+=======
+// app.use(
+//   cors({
+//     origin: ["http://localhost:5173"],
+//     methods: ["GET", "POST", "PUT", "DELETE"],
+//     credentials: true,
+//   })
+// );
+
+>>>>>>> d17886601206db42920ed9879099a13f81d22792
 app.use(
   cors({
     origin: ["http://localhost:5173"],
