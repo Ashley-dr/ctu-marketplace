@@ -35,7 +35,7 @@ const app = express();
 // );
 app.use(
   cors({
-    origin: "https://cebutechmarketplace.com" || "http://localhost:5173",
+    origin: "https://cebutechmarketplace.com",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
