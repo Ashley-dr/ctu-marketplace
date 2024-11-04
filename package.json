@@ -21,6 +21,7 @@
     "@tamagui/vite-plugin": "^1.110.2",
     "@tanstack/react-table": "^8.20.5",
     "@thumbtack/thumbprint-react": "^14.18.2",
+    "aos": "^2.3.4",
     "axios": "^1.6.8",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",

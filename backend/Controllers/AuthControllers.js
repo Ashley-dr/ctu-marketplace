@@ -275,7 +275,6 @@ export const FacultySignup = async (req, res, next) => {
       gender,
       phoneNumber,
       isFaculty: "Faculty",
-
       validId,
       shopImage,
       address,
@@ -312,12 +311,12 @@ export const Login = async (req, res, next) => {
       if (auth) {
         const token = createSecretToken(user._id);
         res.cookie("token", token, {
-          withCredentials: true,
-          httpOnly: false,
+          // withCredentials: true,
+          // httpOnly: false,
 
-          // httpOnly: true,
-          // secure: true, // Only for HTTPS; required for Render's hosted environment
-          // sameSite: "None", // Required for cross-domain cookies with credentials
+          httpOnly: true,
+          secure: true, // Only for HTTPS; required for Render's hosted environment
+          sameSite: "None", // Required for cross-domain cookies with credentials
         });
         return res.json({
           message: `Student logged in successfully ${email}`,
@@ -335,11 +334,11 @@ export const Login = async (req, res, next) => {
       if (authfaculty) {
         const token = createSecretToken(facultyuser._id);
         res.cookie("token", token, {
-          withCredentials: true,
-          httpOnly: false,
-          // httpOnly: true,
-          // secure: true, // Only for HTTPS; required for Render's hosted environment
-          // sameSite: "None", // Required for cross-domain cookies with credentials
+          // withCredentials: true,
+          // httpOnly: false,
+          httpOnly: true,
+          secure: true, // Only for HTTPS; required for Render's hosted environment
+          sameSite: "None", // Required for cross-domain cookies with credentials
         });
         return res.json({
           message: `Staff logged in successfully ${email}`,

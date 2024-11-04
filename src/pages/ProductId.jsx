@@ -485,8 +485,23 @@ function ProductId() {
 
                             <p className="justify-self-center">
                               {" "}
-                              <CalendarIcon className="mb-1" />{" "}
-                              {formatDateToNow(productData.createdAt)}
+                              <p className="ml-2 text-xs opacity-90  ">
+                                <CalendarIcon className="mb-1" />{" "}
+                                {formatDateToNow(productData.createdAt)}
+                                <br />
+                                <p className="text-[11px]">
+                                  {new Date(
+                                    productData.createdAt
+                                  ).toLocaleTimeString("en-PH", {
+                                    second: "2-digit",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                    day: "2-digit",
+                                    month: "long",
+                                    hour12: true,
+                                  })}
+                                </p>
+                              </p>
                             </p>
                             <p className="flex">
                               <BsBox2 className="mr-3" /> {productData.stocks}
@@ -576,7 +591,7 @@ function ProductId() {
                           <DrawerOverlay />
                           <DrawerContent
                             rounded={"xl"}
-                            m={{ base: "xs", md: "md", lg: "lg" }}
+                            m={{ base: "xs", md: "md", lg: "2" }}
                           >
                             <DrawerCloseButton />
                             <DrawerHeader>

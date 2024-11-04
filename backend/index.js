@@ -28,22 +28,23 @@ const app = express();
 const httpServer = createServer(app);
 createServer(app);
 
-app.use(
-  cors({
-    origin: ["http://localhost:5173"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
 // app.use(
 //   cors({
-//     origin: ["https://marketplace-ctu.onrender.com"],
+//     origin: ["http://localhost:5173"],
 //     methods: ["GET", "POST", "PUT", "DELETE"],
 //     credentials: true,
 //   })
 // );
+// app.use(cors({ origin: true, credentials: true }));
+app.use(
+  cors({
+    origin: ["https://marketplace-ctu.onrender.com"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static("dist"));
+app.use(express.static("client/build"));
 
 app.use(express.json());
 app.use(cookieParser());

@@ -294,6 +294,9 @@ function Navigation() {
         if (result.data.success) {
           toast.success(result.data.message);
           navigate("/");
+
+          signupModal.onClose();
+          selectModal.onClose();
         }
       })
       .catch((err) => {
@@ -332,6 +335,8 @@ function Navigation() {
         if (result.data.success) {
           toast.success(result.data.message);
           navigate("/");
+          facultysignupModal.onClose();
+          selectModal.onClose();
         }
         // window.location.reload();
       })
@@ -418,9 +423,13 @@ function Navigation() {
     window.location.reload();
   };
   return (
-    <div className="max-w-full font-quicksand text-sm fixed w-screen z-10">
+    <div className="max-w-full font-quicksand text-sm fixed w-screen z-20">
       <ToastContainer />
-      <Box className="" bg={useColorModeValue("gray.100", "gray.900")} px={4}>
+      <Box
+        className=""
+        bg={useColorModeValue("brand.light", "brand.dark")}
+        px={4}
+      >
         <Flex
           h={16}
           className=""
@@ -439,7 +448,7 @@ function Navigation() {
 
           <Flex zIndex={10} alignItems={"center"}>
             <Stack direction={"row"} spacing={1}>
-              <Button onClick={toggleColorMode} className="mt-1">
+              <Button onClick={toggleColorMode} className="mt-1" mr={2}>
                 {" "}
                 {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
               </Button>
@@ -1330,6 +1339,12 @@ function Navigation() {
                       [e.target.name]: e.target.value,
                     });
                   }}
+                />
+                <IconButton
+                  variant="ghost"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  icon={showPassword ? <FiEyeOff /> : <FiEye />}
+                  onClick={() => setShowPassword(!showPassword)}
                 />
               </FormControl>
 

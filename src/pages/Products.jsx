@@ -174,44 +174,65 @@ function Products() {
           </div>
           <label className="flex mb-1">
             {" "}
-            <p className="ml-2 ssm:text-sm lg:text-sm opacity-90  ">
+            <p className="ml-2 text-xs opacity-90  ">
               <CalendarIcon className="mb-1" />{" "}
               {formatDateToNow(item.createdAt)}
+              <br />
+              <p className="text-[11px]">
+                {new Date(item.createdAt).toLocaleTimeString("en-PH", {
+                  second: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  day: "2-digit",
+                  month: "long",
+                  hour12: true,
+                })}
+              </p>
             </p>
           </label>
           {item.image.slice(0, 1).map((image, index) => (
-            <a key={index} target="_blank" href={image}>
+            <div key={index}>
               <img
-                className="rounded-md p-1 ssm:h-48 md:h-56 lg:h-72 bg-no-repeat bg-fixed w-full object-cover"
+                className="rounded-md p-1 ssm:h-48 md:h-56 lg:h-72 bg-cover bg-no-repeat bg-fixed w-full object-cover"
                 key={index}
                 src={image}
                 alt={`Image ${index + 1}`}
               />
               <div className="absolute inset-0 opacity-40 rounded-md"></div>
-              <div className="absolute  inset-0 ssm:mt-52 sm:mt-52 md:mt-60 lg:mt-72  bg-gradient-to-t from-gray-900 via-gray-500/30">
-                <h2 className="z-10 relative lg:top-6 text-2xl px-4  font-orbitron text-white">
+              <div className="absolute  inset-0 ssm:mt-52 sm:mt-52 md:mt-60 lg:mt-72 ">
+                {/* <h2 className="z-10 relative lg:top-6 text-2xl px-4  text-white">
                   <p>
                     {new Intl.NumberFormat("en-PH", {
                       style: "currency",
                       currency: "PHP",
                     }).format(item.price)}
                   </p>
-                </h2>
+                </h2> */}
               </div>
-            </a>
+            </div>
           ))}
         </div>
         <div className="font-quicksand ">
-          <label className="">
-            <p className="truncate mb-1 mt-1 text-lg ml-3  font-extralight ">
-              {item.prodName}
+          <div className="grid grid-cols-2 justify-between">
+            <label className="">
+              <p className="truncate mb-1 mt-1 text-lg ml-3  font-extralight ">
+                {item.prodName}
+              </p>
+            </label>
+
+            <p className="truncate mb-1 mt-1 text-lg ml-3 justify-self-end mr-5 font-extralight ">
+              {new Intl.NumberFormat("en-PH", {
+                style: "currency",
+                currency: "PHP",
+              }).format(item.price)}
             </p>
-          </label>
+          </div>
           <div className="flex justify-between px-2">
             <label className="flex mx-2">
               <BsBox2 className="mt-1 text-base" />
               <p className="pl-1  text-base underline">{item.stocks}</p>
             </label>
+
             <label className="flex mx-2">
               <RiAccountPinCircleLine className="mt-1 text-base" />
 
@@ -250,14 +271,18 @@ function Products() {
   }
 
   return (
-    <div className="rounded-md   pb-4 max-w-full max-h-full justify-items-center grid  ">
-      <div className="bg-[#79787809] justify-items-center grid max-w-full w-full  pr-5">
+    <div className="rounded-md mt-5 pb-4 max-w-full max-h-full justify-items-center grid  ">
+      <div className=" bg-gradient-to-br from-[#4a35610d] via-[#5505a60d] to-[#480a850d] justify-items-center grid max-w-full w-full  pr-5">
         <form className="">
           <figure className="grid">
             <Input
               ml={5}
-              borderColor={"black.900"}
-              className="pl-5 w-96 mt-5 pt-1 rounded-md  border-2 "
+              borderColor={"purple.700"}
+              borderTop={2}
+              borderLeft={2}
+              rounded={0}
+              borderRight={2}
+              className="pl-5 w-96 mt-5 pt-1   border-2 "
               placeholder="Search items here"
               type="text"
               w={{ base: "xs", md: "md", lg: "lg" }}
@@ -302,7 +327,7 @@ function Products() {
         <p className="text-xs">Open Categories</p>{" "}
         <ArrowRightIcon className="transform rotate-90  ml-3" />
       </button>
-      <div className="flex mt-7 mb-7 bg-[#1b6e7c0e] pt-5 ssm:px-0 lg:px-5 rounded-lg">
+      <div className="flex mt-7 mb-7  pt-5 ssm:px-0 lg:px-5 rounded-lg">
         <div className=" shrink-0 grid   ssm:hidden lg:grid lg:grid-cols-1  mb-5">
           <p className="flex text-sm gap-2 font-poppins">
             <p>Total Products</p>
