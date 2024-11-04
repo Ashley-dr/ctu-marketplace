@@ -275,6 +275,7 @@ export const FacultySignup = async (req, res, next) => {
       gender,
       phoneNumber,
       isFaculty: "Faculty",
+
       validId,
       shopImage,
       address,
