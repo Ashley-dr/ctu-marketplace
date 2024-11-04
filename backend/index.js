@@ -35,7 +35,13 @@ createServer(app);
 //     credentials: true,
 //   })
 // );
-app.use(cors({ origin: true, credentials: true }));
+app.use(
+  cors({
+    origin: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 // app.use(
 //   cors({
 //     origin: ["https://marketplace-ctu.onrender.com"],
