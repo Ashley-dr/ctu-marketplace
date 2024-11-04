@@ -35,7 +35,7 @@ const app = express();
 // );
 app.use(
   cors({
-    origin: ["https://marketplace-ctu.onrender.com"],
+    origin: "https://cebutechmarketplace.com" || "http://localhost:5173",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
