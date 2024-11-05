@@ -318,7 +318,7 @@ export const Login = async (req, res, next) => {
           withCredentials: true,
           // httpOnly: true,
           // secure: true, // Only for HTTPS; required for Render's hosted environment
-          // sameSite: "None", // Required for cross-domain cookies with credentials
+          // sameSite: "git None", // Required for cross-domain cookies with credentials
         });
         return res.json({
           message: `Student logged in successfully ${email}`,
