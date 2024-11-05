@@ -7,7 +7,7 @@ import { v2 as cloudinary } from "cloudinary";
 import { FacultyModel } from "../Models/FacultyUsers.js";
 const router = express.Router();
 // Users model //
-router.get("/api/users", (req, res) => {
+router.get("/users", (req, res) => {
   UserModel.find()
     .then((result) => {
       res.json(result);
@@ -16,7 +16,7 @@ router.get("/api/users", (req, res) => {
       res.status(404).json(err);
     });
 });
-router.put("/api/usersSellerUpdate/:id", (req, res) => {
+router.put("/usersSellerUpdate/:id", (req, res) => {
   UserModel.findByIdAndUpdate(req.params.id, req.body)
     .then((result) => {
       res.json("Student user has been a seller successfully,");
@@ -26,7 +26,7 @@ router.put("/api/usersSellerUpdate/:id", (req, res) => {
     });
 });
 
-router.delete("/api/users/:id", (req, res) => {
+router.delete("/users/:id", (req, res) => {
   UserModel.findByIdAndDelete(req.params.id, req.body)
     .then((result) => {
       res.json({ mgs: "User Deleted" });
@@ -35,7 +35,7 @@ router.delete("/api/users/:id", (req, res) => {
       console.log("Error to delete this user", err);
     });
 });
-router.get("/api/users/:id", (req, res) => {
+router.get("/users/:id", (req, res) => {
   UserModel.findById(req.params.id, req.body, req.file)
     .then((result) => {
       res.json(result);
@@ -44,7 +44,7 @@ router.get("/api/users/:id", (req, res) => {
       console.log("Error");
     });
 });
-router.get("/api/user-account/:email", async (req, res) => {
+router.get("/user-account/:email", async (req, res) => {
   UserModel.findOne({ email: req.params.email })
     .then((result) => {
       res.status(200).json(result);
@@ -54,7 +54,7 @@ router.get("/api/user-account/:email", async (req, res) => {
     });
 });
 
-router.put("/api/userEmail/:id", async (req, res) => {
+router.put("/userEmail/:id", async (req, res) => {
   try {
     const { email } = req.body;
 
@@ -80,7 +80,7 @@ router.put("/api/userEmail/:id", async (req, res) => {
   }
 });
 
-router.put("/api/userNumbers/:id", async (req, res) => {
+router.put("/userNumbers/:id", async (req, res) => {
   try {
     const { phoneNumber, gcashNumber } = req.body;
 
@@ -124,7 +124,7 @@ router.put("/api/userNumbers/:id", async (req, res) => {
   }
 });
 
-router.put("/api/ctuId/:id", async (req, res) => {
+router.put("/ctuId/:id", async (req, res) => {
   try {
     const { idNumber } = req.body;
     const existingUserIDNumber = await UserModel.findOne({ idNumber });
@@ -152,7 +152,7 @@ router.put("/api/ctuId/:id", async (req, res) => {
 });
 
 router.put(
-  "/api/users/:id",
+  "/users/:id",
   upload.fields([
     { name: "validId", maxCount: 1 },
     { name: "image", maxCount: 1 },

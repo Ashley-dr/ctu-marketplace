@@ -7,7 +7,7 @@ import { UserModel } from "../Models/UserModel.js";
 import { FacultyModel } from "../Models/FacultyUsers.js";
 // Faculty users model //
 const router = express.Router();
-router.get("/api/faculty", (req, res) => {
+router.get("/faculty", (req, res) => {
   FacultyModel.find()
     .then((result) => {
       res.json(result);
@@ -17,7 +17,7 @@ router.get("/api/faculty", (req, res) => {
     });
 });
 
-router.put("/api/facultySellerUpdate/:id", (req, res) => {
+router.put("/facultySellerUpdate/:id", (req, res) => {
   FacultyModel.findByIdAndUpdate(req.params.id, req.body)
     .then((result) => {
       res.json("Faculty member has been a seller successfully,");
@@ -26,7 +26,7 @@ router.put("/api/facultySellerUpdate/:id", (req, res) => {
       console.log("Cannot be a seller.");
     });
 });
-router.get("/api/faculty/:id", (req, res) => {
+router.get("/faculty/:id", (req, res) => {
   FacultyModel.findById(req.params.id, req.body)
     .then((result) => {
       res.json(result);
@@ -35,7 +35,7 @@ router.get("/api/faculty/:id", (req, res) => {
       console.log("Error");
     });
 });
-router.delete("/api/faculty/:id", (req, res) => {
+router.delete("/faculty/:id", (req, res) => {
   FacultyModel.findByIdAndDelete(req.params.id, req.body)
     .then((result) => {
       res.json({ mgs: "Faculty user deleted" });
@@ -46,7 +46,7 @@ router.delete("/api/faculty/:id", (req, res) => {
 });
 
 router.put(
-  "/api/faculty/:id",
+  "/faculty/:id",
   upload.fields([
     { name: "validId", maxCount: 1 },
     { name: "image", maxCount: 1 },
@@ -119,7 +119,7 @@ router.put(
   }
 );
 
-router.put("/api/facultyEmail/:id", async (req, res) => {
+router.put("/facultyEmail/:id", async (req, res) => {
   try {
     const { email } = req.body;
 
@@ -145,7 +145,7 @@ router.put("/api/facultyEmail/:id", async (req, res) => {
   }
 });
 
-router.put("/api/facultyNumbers/:id", async (req, res) => {
+router.put("/facultyNumbers/:id", async (req, res) => {
   try {
     const { phoneNumber, gcashNumber } = req.body;
 
@@ -188,7 +188,7 @@ router.put("/api/facultyNumbers/:id", async (req, res) => {
     res.status(400).json({ message: "Cannot update user data" });
   }
 });
-router.get("/api/faculty-account/:email", async (req, res) => {
+router.get("/faculty-account/:email", async (req, res) => {
   FacultyModel.findOne({ email: req.params.email })
     .then((result) => {
       res.status(200).json(result);

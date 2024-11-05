@@ -26,7 +26,7 @@ const router = express.Router();
 
 // router.post("/api/chat-channel", createChannel);
 // router.post("/generate-stream-token", generateStreamToken);
-router.post("/api/send-message", upload.single("image"), async (req, res) => {
+router.post("/send-message", upload.single("image"), async (req, res) => {
   try {
     const { senderEmail, receiverEmail, message } = req.body;
     const file = req.file ? req.file.path : null; // Get file URL if uploaded
@@ -48,7 +48,7 @@ router.post("/api/send-message", upload.single("image"), async (req, res) => {
     console.log("Message sent error", error);
   }
 });
-router.get("/api/get-message/:senderEmail/:receiverEmail", async (req, res) => {
+router.get("/get-message/:senderEmail/:receiverEmail", async (req, res) => {
   try {
     const { senderEmail, receiverEmail } = req.params;
     const message = await MessageModel.find({
@@ -62,7 +62,7 @@ router.get("/api/get-message/:senderEmail/:receiverEmail", async (req, res) => {
     console.log("Error to receive a message: ", error);
   }
 });
-router.delete("/api/delete-message/:id", async (req, res) => {
+router.delete("/delete-message/:id", async (req, res) => {
   MessageModel.findByIdAndDelete(req.params.id)
     .then((result) => {
       res.json(result);

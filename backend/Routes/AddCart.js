@@ -6,7 +6,7 @@ import { v2 as cloudinary } from "cloudinary";
 import { PurchasedModel } from "../Models/Purchased.js";
 const router = express.Router();
 // item purchased add to cart //
-router.post("/api/chats/:id", async (req, res) => {
+router.post("/chats/:id", async (req, res) => {
   const chatsvar = await PurchasedModel.findById(req.params.id);
   const newChat = {
     chats: req.body.chats,
@@ -20,7 +20,7 @@ router.post("/api/chats/:id", async (req, res) => {
   res.json(newChat);
 });
 
-router.post("/api/purchasedItem", (req, res) => {
+router.post("/purchasedItem", (req, res) => {
   PurchasedModel.create(req.body)
     .then((result) => {
       res.json(result);
@@ -29,7 +29,7 @@ router.post("/api/purchasedItem", (req, res) => {
       console.log("error", err);
     });
 });
-router.get("/api/user-orders/:id", async (req, res) => {
+router.get("/user-orders/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const result = await PurchasedModel.aggregate(
@@ -48,7 +48,7 @@ router.get("/api/user-orders/:id", async (req, res) => {
     res.status(500).json({ message: "Error in fetching order count", error });
   }
 });
-router.get("/api/user-orders", async (req, res) => {
+router.get("/user-orders", async (req, res) => {
   try {
     const result = await PurchasedModel.aggregate(
       [
@@ -69,7 +69,7 @@ router.get("/api/user-orders", async (req, res) => {
     res.status(500).json({ message: "Error in fetching order count", error });
   }
 });
-router.put("/api/purchasedItem/:id", upload.single("image"), (req, res) => {
+router.put("/purchasedItem/:id", upload.single("image"), (req, res) => {
   PurchasedModel.findByIdAndUpdate(req.params.id, req.body, { new: true })
     .then((result) => {
       res.json(result);
@@ -78,7 +78,7 @@ router.put("/api/purchasedItem/:id", upload.single("image"), (req, res) => {
       res.status(400).json({ error: "Unable to update" });
     });
 });
-router.get("/api/transactions/:sellerId", (req, res) => {
+router.get("/transactions/:sellerId", (req, res) => {
   PurchasedModel.find({ sellerId: req.params.sellerId })
     .then((result) => {
       res.json(result);
@@ -87,7 +87,7 @@ router.get("/api/transactions/:sellerId", (req, res) => {
       res.status(404).json(err);
     });
 });
-router.get("/api/transaction-count/:id", async (req, res) => {
+router.get("/transaction-count/:id", async (req, res) => {
   PurchasedModel.aggregate(
     [
       { $match: { sellerId: req.params.id } },
@@ -105,7 +105,7 @@ router.get("/api/transaction-count/:id", async (req, res) => {
       res.status(500).json({ message: "Error in fetching order count", err });
     });
 });
-router.get("/api/orders/:userId", (req, res) => {
+router.get("/orders/:userId", (req, res) => {
   PurchasedModel.find({ userId: req.params.userId })
     .then((result) => {
       res.json(result);
@@ -114,7 +114,7 @@ router.get("/api/orders/:userId", (req, res) => {
       console.log("Error to get orders", err);
     });
 });
-router.delete("/api/orders/:id", (req, res) => {
+router.delete("/orders/:id", (req, res) => {
   PurchasedModel.findByIdAndDelete(req.params.id)
     .then((result) => {
       res.json(result);

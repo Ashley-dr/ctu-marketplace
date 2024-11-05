@@ -8,7 +8,7 @@ import upload from "../config/Cloudinary.js";
 
 const router = express.Router();
 // Add Products //
-router.post("/api/products", upload.array("image", 5), async (req, res) => {
+router.post("/products", upload.array("image", 5), async (req, res) => {
   try {
     const {
       sellerId,
@@ -53,7 +53,7 @@ router.post("/api/products", upload.array("image", 5), async (req, res) => {
   }
 });
 
-router.get("/api/products", (req, res) => {
+router.get("/products", (req, res) => {
   ProductModel.find()
     .then((result) => {
       res.json(result);
@@ -62,7 +62,7 @@ router.get("/api/products", (req, res) => {
       res.status(404).json(err);
     });
 });
-router.get("/api/inventory/:sellerId", (req, res) => {
+router.get("/inventory/:sellerId", (req, res) => {
   ProductModel.find({ sellerId: req.params.sellerId })
     .then((result) => {
       res.json(result);
@@ -71,7 +71,7 @@ router.get("/api/inventory/:sellerId", (req, res) => {
       res.status(404).json(err);
     });
 });
-router.put("/api/inventory/:id", async (req, res) => {
+router.put("/inventory/:id", async (req, res) => {
   try {
     const { stocks, price } = req.body;
     await ProductModel.findByIdAndUpdate(
@@ -85,7 +85,7 @@ router.put("/api/inventory/:id", async (req, res) => {
   }
 });
 
-router.delete("/api/inventory/:id", async (req, res) => {
+router.delete("/inventory/:id", async (req, res) => {
   try {
     const deleteProduct = await ProductModel.findByIdAndDelete(req.params.id);
     if (!deleteProduct) {
@@ -96,7 +96,7 @@ router.delete("/api/inventory/:id", async (req, res) => {
     res.status(505).json({ error: error.message });
   }
 });
-router.get("/api/products/:id", (req, res) => {
+router.get("/products/:id", (req, res) => {
   ProductModel.findById(req.params.id, req.body, req.file)
     .then((result) => {
       res.json(result);
@@ -106,7 +106,7 @@ router.get("/api/products/:id", (req, res) => {
     });
 });
 
-router.post("/api/comments/:id", async (req, res) => {
+router.post("/comments/:id", async (req, res) => {
   const product = await ProductModel.findById(req.params.id);
   const newComment = {
     comment: req.body.comment,
@@ -121,7 +121,7 @@ router.post("/api/comments/:id", async (req, res) => {
   res.json(newComment);
 });
 
-router.delete("/api/comments/:productId/:commentId", async (req, res) => {
+router.delete("/comments/:productId/:commentId", async (req, res) => {
   try {
     const { productId, commentId } = req.params;
     const product = await ProductModel.findById(productId);
@@ -135,7 +135,7 @@ router.delete("/api/comments/:productId/:commentId", async (req, res) => {
   }
 });
 
-router.get("/api/comments/:productId", async (req, res) => {
+router.get("/comments/:productId", async (req, res) => {
   try {
     const product = await ProductModel.findById(req.params.productId);
     res.json(product.comments);
@@ -143,7 +143,7 @@ router.get("/api/comments/:productId", async (req, res) => {
     res.status(500).json({ message: "Error fetching comments", error });
   }
 });
-router.get("/api/user-products/:id", async (req, res) => {
+router.get("/user-products/:id", async (req, res) => {
   ProductModel.aggregate(
     [
       { $match: { sellerId: req.params.id } },
@@ -161,7 +161,7 @@ router.get("/api/user-products/:id", async (req, res) => {
       res.status(500).json({ message: "Error in fetching order count", err });
     });
 });
-router.get("/api/count-products", async (req, res) => {
+router.get("/count-products", async (req, res) => {
   ProductModel.aggregate([{ $group: { _id: "_id", count: { $sum: 1 } } }], {
     maxTimeMS: 60000,
     allowDiskUse: true,

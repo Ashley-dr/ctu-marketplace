@@ -5,78 +5,74 @@ import { DonePurchasedModel } from "../Models/DonePurchased.js";
 import upload from "../config/Cloudinary.js";
 import { v2 as cloudinary } from "cloudinary";
 const router = express.Router();
-router.post(
-  "/api/DonePurchased",
-  upload.array("picture", 5),
-  async (req, res) => {
-    try {
-      const {
-        userId,
-        sellerId,
-        sellerName,
-        productId,
-        sellerEmail,
-        prodName,
-        message,
-        quantity,
-        buyerName,
-        buyerEmail,
-        image,
-        status,
-        total,
-        types,
-        sellerFacebook,
-        buyerFacebook,
-        picture,
-        price,
-        accountType,
-        tax,
-        buyerPhoneNumber,
-        sellerPhoneNumber,
-        buyerGcashNumber,
-        sellerGcashNumber,
-        buyerType,
-      } = req.body;
-      const imageUrls = [];
-      for (const file of req.files) {
-        const result = await cloudinary.uploader.upload(file.path);
-        imageUrls.push(result.secure_url);
-      }
-      const newImages = new DonePurchasedModel({
-        userId,
-        sellerId,
-        sellerName,
-        productId,
-        sellerEmail,
-        prodName,
-        message,
-        quantity,
-        buyerName,
-        buyerEmail,
-        status,
-        total,
-        types,
-        sellerFacebook,
-        buyerFacebook,
-        picture: imageUrls,
-        price,
-        accountType,
-        image,
-        tax,
-        buyerPhoneNumber,
-        sellerPhoneNumber,
-        buyerGcashNumber,
-        sellerGcashNumber,
-        buyerType,
-      });
-      await newImages.save();
-    } catch (error) {
-      console.log("Error uploading images", error);
-      res.status(500).json({ success: false, error: "Failed to upload" });
+router.post("/DonePurchased", upload.array("picture", 5), async (req, res) => {
+  try {
+    const {
+      userId,
+      sellerId,
+      sellerName,
+      productId,
+      sellerEmail,
+      prodName,
+      message,
+      quantity,
+      buyerName,
+      buyerEmail,
+      image,
+      status,
+      total,
+      types,
+      sellerFacebook,
+      buyerFacebook,
+      picture,
+      price,
+      accountType,
+      tax,
+      buyerPhoneNumber,
+      sellerPhoneNumber,
+      buyerGcashNumber,
+      sellerGcashNumber,
+      buyerType,
+    } = req.body;
+    const imageUrls = [];
+    for (const file of req.files) {
+      const result = await cloudinary.uploader.upload(file.path);
+      imageUrls.push(result.secure_url);
     }
+    const newImages = new DonePurchasedModel({
+      userId,
+      sellerId,
+      sellerName,
+      productId,
+      sellerEmail,
+      prodName,
+      message,
+      quantity,
+      buyerName,
+      buyerEmail,
+      status,
+      total,
+      types,
+      sellerFacebook,
+      buyerFacebook,
+      picture: imageUrls,
+      price,
+      accountType,
+      image,
+      tax,
+      buyerPhoneNumber,
+      sellerPhoneNumber,
+      buyerGcashNumber,
+      sellerGcashNumber,
+      buyerType,
+    });
+    await newImages.save();
+  } catch (error) {
+    console.log("Error uploading images", error);
+    res.status(500).json({ success: false, error: "Failed to upload" });
   }
-);
-router.get("/api/DonePurchased", async (req, res) => {
+});
+router.get("/DonePurchased", async (req, res) => {
   DonePurchasedModel.find()
     .then((result) => {
       res.json(result);
@@ -85,7 +81,7 @@ router.get("/api/DonePurchased", async (req, res) => {
       res.status(404).json(err);
     });
 });
-router.delete("/api/DonePurchased/:id", async (req, res) => {
+router.delete("/DonePurchased/:id", async (req, res) => {
   try {
     const deleteProduct = await DonePurchasedModel.findByIdAndDelete(
       req.params.id
@@ -98,7 +94,7 @@ router.delete("/api/DonePurchased/:id", async (req, res) => {
     res.status(505).json({ error: error.message });
   }
 });
-router.get("/api/item-sold/:id", async (req, res) => {
+router.get("/item-sold/:id", async (req, res) => {
   DonePurchasedModel.aggregate(
     [
       { $match: { sellerId: req.params.id } },

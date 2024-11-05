@@ -1,13 +1,8 @@
 /* eslint-disable no-unused-vars */
 
 import "./App.css";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Link,
-  BrowserRouter,
-} from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
+
 import Home from "./pages/Home";
 import { Box, useColorModeValue } from "@chakra-ui/react";
 import Navigation from "./components/Navigation";
@@ -34,36 +29,34 @@ import ChatPage from "./tabs/ChatPage";
 function App() {
   const bgColor = useColorModeValue("brand.light", "brand.dark");
   return (
-    <UserContextProvider>
-      <Box bg={bgColor}>
-        <header className="w-full pb-16">
-          <Navigation />
-        </header>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/Account" element={<Account />} />
-          <Route path="/UserAccount/:email" element={<UserAccount />} />
-          <Route path="/FacultyAccount/:email" element={<FacultyAccount />} />
-          <Route path="/MainAdmDash/*" element={<MainDashboard />} />
-          <Route path="/BecomeSeller/:id" element={<BecomeSeller />} />
-          <Route path="/Transactions/:id" element={<Transactions />} />
-          <Route path="/Inventory/:id" element={<Inventory />} />
-          <Route path="/UserInventory/:id" element={<UserInventory />} />
-          <Route path="/ChatPage" element={<ChatPage />} />
-          <Route path="/Orders/:id" element={<Orders />} />
-          <Route path="/AddProducts/:id" element={<AddProducts />} />
-          <Route
-            path="/FacultyAddProducts/:id"
-            element={<FacultyAddProducts />}
-          />
-          <Route path="/AccountsToBeSeller" element={<AccountsToBeSeller />} />
-          <Route path="/ProductId/:id" element={<ProductId />} />
-        </Routes>
-        <footer>
-          <Footer />
-        </footer>
-      </Box>
-    </UserContextProvider>
+    <Box bg={bgColor}>
+      <header className="w-full pb-16">
+        <Navigation />
+      </header>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/Account" element={<Account />} />
+        <Route path="/UserAccount/:email" element={<UserAccount />} />
+        <Route path="/FacultyAccount/:email" element={<FacultyAccount />} />
+        <Route path="/MainAdmDash/*" element={<MainDashboard />} />
+        <Route path="/BecomeSeller/:id" element={<BecomeSeller />} />
+        <Route path="/Transactions/:id" element={<Transactions />} />
+        <Route path="/Inventory/:id" element={<Inventory />} />
+        <Route path="/UserInventory/:id" element={<UserInventory />} />
+        <Route path="/ChatPage" element={<ChatPage />} />
+        <Route path="/Orders/:id" element={<Orders />} />
+        <Route path="/AddProducts/:id" element={<AddProducts />} />
+        <Route
+          path="/FacultyAddProducts/:id"
+          element={<FacultyAddProducts />}
+        />
+        <Route path="/AccountsToBeSeller" element={<AccountsToBeSeller />} />
+        <Route path="/ProductId/:id" element={<ProductId />} />
+      </Routes>
+      <footer>
+        <Footer />
+      </footer>
+    </Box>
   );
 }
 
