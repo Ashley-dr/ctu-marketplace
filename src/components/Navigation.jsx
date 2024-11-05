@@ -419,9 +419,28 @@ function Navigation() {
 
   const logout = () => {
     removeCookies("token");
+
     navigate("/");
 
     window.location.reload();
+  };
+  const handleLogout = async () => {
+    try {
+      // Send logout request to backend
+      await axios.post(
+        `${baseUrl}/logout`,
+        {},
+        { withCredentials: true } // Ensure the cookie is sent with the request
+      );
+
+      // Remove the token cookie from client-side storage (optional but recommended)
+      removeCookies("token", { path: "/" });
+      window.location.reload();
+      // Redirect to login or home page
+      navigate("/");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
   return (
     <div className="max-w-full font-quicksand text-sm fixed w-screen z-20">
@@ -610,7 +629,7 @@ function Navigation() {
                       <></>
                     )}
                     <MenuItem>
-                      <Button className="w-full gap-2" onClick={logout}>
+                      <Button className="w-full gap-2" onClick={handleLogout}>
                         <p className="text-xs">Sign out</p>
                         <CiLogout />
                       </Button>
@@ -698,7 +717,7 @@ function Navigation() {
                       </Link>
                     )}
                     <MenuItem>
-                      <Button className="w-full gap-2" onClick={logout}>
+                      <Button className="w-full gap-2" onClick={handleLogout}>
                         <p className="text-xs">Sign out</p>
                         <CiLogout />
                       </Button>
