@@ -234,16 +234,19 @@ function ProductId() {
     e.preventDefault();
 
     let commenterName = "";
+    let commenterImage = "";
     let commenterEmail = "";
     let commenterId = "";
     let commenterAccountType = "";
     if (isUsers) {
       commenterName = isUsers.fullname;
+      commenterImage = isUsers.image;
       commenterAccountType = isUsers.isUser;
       commenterEmail = isUsers.email;
       commenterId = isUsers.id;
     } else if (isFaculty) {
       commenterName = isFaculty.fullname;
+      commenterImage = isFaculty.image;
       commenterEmail = isFaculty.email;
       commenterAccountType = isFaculty.isFaculty;
       commenterId = isFaculty.id;
@@ -251,6 +254,7 @@ function ProductId() {
     axios
       .post(`${baseUrl}/api/comments/${id}`, {
         comment: newComment,
+        commenterImage: commenterImage,
         commenterEmail: commenterEmail,
         commenterAccountType: commenterAccountType,
         commenterId: commenterId,
@@ -690,9 +694,12 @@ function ProductId() {
                                 <Link
                                   to={`/UserAccount/${comment.commenterEmail}`}
                                 >
-                                  <span className="flex underline font-extralight pt-1 mb-1">
-                                    <CgNametag className="mt-0.5 mr-1 text-base" />{" "}
-                                    {comment.commenterName}
+                                  <span className="flex underline font-extralight pt-1 mb-1 gap-4 mx-2 ">
+                                    <Avatar
+                                      size={"sm"}
+                                      src={comment.commenterImage}
+                                    />{" "}
+                                    <Text>{comment.commenterName} </Text>
                                   </span>
                                 </Link>
                               </>
@@ -703,20 +710,23 @@ function ProductId() {
                                 <Link
                                   to={`/FacultyAccount/${comment.commenterEmail}`}
                                 >
-                                  <span className="flex underline font-extralight pt-1 mb-1">
-                                    <CgNametag className="mt-0.5 mr-1 text-base" />{" "}
-                                    {comment.commenterName}
+                                  <span className="flex underline font-extralight pt-1 mb-1 gap-4 mx-2 ">
+                                    <Avatar
+                                      size={"sm"}
+                                      src={comment.commenterImage}
+                                    />{" "}
+                                    <Text>{comment.commenterName} </Text>
                                   </span>
                                 </Link>
                               </>
                             )}
 
-                            <span className="ml-2 text-xs mt-1 flex">
+                            <span className=" text-xs mt-2 flex">
                               <LuDot className="mr-1 text-base" />{" "}
                               {formatDateToNow(comment.createdAt)}
                             </span>
                           </div>
-                          <p className="font-quicksand mb-2 pl-1 ssm:w-72 lg:w-96">
+                          <p className="font-quicksand mb-2 px-14 ssm:w-72 lg:w-96">
                             {comment.comment}
                           </p>
                           {(isUsers?.id === comment.commenterId ||

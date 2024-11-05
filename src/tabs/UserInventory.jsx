@@ -80,16 +80,19 @@ function UserInventory({ userId }) {
     e.preventDefault();
 
     let commenterName = "";
+    let commenterImage = "";
     let commenterEmail = "";
     let commenterId = "";
     let commenterAccountType = "";
     if (isUsers) {
       commenterName = isUsers.fullname;
+      commenterImage = isUsers.image;
       commenterAccountType = isUsers.isUser;
       commenterEmail = isUsers.email;
       commenterId = isUsers.id;
     } else if (isFaculty) {
       commenterName = isFaculty.fullname;
+      commenterImage = isFaculty.image;
       commenterEmail = isFaculty.email;
       commenterAccountType = isFaculty.isFaculty;
       commenterId = isFaculty.id;
@@ -97,6 +100,7 @@ function UserInventory({ userId }) {
     axios
       .post(`${baseUrl}/api/comments/${viewModal._id}`, {
         comment: newComment,
+        commenterImage: commenterImage,
         commenterEmail: commenterEmail,
         commenterAccountType: commenterAccountType,
         commenterId: commenterId,

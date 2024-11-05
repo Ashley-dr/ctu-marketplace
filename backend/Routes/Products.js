@@ -109,6 +109,7 @@ router.get("/products/:id", (req, res) => {
 router.post("/comments/:id", async (req, res) => {
   const product = await ProductModel.findById(req.params.id);
   const newComment = {
+    commenterImage: req.body.commenterImage,
     comment: req.body.comment,
     commenterAccountType: req.body.commenterAccountType,
     commenterId: req.body.commenterId,

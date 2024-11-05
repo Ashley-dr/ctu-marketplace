@@ -435,9 +435,10 @@ function Navigation() {
 
       // Remove the token cookie from client-side storage (optional but recommended)
       removeCookies("token", { path: "/" });
-      window.location.reload();
+
       // Redirect to login or home page
       navigate("/");
+      window.location.reload();
     } catch (error) {
       console.error("Logout failed:", error);
     }

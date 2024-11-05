@@ -45,6 +45,7 @@ const productSchema = new mongoose.Schema({
   comments: [
     {
       comment: { type: String },
+      commenterImage: { type: String },
       commenterId: { type: String },
       commenterAccountType: { type: String },
       commenterEmail: { type: String },
