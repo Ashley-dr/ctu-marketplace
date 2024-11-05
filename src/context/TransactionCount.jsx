@@ -15,9 +15,9 @@ function TransactionCount({ id }) {
   const navigate = useNavigate();
   useEffect(() => {
     const verifyCookie = async () => {
-      if (!cookies.token) {
-        navigate("/");
-      }
+      // if (!cookies.token) {
+      //   navigate("/");
+      // }
       const { data } = await axios.post(
         `${baseUrl}/facultypost`,
         {},
@@ -33,9 +33,9 @@ function TransactionCount({ id }) {
 
   useEffect(() => {
     const verifyCookie = async () => {
-      if (!cookies.token) {
-        navigate("/");
-      }
+      // if (!cookies.token) {
+      //   navigate("/");
+      // }
       const { data } = await axios.post(
         `${baseUrl}/userspost`,
         {},

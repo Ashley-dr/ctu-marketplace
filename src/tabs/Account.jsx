@@ -114,9 +114,9 @@ function Account() {
   // Fetch Faculty User
   useEffect(() => {
     const verifyCookie = async () => {
-      if (!cookies.token) {
-        navigate("/");
-      }
+      // if (!cookies.token) {
+      //   navigate("/");
+      // }
       try {
         const { data } = await axios.post(
           `${baseUrl}/facultypost`,
@@ -135,9 +135,9 @@ function Account() {
   // Fetch Regular User
   useEffect(() => {
     const verifyCookie = async () => {
-      if (!cookies.token) {
-        navigate("/");
-      }
+      // if (!cookies.token) {
+      //   navigate("/");
+      // }
       try {
         const { data } = await axios.post(
           `${baseUrl}/userspost`,

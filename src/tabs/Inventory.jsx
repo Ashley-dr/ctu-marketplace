@@ -151,9 +151,9 @@ function Inventory({ userId }) {
 
   useEffect(() => {
     const verifyCookie = async () => {
-      if (!cookies.token) {
-        navigate("/");
-      }
+      // if (!cookies.token) {
+      //   navigate("/");
+      // }
       const { data } = await axios.post(
         `${baseUrl}/facultypost`,
         {},
@@ -169,9 +169,9 @@ function Inventory({ userId }) {
 
   useEffect(() => {
     const verifyCookie = async () => {
-      if (!cookies.token) {
-        navigate("/");
-      }
+      // if (!cookies.token) {
+      //   navigate("/");
+      // }
       const { data } = await axios.post(
         `${baseUrl}/userspost`,
         {},

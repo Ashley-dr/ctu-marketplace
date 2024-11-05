@@ -44,9 +44,9 @@ function AddProducts() {
 
   useEffect(() => {
     const verifyCookie = async () => {
-      if (!cookies.token) {
-        navigate("/");
-      }
+      // if (!cookies.token) {
+      //   navigate("/");
+      // }
       const { data } = await axios.post(
         `${baseUrl}/userspost`,
         {},

@@ -23,10 +23,10 @@ function ChatPage({ userEmail }) {
 
   useEffect(() => {
     const verifyCookie = async () => {
-      if (!cookies.token) {
-        navigate("/");
-        return;
-      }
+      // if (!cookies.token) {
+      //   navigate("/");
+      //   return;
+      // }
       try {
         const facultyRes = await axios.post(
           `${baseUrl}/facultypost`,

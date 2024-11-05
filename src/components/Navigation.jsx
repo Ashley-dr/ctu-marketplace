@@ -383,9 +383,9 @@ function Navigation() {
 
   useEffect(() => {
     const verifyCookie = async () => {
-      if (!cookies.token) {
-        navigate("/");
-      }
+      // if (!cookies.token) {
+      //   navigate("/");
+      // }
       const { data } = await axios.post(
         `${baseUrl}/facultypost`,
         {},
@@ -401,9 +401,9 @@ function Navigation() {
 
   useEffect(() => {
     const verifyCookie = async () => {
-      if (!cookies.token) {
-        navigate("/");
-      }
+      // if (!cookies.token) {
+      //   navigate("/");
+      // }
       const { data } = await axios.post(
         `${baseUrl}/userspost`,
         {},
@@ -420,6 +420,7 @@ function Navigation() {
   const logout = () => {
     removeCookies("token");
     navigate("/");
+
     window.location.reload();
   };
   return (
