@@ -32,13 +32,16 @@ import {
   Avatar,
 } from "@chakra-ui/react";
 import { MdDelete } from "react-icons/md";
+import qrmaya from "../assets/PYMY CTU Marketplace.png";
 import { FaFacebookF } from "react-icons/fa6";
 import logo from "../assets/ctu-logo.jpg";
 import logomarket from "../assets/ctu-logo-marketplace.jpg";
 import { AtSignIcon, CalendarIcon, LinkIcon } from "@chakra-ui/icons";
 import ChatPage from "./ChatPage";
 import Loader from "../components/Loader";
-
+import Lightbox from "yet-another-react-lightbox";
+import { Zoom } from "yet-another-react-lightbox/plugins";
+import "yet-another-react-lightbox/styles.css";
 function Orders() {
   const [orders, setOrders] = useState([]);
   const baseUrl = import.meta.env.VITE_SERVER_URL;
@@ -238,6 +241,13 @@ function Orders() {
   //       console.log("Error updating status:", err);
   //     });
   // };
+  const [open, setOpen] = useState(false); // Lightbox open state
+  const [currentImage, setCurrentImage] = useState(0); // Track current image index
+
+  const handleOpenLightbox = (index) => {
+    setCurrentImage(index); // Set the clicked image index
+    setOpen(true); // Open the lightbox
+  };
   return (
     <main className="rounded-md pb-4 max-w-full max-h-full justify-items-center grid  bg-gradient-to-tr">
       {" "}
@@ -515,20 +525,40 @@ function Orders() {
                         type="button"
                         onClick={() => buttonStatus("GCash")}
                       >
-                        ( GCash )
+                        E payment
                       </button>
-                      <input
-                        className="bg-transparent text-center mb-1"
-                        readOnly
-                        disabled
-                        type="text"
-                        name="status"
-                        placeholder="None"
-                        value={
-                          (purchasedSchema.status =
-                            statusData.status || purchasedSchema.status)
-                        }
-                        onChange={purchasedOnChange}
+                      {purchasedSchema.status === "GCash" ? (
+                        <div>
+                          <Img
+                            src={qrmaya}
+                            alt=""
+                            className="shadow-inner hover:shadow-xl size-96 rounded-md cursor-pointer"
+                            onClick={() => setOpen(true)}
+                          />
+                        </div>
+                      ) : (
+                        <>
+                          {" "}
+                          <input
+                            className="bg-transparent text-center mb-1"
+                            readOnly
+                            disabled
+                            type="text"
+                            name="status"
+                            placeholder="None"
+                            value={
+                              (purchasedSchema.status =
+                                statusData.status || purchasedSchema.status)
+                            }
+                            onChange={purchasedOnChange}
+                          />
+                        </>
+                      )}
+                      <Lightbox
+                        open={open}
+                        close={() => setOpen(false)}
+                        plugins={[Zoom]}
+                        slides={[{ src: qrmaya }]}
                       />
                     </div>
                   </div>
