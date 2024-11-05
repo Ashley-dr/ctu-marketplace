@@ -30,13 +30,20 @@ mongoose
   .catch((err) => console.log(err));
 
 // Middleware
-// app.use(cors({ origin: true, credentials: true }));
 app.use(
   cors({
-    origin: "https://cebutechmarketplace.com", // Replace with your frontend URL
-    credentials: true, // Allows cookies to be sent
+    origin: ["https://cebutechmarketplace.com", "http://localhost:5173"],
+    methods: ["POST", "GET", "PUT", "DELETE", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   })
 );
+// app.use(
+//   cors({
+//     origin: "https://cebutechmarketplace.com", // Replace with your frontend URL
+//     credentials: true, // Allows cookies to be sent
+//   })
+// );
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());

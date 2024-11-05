@@ -312,7 +312,7 @@ export const Login = async (req, res, next) => {
       if (auth) {
         const token = createSecretToken(user._id);
         res.cookie("token", token, {
-          // withCredentials: true,
+          withCredentials: true,
           // httpOnly: false,
 
           httpOnly: true,
@@ -335,8 +335,9 @@ export const Login = async (req, res, next) => {
       if (authfaculty) {
         const token = createSecretToken(facultyuser._id);
         res.cookie("token", token, {
-          // withCredentials: true,
+          withCredentials: true,
           // httpOnly: false,
+
           httpOnly: true,
           secure: true, // Only for HTTPS; required for Render's hosted environment
           sameSite: "None", // Required for cross-domain cookies with credentials
