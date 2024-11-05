@@ -313,9 +313,9 @@ export const Login = async (req, res, next) => {
         const token = createSecretToken(user._id);
         res.cookie("token", token, {
           withCredentials: true,
-          httpOnly: false,
+          // httpOnly: false,
 
-          // httpOnly: true,
+          httpOnly: true,
           secure: true, // Only for HTTPS; required for Render's hosted environment
           sameSite: "None", // Required for cross-domain cookies with credentials
         });
@@ -336,8 +336,8 @@ export const Login = async (req, res, next) => {
         const token = createSecretToken(facultyuser._id);
         res.cookie("token", token, {
           withCredentials: true,
-          httpOnly: false,
-          // httpOnly: true,
+          // httpOnly: false,
+          httpOnly: true,
           secure: true, // Only for HTTPS; required for Render's hosted environment
           sameSite: "None", // Required for cross-domain cookies with credentials
         });
