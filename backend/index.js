@@ -33,7 +33,7 @@ mongoose
 // app.use(cors({ origin: true, credentials: true }));
 app.use(
   cors({
-    origin: "https://cebutechmarketplace.com/", // Replace with your frontend URL
+    origin: "https://cebutechmarketplace.com", // Replace with your frontend URL
     credentials: true, // Allows cookies to be sent
   })
 );
