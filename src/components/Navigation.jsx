@@ -591,10 +591,6 @@ function Navigation() {
                         <MdHome /> Home
                       </MenuItem>
                     </Link>
-                    <MenuItem className="gap-2 ">
-                      {" "}
-                      <MdNotifications /> Notification
-                    </MenuItem>
                     <Link to="/Account">
                       {" "}
                       <MenuItem className="gap-2 ">
@@ -682,16 +678,31 @@ function Navigation() {
                       <p>Faculty Member</p>
                     </Center>
                     <MenuDivider />
+                    <MenuItem className="gap-2 " onClick={onOpen}>
+                      <MdContactPage /> Contacts
+                    </MenuItem>
+                    <Drawer
+                      isOpen={isOpen}
+                      placement="left"
+                      size={"full"}
+                      onClose={onClose}
+                    >
+                      <DrawerOverlay />
+                      <DrawerContent>
+                        <DrawerCloseButton />
+                        <DrawerHeader></DrawerHeader>
+                        <DrawerBody>
+                          {/* Load the UsersMessage Component within the Drawer */}
+                          <UsersMessage email={isFaculty.email} />
+                        </DrawerBody>
+                      </DrawerContent>
+                    </Drawer>
                     <Link to="/">
                       {" "}
                       <MenuItem className="gap-2 ">
                         <MdHome /> Home
                       </MenuItem>
                     </Link>
-                    <MenuItem className="gap-2 ">
-                      {" "}
-                      <MdNotifications /> Notification
-                    </MenuItem>
 
                     <Link to="/Account">
                       <MenuItem className="gap-2 ">
