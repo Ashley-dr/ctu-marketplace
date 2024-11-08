@@ -68,6 +68,7 @@ import { useCookies } from "react-cookie";
 import {
   MdAccountBox,
   MdAddBox,
+  MdContactPage,
   MdDashboard,
   MdHome,
   MdMenu,
@@ -80,6 +81,7 @@ import { PiPasswordBold, PiShoppingCartDuotone } from "react-icons/pi";
 import { AiOutlineUpload } from "react-icons/ai";
 import OrdersCount from "../context/OrdersCount";
 import TransactionCount from "../context/TransactionCount";
+import UsersMessage from "../pages/UsersMessage";
 function Navigation() {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const { colorMode, toggleColorMode } = useColorMode();
@@ -563,13 +565,26 @@ function Navigation() {
                     <Center>
                       <p>Student Member</p>
                     </Center>
-                    <MenuDivider />
-                    <Link to="/ChatPage">
-                      {" "}
-                      <MenuItem className="gap-2 ">
-                        <MdHome /> chat
-                      </MenuItem>
-                    </Link>
+                    <MenuDivider />{" "}
+                    <MenuItem className="gap-2 " onClick={onOpen}>
+                      <MdContactPage /> Contacts
+                    </MenuItem>
+                    <Drawer
+                      isOpen={isOpen}
+                      placement="left"
+                      size={"full"}
+                      onClose={onClose}
+                    >
+                      <DrawerOverlay />
+                      <DrawerContent>
+                        <DrawerCloseButton />
+                        <DrawerHeader></DrawerHeader>
+                        <DrawerBody>
+                          {/* Load the UsersMessage Component within the Drawer */}
+                          <UsersMessage email={isUsers.email} />
+                        </DrawerBody>
+                      </DrawerContent>
+                    </Drawer>
                     <Link to="/">
                       {" "}
                       <MenuItem className="gap-2 ">
@@ -580,17 +595,15 @@ function Navigation() {
                       {" "}
                       <MdNotifications /> Notification
                     </MenuItem>
-
                     <Link to="/Account">
                       {" "}
                       <MenuItem className="gap-2 ">
                         <MdAccountBox /> Account Settings
                       </MenuItem>
                     </Link>
-
                     <Link to={`/Orders/${isUsers.id}`}>
                       {" "}
-                      <MenuItem className="gap-2 ">
+                      <MenuItem className="gap-2.5 ">
                         <PiShoppingCartDuotone /> Orders
                         <OrdersCount id={isUsers.id} />
                       </MenuItem>

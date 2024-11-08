@@ -4,6 +4,7 @@ import { UserContext } from "../../backend/Context/userContext";
 import { Link, useNavigate } from "react-router-dom";
 import Products from "./Products";
 import WelcomePage from "../components/WelcomePage";
+import Users from "./Users";
 function Home() {
   const { isUser } = useContext(UserContext);
   return (
@@ -11,6 +12,7 @@ function Home() {
       <figure></figure>
       <WelcomePage />
       <Products />
+      <Users />
     </div>
   );
 }

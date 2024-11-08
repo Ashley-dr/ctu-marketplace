@@ -25,6 +25,9 @@ import UserAccount from "./tabs/UserAccount";
 import UserInventory from "./tabs/UserInventory";
 import FacultyAccount from "./tabs/FacultyAccount";
 import ChatPage from "./tabs/ChatPage";
+import Users from "./pages/Users";
+import ContactList from "./tabs/ContactList";
+import UsersMessage from "./pages/UsersMessage";
 
 function App() {
   const bgColor = useColorModeValue("brand.light", "brand.dark");
@@ -50,6 +53,9 @@ function App() {
           path="/FacultyAddProducts/:id"
           element={<FacultyAddProducts />}
         />
+        <Route path="/UserMessages/:email" element={<UsersMessage />} />
+        <Route path="/ContactPage" element={<ContactList />} />
+        <Route path="/Users" element={<Users />} />
         <Route path="/AccountsToBeSeller" element={<AccountsToBeSeller />} />
         <Route path="/ProductId/:id" element={<ProductId />} />
       </Routes>

@@ -29,23 +29,53 @@ const router = express.Router();
 router.post("/send-message", upload.single("image"), async (req, res) => {
   try {
     const { senderEmail, receiverEmail, message } = req.body;
-    const file = req.file ? req.file.path : null; // Get file URL if uploaded
+    const file = req.file ? req.file.path : null;
+
+    // Find receiver details (name and image) from User or Faculty model
+    const receiver =
+      (await UserModel.findOne({ email: receiverEmail })) ||
+      (await FacultyModel.findOne({ email: receiverEmail }));
+    const receiverName = receiver ? receiver.fullname : null;
+    const receiverImage = receiver ? receiver.image : null;
+
+    // Find sender details (name and image) from User or Faculty model
+    const sender =
+      (await UserModel.findOne({ email: senderEmail })) ||
+      (await FacultyModel.findOne({ email: senderEmail }));
+    const senderName = sender ? sender.fullname : null;
+    const senderImage = sender ? sender.image : null;
+
+    // Create new message
     const newMessage = new MessageModel({
       senderEmail,
       receiverEmail,
       message,
       file,
+      receiverName,
+      receiverImage,
+      senderName,
+      senderImage,
     });
+
+    // Save message to the database
     await newMessage.save();
+
+    // Trigger Pusher or any real-time functionality
     pusher.trigger("chat-channel", "message", {
       senderEmail,
       receiverEmail,
       message,
       file,
+      receiverName,
+      receiverImage,
+      senderName,
+      senderImage,
     });
-    res.status(200).json("Message send: ");
+
+    res.status(200).json("Message sent successfully");
   } catch (error) {
-    console.log("Message sent error", error);
+    console.error("Message send error:", error);
+    res.status(500).json({ message: "Message sending failed", error });
   }
 });
 router.get("/get-message/:senderEmail/:receiverEmail", async (req, res) => {
@@ -72,4 +102,28 @@ router.delete("/delete-message/:id", async (req, res) => {
     });
 });
 
+router.get("/get-senders/:email", async (req, res) => {
+  MessageModel.aggregate([
+    { $match: { receiverEmail: req.params.email } },
+    {
+      $group: {
+        _id: "$senderEmail",
+        senderName: { $first: "$senderName" },
+        senderImage: { $first: "$senderImage" },
+      },
+    },
+    {
+      $project: { _id: 0, senderEmail: "$_id", senderName: 1, senderImage: 1 },
+    },
+  ])
+    .then((result) => {
+      if (result.length === 0) {
+        return res.status(200).json({ senders: [], count: 0 });
+      }
+      res.status(200).json({ senders: result, count: result.length });
+    })
+    .catch((err) => {
+      res.status(500).json({ message: "Error fetching senders", err });
+    });
+});
 export default router;
