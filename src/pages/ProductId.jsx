@@ -44,17 +44,27 @@ import {
   DrawerContent,
   DrawerCloseButton,
   Avatar,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverHeader,
+  PopoverBody,
+  Flex,
+  Center,
+  Divider,
 } from "@chakra-ui/react";
 import { RiSendPlane2Fill } from "react-icons/ri";
 import { CgNametag } from "react-icons/cg";
-import { MdDelete, MdMessage } from "react-icons/md";
+import { MdArrowUpward, MdDelete, MdMessage } from "react-icons/md";
 import { FaFacebookSquare } from "react-icons/fa";
 import { formatDate, formatDistanceToNow } from "date-fns";
 import { AtSignIcon, CalendarIcon, LinkIcon } from "@chakra-ui/icons";
 import { RiAccountCircleLine } from "react-icons/ri";
 import { IoPricetagOutline } from "react-icons/io5";
 import { TbLetterT, TbSquareLetterS } from "react-icons/tb";
-import { CiShoppingCart } from "react-icons/ci";
+import { CiShoppingCart, CiShoppingTag } from "react-icons/ci";
 import { BsBox2 } from "react-icons/bs";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -77,6 +87,7 @@ import Lightbox from "yet-another-react-lightbox";
 import { Zoom } from "yet-another-react-lightbox/plugins";
 import "yet-another-react-lightbox/styles.css";
 import ChatPage from "../tabs/ChatPage";
+import Products from "./Products";
 function ProductId() {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [cookies, removeCookies] = useCookies([]);
@@ -343,8 +354,18 @@ function ProductId() {
     setCurrentImage(index); // Set the clicked image index
     setOpen(true); // Open the lightbox
   };
+
   return (
-    <div className="rounded-md  pb-4 max-w-full max-h-full lg:justify-items-center lg:grid mb-10  lg:mt-10">
+    <div
+      id="item"
+      className="rounded-md  pb-4 max-w-full max-h-full lg:justify-items-center lg:grid mb-10  lg:mt-10"
+    >
+      <a
+        href="#item"
+        className="fixed  bg-[#8080804a] bottom-4 right-4 flex items-center justify-center  p-2 rounded-full z-10 shadow-lg hover:bg-[#bababad0] transition duration-300 ease-in-out"
+      >
+        <MdArrowUpward className="text-2xl" />
+      </a>
       <figure className=" lg:justify-items-center lg:grid max-w-full w-full">
         <article>
           {productData ? (
@@ -402,13 +423,21 @@ function ProductId() {
                 >
                   <CardHeader>
                     <Heading size="md">
-                      <p className="ssm:w-64 break-words lg:w-96 ">
-                        {productData.prodName}
+                      <p className="ssm:w-64 break-words lg:w-96 flex place-items-end gap-1 font-quicksand font-thin">
+                        <CiShoppingTag /> {productData.prodName}
+                      </p>
+                      <p className="font-thin font-quicksand text-base mt-1">
+                        {productData && productData.price
+                          ? productData.price.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })
+                          : "Loading price..."}
                       </p>
                     </Heading>
                   </CardHeader>
                   <CardBody>
-                    <Stack divider={<StackDivider />} spacing="4">
+                    <Stack divider={<StackDivider />}>
                       <Box>
                         <Heading size="xs">
                           {productData.accountType === "Student" && (
@@ -422,8 +451,8 @@ function ProductId() {
                                   <LinkIcon className="mr-1" />
                                   {productData.sellerName}
                                 </p>
-                                <p className="ssm:w-64 truncate lg:w-96  underline">
-                                  <AtSignIcon className="" />{" "}
+                                <p className="ssm:w-64 truncate lg:w-96 ">
+                                  <AtSignIcon className="mr-1" />
                                   {productData.sellerEmail}
                                 </p>
                               </Link>
@@ -440,8 +469,8 @@ function ProductId() {
                                   <LinkIcon className="mr-1" />
                                   {productData.sellerName}
                                 </p>
-                                <p className="ssm:w-64 truncate lg:w-96  underline">
-                                  <AtSignIcon className="" />{" "}
+                                <p className="ssm:w-64 truncate lg:w-96">
+                                  <AtSignIcon className="mr-1" />
                                   {productData.sellerEmail}
                                 </p>
                               </Link>
@@ -449,15 +478,7 @@ function ProductId() {
                           )}
 
                           <div className="mt-3 grid grid-cols-2">
-                            <p className="flex  mr-5">
-                              {productData && productData.price
-                                ? productData.price.toLocaleString("en-PH", {
-                                    style: "currency",
-                                    currency: "PHP",
-                                  })
-                                : "Loading price..."}
-                            </p>
-                            <p className="flex justify-self-center mr-4">
+                            <p className="flex  mr-4">
                               <RiAccountCircleLine className="mr-1" />{" "}
                               {productData.accountType}
                             </p>
@@ -487,9 +508,9 @@ function ProductId() {
                               <></>
                             )}
 
-                            <p className="justify-self-center">
+                            <p className="">
                               {" "}
-                              <p className="ml-2 text-xs opacity-90  ">
+                              <p className=" text-xs opacity-90  ">
                                 <CalendarIcon className="mb-1" />{" "}
                                 {formatDateToNow(productData.createdAt)}
                                 <br />
@@ -677,7 +698,7 @@ function ProductId() {
                 <></>
               )}
 
-              <div className="bg-[#27262615] rounded-lg text-sm w-full p-1 grid">
+              <div className=" rounded-lg text-sm w-full p-1 grid mt-5">
                 {productData.comments && productData.comments.length > 0 ? (
                   <div>
                     <p className="ml-5">Comments</p>
@@ -685,7 +706,7 @@ function ProductId() {
                       .map((comment) => (
                         <article
                           key={comment._id}
-                          className="grid mx-2 mt-2 mb-4 bg-[#554f4f18] rounded-md font-poppins"
+                          className="grid mx-2 mt-2 mb-4  rounded-md font-poppins"
                         >
                           <div className="flex">
                             {comment.commenterAccountType === "Student" && (
@@ -725,37 +746,61 @@ function ProductId() {
                               <LuDot className="mr-1 text-base" />{" "}
                               {formatDateToNow(comment.createdAt)}
                             </span>
+                            {(isUsers?.id === comment.commenterId ||
+                              isFaculty?.id === comment.commenterId) && (
+                              <Flex justifyContent={"end"} mx={1}>
+                                <Popover>
+                                  <PopoverTrigger>
+                                    <Button size="xs" bg="transparent">
+                                      <Box as="span" flex="1" textAlign="right">
+                                        <MdDelete className="text-base" />
+                                      </Box>
+
+                                      {/* <AccordionIcon /> */}
+                                    </Button>
+                                  </PopoverTrigger>
+                                  <PopoverContent>
+                                    <PopoverArrow />
+                                    <PopoverCloseButton />
+                                    <PopoverHeader>
+                                      <Text>
+                                        Do you want to remove this comment?
+                                      </Text>
+                                    </PopoverHeader>
+                                    <PopoverBody>
+                                      <Button
+                                        colorScheme="green"
+                                        className="justify-self-center mb-1 flex"
+                                        onClick={() =>
+                                          commentDelete(comment._id)
+                                        }
+                                      >
+                                        Confirm
+                                      </Button>
+                                    </PopoverBody>
+                                  </PopoverContent>
+                                </Popover>
+                              </Flex>
+                            )}
                           </div>
-                          <p className="font-quicksand mb-2 px-14 ssm:w-72 lg:w-96">
-                            {comment.comment}
+
+                          <p className="font-quicksand flex mb-2 px-6 ssm:w-72 lg:w-96">
+                            <Divider
+                              orientation="vertical"
+                              height={4}
+                              borderColor="purple.500"
+                            />{" "}
+                            <Divider
+                              pt={4}
+                              w={8}
+                              mr={1}
+                              orientation="horizontal"
+                              borderColor="purple.500"
+                            />
+                            <p className="ssm:w-[300px] sm:w-[600px] md:w-[700px] lg:w-[1000px] ">
+                              {comment.comment}
+                            </p>
                           </p>
-                          {(isUsers?.id === comment.commenterId ||
-                            isFaculty?.id === comment.commenterId) && (
-                            <Accordion defaultIndex={[1]} allowMultiple>
-                              <AccordionItem>
-                                <h2>
-                                  <AccordionButton>
-                                    <Box
-                                      as="span"
-                                      flex="1"
-                                      textAlign="right"
-                                    ></Box>
-                                    <MdDelete className="text-base" />
-                                    <AccordionIcon />
-                                  </AccordionButton>
-                                </h2>
-                                <AccordionPanel textAlign={"center"} pb={4}>
-                                  <p>Do you want to remove this comment?</p>
-                                  <Button
-                                    className="justify-self-start mb-1 flex"
-                                    onClick={() => commentDelete(comment._id)}
-                                  >
-                                    Confirm
-                                  </Button>
-                                </AccordionPanel>
-                              </AccordionItem>
-                            </Accordion>
-                          )}
                         </article>
                       ))
                       .reverse()}
@@ -1272,6 +1317,9 @@ function ProductId() {
           </ModalContent>
         </Modal>
       )}
+      <Divider mt={4} mb={4} />
+
+      <Products />
     </div>
   );
 }

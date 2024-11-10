@@ -108,12 +108,21 @@ router.get("/get-senders/:email", async (req, res) => {
     {
       $group: {
         _id: "$senderEmail",
-        senderName: { $first: "$senderName" },
-        senderImage: { $first: "$senderImage" },
+        senderName: { $last: "$senderName" },
+        senderImage: { $last: "$senderImage" },
+        timestamp: { $last: "$timestamp" },
+        message: { $last: "$message" },
       },
     },
     {
-      $project: { _id: 0, senderEmail: "$_id", senderName: 1, senderImage: 1 },
+      $project: {
+        _id: 0,
+        senderEmail: "$_id",
+        senderName: 1,
+        senderImage: 1,
+        timestamp: 1,
+        message: 1,
+      },
     },
   ])
     .then((result) => {

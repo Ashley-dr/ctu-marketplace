@@ -62,6 +62,13 @@ function UserAccount() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const [cookies, removeCookies] = useCookies([]);
+  const [isUsers, setisUser] = useState("");
+  const [isFaculty, setisFaculty] = useState("");
+  const navigate = useNavigate();
+  const [currentUser, setCurrentUser] = useState("");
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -78,6 +85,31 @@ function UserAccount() {
 
     fetchUser();
   }, [email]);
+
+  useEffect(() => {
+    const verifyCookie = async () => {
+      try {
+        const facultyRes = await axios.post(
+          `${baseUrl}/facultypost`,
+          {},
+          { withCredentials: true }
+        );
+        setisFaculty(facultyRes.data.user);
+
+        const userRes = await axios.post(
+          `${baseUrl}/userspost`,
+          {},
+          { withCredentials: true }
+        );
+        setisUser(userRes.data.user);
+
+        setCurrentUser(facultyRes.data.user || userRes.data.user);
+      } catch (error) {
+        console.error("Authentication error:", error);
+      }
+    };
+    verifyCookie();
+  }, [baseUrl, cookies, navigate, removeCookies]);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
@@ -105,10 +137,17 @@ function UserAccount() {
 
           <p className="mt-2 relative bottom-16 flex font-quicksand font-bold ">
             {user.fullname}
-            <MdMessage
-              onClick={onOpen}
-              className=" cursor-pointer mx-2  text-2xl"
-            />
+            {currentUser ? (
+              <>
+                {" "}
+                <MdMessage
+                  onClick={onOpen}
+                  className=" cursor-pointer mx-2  text-2xl"
+                />
+              </>
+            ) : (
+              <></>
+            )}
           </p>
 
           <Drawer
@@ -118,7 +157,7 @@ function UserAccount() {
             onClose={onClose}
           >
             <DrawerOverlay />
-            <DrawerContent rounded={"xl"} m={2}>
+            <DrawerContent rounded={"xl"} m={{ base: 0, lg: 2 }}>
               <DrawerCloseButton />
               <DrawerHeader>
                 <div className="flex gap-4 space-y-2">

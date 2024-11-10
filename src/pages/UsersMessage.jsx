@@ -45,6 +45,7 @@ import {
   DrawerCloseButton,
 } from "@chakra-ui/react";
 import ChatPage from "../tabs/ChatPage";
+import { formatDateToNow } from "./Products";
 function UsersMessage({ email }) {
   const [messageUserCount, setMessageUserCounte] = useState(null);
   const [messageUsers, setMessageUsers] = useState([]);
@@ -138,11 +139,23 @@ function UsersMessage({ email }) {
             {messageUsers.map((sender, index) => (
               <div
                 key={index}
-                className="flex border-b-purple-100 border-2 border-l-0 border-r-0 border-t-0 p-2 gap-2 lg:w-96"
+                className="flex justify-items-start  border-b-purple-100 border-2 border-l-0 border-r-0 border-t-0 p-2 gap-2 cursor-pointer transition ease-in-out hover:translate-x-2"
                 onClick={() => chatButton(sender)}
               >
                 <Avatar src={sender.senderImage} />{" "}
-                <p className=" ">{sender.senderName}</p>
+                <article className="grid">
+                  <article className="flex gap-1">
+                    <p className="text-sm truncate ssm:w-40 lg:w-52 font-bold font-quicksand ">
+                      {sender.senderName}
+                    </p>
+                    <p className="text-[10px]  font-thin font-quicksand">
+                      {formatDateToNow(sender.timestamp)}
+                    </p>
+                  </article>
+                  <p className="text-xs font-thin font-quicksand">
+                    {sender.message}
+                  </p>
+                </article>
               </div>
             ))}
           </div>
@@ -152,7 +165,7 @@ function UsersMessage({ email }) {
         <Drawer
           isOpen={isOpenDrawer}
           placement="right"
-          size={"sm"}
+          size={{ md: "md", lg: "md" }}
           onClose={onCloseDrawer}
         >
           <DrawerOverlay />
@@ -164,9 +177,6 @@ function UsersMessage({ email }) {
                 <div>
                   <p className="text-xs font-quicksand">
                     {statusData.senderName}
-                  </p>
-                  <p className="text-xs font-thin font-quicksand">
-                    {statusData.senderEmail}
                   </p>
                 </div>
               </div>

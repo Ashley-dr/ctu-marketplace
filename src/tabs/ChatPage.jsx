@@ -6,9 +6,30 @@ import Pusher from "pusher-js";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
-import { Box, Button, Img, Input } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  IconButton,
+  Img,
+  Input,
+  InputGroup,
+  InputRightAddon,
+  InputRightElement,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
+  Text,
+} from "@chakra-ui/react";
 import { MdDelete, MdSend } from "react-icons/md";
 import { formatDateToNow } from "../pages/Products";
+import { InputRightButton } from "@saas-ui/react";
+import { FaUpload } from "react-icons/fa6";
+import { RiFileUploadFill } from "react-icons/ri";
 
 function ChatPage({ userEmail }) {
   const [messages, setMessages] = useState([]);
@@ -128,6 +149,7 @@ function ChatPage({ userEmail }) {
       .delete(`${baseUrl}/api/delete-message/${id}`)
       .then((result) => {
         console.log("Message deleted:", result.data);
+        location.reload();
       })
       .catch((err) => {
         console.log("Error deleting message:", err);
@@ -135,7 +157,7 @@ function ChatPage({ userEmail }) {
   };
   return (
     <div className="">
-      <div className="chat-history border h-96 overflow-y-scroll bg-[#d2e2f513] rounded-lg font-quicksand text-sm px-1 pb-2 pt-2">
+      <div className="chat-history border ssm:h-[500px] lg:h-[420px] overflow-y-scroll bg-[#d2e2f513] rounded-lg font-quicksand text-sm px-1 pb-2 pt-2">
         {messages.map((msg, index) => (
           <p
             key={index}
@@ -182,7 +204,7 @@ function ChatPage({ userEmail }) {
                           className="w-32 h-auto mt-2 rounded-md"
                         />
                       )}
-                      <div className="flex gap-1">
+                      <div className="flex items-center ">
                         <p className="text-xs text-[10px] font-thin font-montserrat">
                           {new Date(msg.timestamp).toLocaleTimeString("en-PH", {
                             second: "2-digit",
@@ -191,12 +213,34 @@ function ChatPage({ userEmail }) {
                             hour12: true,
                           })}
                         </p>
-                        <button
-                          className="justify-self-end  text-sm hover:shadow-inner hover:scale-110"
-                          onClick={() => deleteMessage(msg._id)}
-                        >
-                          <MdDelete />
-                        </button>
+                        <Flex justifyContent={"end"} mx={1}>
+                          <Popover>
+                            <PopoverTrigger>
+                              <button size="xs">
+                                <Box as="span" flex="1" textAlign="right">
+                                  <MdDelete className="text-base" />
+                                </Box>
+
+                                {/* <AccordionIcon /> */}
+                              </button>
+                            </PopoverTrigger>
+                            <PopoverContent mr={8}>
+                              <PopoverArrow />
+                              <PopoverCloseButton />
+                              <PopoverHeader textAlign={"center"}>
+                                <Text>Do you want to remove this comment?</Text>
+                              </PopoverHeader>
+                              <PopoverBody>
+                                <button
+                                  className="justify-self-start text-sm hover:shadow-inner hover:scale-110"
+                                  onClick={() => deleteMessage(msg._id)}
+                                >
+                                  Confirm
+                                </button>
+                              </PopoverBody>
+                            </PopoverContent>
+                          </Popover>
+                        </Flex>
                       </div>
                     </p>
                   </div>
@@ -208,24 +252,38 @@ function ChatPage({ userEmail }) {
       </div>
       <form onSubmit={handleSubmit} className=" mt-4 ">
         <div className="flex gap-1">
-          <Input
-            type="text"
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            placeholder="Type your message"
-          />
-
-          <Button bg={"transparent"} type="submit">
-            <MdSend className="text-2xl " />
-          </Button>
-        </div>
-        <div className="">
-          <input
-            className="block w-full text-sm mt-1 text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-            type="file"
-            accept=".jpeg,.jpg,.png,.gif,.pdf,.doc,.docx"
-            onChange={handleFileChange}
-          />
+          <InputGroup>
+            <InputRightElement mr={6}>
+              {" "}
+              <Flex align="center">
+                <label htmlFor="file-upload" className="cursor-pointer">
+                  <IconButton
+                    bg={"transparent"}
+                    icon={<RiFileUploadFill />}
+                    aria-label="Upload file"
+                    as="span"
+                    size="md"
+                  />
+                </label>
+                <Input
+                  id="file-upload"
+                  type="file"
+                  accept=".jpeg,.jpg,.png,.gif,.pdf,.doc,.docx"
+                  onChange={handleFileChange}
+                  display="none"
+                />
+              </Flex>
+              <Button bg={"transparent"} type="submit">
+                <MdSend className="text-2xl " />
+              </Button>
+            </InputRightElement>
+            <Input
+              type="text"
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              placeholder="Type your message"
+            />
+          </InputGroup>
         </div>
       </form>
     </div>

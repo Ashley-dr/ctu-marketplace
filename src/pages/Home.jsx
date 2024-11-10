@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Products from "./Products";
 import WelcomePage from "../components/WelcomePage";
 import Users from "./Users";
+import Keyoffering from "../components/Keyoffering";
 function Home() {
   const { isUser } = useContext(UserContext);
   return (
@@ -13,6 +14,7 @@ function Home() {
       <WelcomePage />
       <Products />
       <Users />
+      <Keyoffering />
     </div>
   );
 }

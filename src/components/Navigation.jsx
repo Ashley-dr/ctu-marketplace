@@ -572,7 +572,7 @@ function Navigation() {
                     <Drawer
                       isOpen={isOpen}
                       placement="left"
-                      size={"full"}
+                      size={"sm"}
                       onClose={onClose}
                     >
                       <DrawerOverlay />
@@ -1375,7 +1375,7 @@ function Navigation() {
                 <input
                   className="mb-2  w-full bg-transparent pt-1 pl-1 border-b-4 border-gray-900"
                   placeholder="Password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   value={inputLogin.password}
                   onChange={(e) => {

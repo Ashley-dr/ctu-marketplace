@@ -61,6 +61,13 @@ function FacultyAccount() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const [cookies, removeCookies] = useCookies([]);
+  const [isUsers, setisUser] = useState("");
+  const [isFaculty, setisFaculty] = useState("");
+  const navigate = useNavigate();
+  const [currentUser, setCurrentUser] = useState("");
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -78,6 +85,30 @@ function FacultyAccount() {
     fetchUser();
   }, [email]);
 
+  useEffect(() => {
+    const verifyCookie = async () => {
+      try {
+        const facultyRes = await axios.post(
+          `${baseUrl}/facultypost`,
+          {},
+          { withCredentials: true }
+        );
+        setisFaculty(facultyRes.data);
+
+        const userRes = await axios.post(
+          `${baseUrl}/userspost`,
+          {},
+          { withCredentials: true }
+        );
+        setisUser(userRes.data);
+
+        setCurrentUser(facultyRes.data.user || userRes.data.user);
+      } catch (error) {
+        console.error("Authentication error:", error);
+      }
+    };
+    verifyCookie();
+  }, [baseUrl, cookies, navigate, removeCookies]);
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
@@ -104,10 +135,17 @@ function FacultyAccount() {
 
           <p className="mt-2 relative bottom-16 flex font-quicksand font-bold">
             {user.fullname}
-            <MdMessage
-              onClick={onOpen}
-              className=" cursor-pointer mx-2  text-2xl"
-            />
+            {currentUser ? (
+              <>
+                {" "}
+                <MdMessage
+                  onClick={onOpen}
+                  className=" cursor-pointer mx-2  text-2xl"
+                />
+              </>
+            ) : (
+              <></>
+            )}
           </p>
 
           <Drawer

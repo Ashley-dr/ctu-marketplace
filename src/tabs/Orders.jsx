@@ -252,7 +252,7 @@ function Orders() {
     <main className="rounded-md pb-4 max-w-full max-h-full justify-items-center grid  bg-gradient-to-tr">
       {" "}
       <div className="mx-2 mt-2 mb-14  px-4 rounded-md pt-3 pb-4 max-w-full max-h-full ">
-        <div className=" md:shrink-0 grid justify-items-center grid-cols-1 ssm:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 ">
+        <div className=" md:shrink-0 grid justify-items-center grid-cols-1 ssm:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 ">
           {/* <OrdersCount id={id} /> */}
           {loading ? (
             <>
@@ -271,12 +271,12 @@ function Orders() {
                 orders.map((order) => (
                   <div
                     key={order._id}
-                    className="border-solid bg-[#b7b7b81f] px-2 rounded-2xl p-2 max-w-full mb-5 lg:mx-4 shadow-inner hover:shadow-xl"
+                    className="border-solid  px-2 rounded-2xl p-2 max-w-full mb-5  shadow-inner hover:shadow-xl"
                   >
-                    <div className="md:shrink-0 grid justify-items-center grid-cols-1 ssm:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 xl:grid-cols-2">
+                    <div className="md:shrink-0 grid justify-items-center grid-cols-1 ssm:grid-cols-2 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-2">
                       <figure>
                         <img
-                          className="mt-2.5 block ml-auto mr-auto rounded-sm max-w-full max-h-full w-96 ssm:h-32 lg:h-80 object-cover bg-fixed"
+                          className="mt-2.5 block ml-auto mr-auto rounded-sm max-w-full max-h-full ssm:w-44 lg:w-80 h-32  object-cover bg-fixed"
                           src={order.image}
                           alt={order.prodName}
                         />
@@ -300,7 +300,7 @@ function Orders() {
                           </button>
                         </div>
                       </figure>
-                      <Card className="grid rounded-md px-2 ssm:w-80 lg:w-72 p-1 mt-2 font-quicksand text-sm space-y-1">
+                      <Card className="grid rounded-md px-2 ssm:w-44 lg:w-72 p-1 mt-2 font-quicksand text-sm space-y-1">
                         <p className="text-xl grid grid-cols-2">
                           <Link to={`/ProductId/${order.productId}`}>
                             <button className="truncate ssm:w-80 lg:w-60 text-start">

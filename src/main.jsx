@@ -27,24 +27,32 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <CookieConsent
         location="bottom"
-        buttonText="Accept"
+        buttonText="Accept cookies"
         cookieName="MarketplaceCookie"
-        style={{ background: "#2B373B" }}
+        style={{
+          background: "white",
+          color: "rgb(14 0 38)",
+          fontFamily: "Arial",
+          fontSize: "13px",
+        }}
         buttonStyle={{
-          background: "rgb(255 255 255)",
-
+          background: "rgb(54 0 149)",
+          fontSize: "15px",
+          color: "white",
           borderRadius: "2px",
         }}
         expires={150}
         enableDeclineButton
         declineButtonText="Decline"
         declineButtonStyle={{
-          background: "rgb(5 11 12)",
-
+          background: "rgb(255 255 255)",
+          color: "rgb(54 0 149)",
+          fontSize: "15px",
           borderRadius: "2px",
         }}
       >
-        Cebutech marketplace uses cookies to enhance user experience.
+        Cebutech marketplace uses cookies to enhance user experience and
+        perfomance and traffic on our website.
       </CookieConsent>
       <App />
     </ChakraProvider>
