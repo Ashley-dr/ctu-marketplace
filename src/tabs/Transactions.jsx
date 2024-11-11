@@ -337,7 +337,7 @@ function Transactions() {
   const quantity = statusData.quantity;
   const total = price * quantity;
   const tax = total * 0.01;
-  const totalWithTax = total + tax;
+  const totalWithTax = total - tax;
   return (
     <main className="rounded-md pb-4 max-w-full max-h-full   bg-gradient-to-tr ">
       {" "}

@@ -4,7 +4,11 @@ import express from "express";
 import { DonePurchasedModel } from "../Models/DonePurchased.js";
 import upload from "../config/Cloudinary.js";
 import { v2 as cloudinary } from "cloudinary";
+
+const PAYMONGO_SECRET_KEY = process.env.PAYMONGO_SECRET_KEY;
+const PAYMONGO_BASE_URL = 'https://api.paymongo.com/v1';
 const router = express.Router();
+
 router.post("/DonePurchased", upload.array("picture", 5), async (req, res) => {
   try {
     const {
@@ -67,6 +71,8 @@ router.post("/DonePurchased", upload.array("picture", 5), async (req, res) => {
       buyerType,
     });
     await newImages.save();
+
+    
   } catch (error) {
     console.log("Error uploading images", error);
     res.status(500).json({ success: false, error: "Failed to upload" });

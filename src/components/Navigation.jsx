@@ -82,10 +82,17 @@ import { AiOutlineUpload } from "react-icons/ai";
 import OrdersCount from "../context/OrdersCount";
 import TransactionCount from "../context/TransactionCount";
 import UsersMessage from "../pages/UsersMessage";
+import Orders from "../tabs/Orders";
+import OrdersDrawer from "../tabs/OrdersDrawer";
 function Navigation() {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenDrawer,
+    onOpen: onOpenDrawer,
+    onClose: onCloseDrawer,
+  } = useDisclosure();
   const [cookies, removeCookies] = useCookies([]);
   const [isUsers, setisUser] = useState("");
   const [isFaculty, setisFaculty] = useState("");
@@ -127,6 +134,7 @@ function Navigation() {
           status: "success",
           duration: 5000,
           isClosable: true,
+          zIndex: 40,
         });
         console.log("Email sent");
         setDone(true);
@@ -143,6 +151,7 @@ function Navigation() {
             "Email not found. Please check the email address and try again.",
           status: "error",
           duration: 5000,
+          zIndex: 40,
           isClosable: true,
         });
       } else {
@@ -153,6 +162,7 @@ function Navigation() {
             "An error occurred. Please try again.",
           status: "error",
           duration: 5000,
+          zIndex: 40,
           isClosable: true,
         });
       }
@@ -167,6 +177,7 @@ function Navigation() {
         title: "Error",
         description: "Passwords do not match.",
         status: "error",
+        zIndex: 40,
         duration: 5000,
         isClosable: true,
       });
@@ -179,6 +190,7 @@ function Navigation() {
         description: "Please enter both the reset token and new password.",
         status: "error",
         duration: 5000,
+        zIndex: 40,
         isClosable: true,
       });
       return;
@@ -214,6 +226,7 @@ function Navigation() {
         description: "Failed to reset password. Please try again.",
         status: "error",
         duration: 5000,
+        zIndex: 40,
         isClosable: true,
       });
     }
@@ -597,13 +610,29 @@ function Navigation() {
                         <MdAccountBox /> Account Settings
                       </MenuItem>
                     </Link>
-                    <Link to={`/Orders/${isUsers.id}`}>
+                    {/* <Link to={`/Orders/${isUsers.id}`}> */}
                       {" "}
-                      <MenuItem className="gap-2.5 ">
+                      <MenuItem className="gap-2.5 " onClick={onOpenDrawer}>
                         <PiShoppingCartDuotone /> Orders
                         <OrdersCount id={isUsers.id} />
                       </MenuItem>
-                    </Link>
+                      <Drawer
+                      isOpen={isOpenDrawer}
+                      placement="right"
+                      size={"sm"}
+                      onClose={onCloseDrawer}
+                    >
+                      <DrawerOverlay />
+                      <DrawerContent>
+                        <DrawerCloseButton />
+                        <DrawerHeader></DrawerHeader>
+                        <DrawerBody>
+                        
+                          <OrdersDrawer id={isUsers.id} />
+                        </DrawerBody>
+                      </DrawerContent>
+                    </Drawer>
+                    {/* </Link> */}
                     {isUsers.isSeller === true ? (
                       <div>
                         <Link to={`/Transactions/${isUsers.id}`}>
@@ -1352,6 +1381,7 @@ function Navigation() {
                     <MdOutlineAlternateEmail />
                   </p>
                 </FormLabel>
+                
                 <input
                   className="mb-2  w-full bg-transparent pt-1 pl-1 border-b-4 border-gray-900"
                   placeholder="email@"
@@ -1372,6 +1402,16 @@ function Navigation() {
                     <PiPasswordBold />
                   </p>
                 </FormLabel>
+                <InputGroup>
+                <InputRightElement>  
+                 <IconButton
+                  variant="ghost"
+                  bg={"transparent"}
+                  _hover={"none"}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  icon={showPassword ? <FiEyeOff /> : <FiEye />}
+                  onClick={() => setShowPassword(!showPassword)}
+                /></InputRightElement>
                 <input
                   className="mb-2  w-full bg-transparent pt-1 pl-1 border-b-4 border-gray-900"
                   placeholder="Password"
@@ -1385,12 +1425,8 @@ function Navigation() {
                     });
                   }}
                 />
-                <IconButton
-                  variant="ghost"
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                  icon={showPassword ? <FiEyeOff /> : <FiEye />}
-                  onClick={() => setShowPassword(!showPassword)}
-                />
+                </InputGroup>
+            
               </FormControl>
 
               <Button

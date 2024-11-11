@@ -94,7 +94,7 @@ function Users() {
   }
 
   return (
-    <div className="mx-7  mt-5 pb-4 justify-self-center ssm:w-[330px] md:w-[500px] lg:w-[1300px]">
+    <div className="mx-7  mt-5 pb-4 justify-self-center ssm:w-[330px] md:w-[500px] lg:w-[1200px]">
       <figure className="flex align-middle ">
         <InputGroup mx={17}>
           <InputLeftElement>

@@ -43,7 +43,7 @@ import Loader from "../components/Loader";
 import Lightbox from "yet-another-react-lightbox";
 import { Zoom } from "yet-another-react-lightbox/plugins";
 import "yet-another-react-lightbox/styles.css";
-function Orders({id}) {
+function OrdersDrawer({id}) {
   const [orders, setOrders] = useState([]);
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [cookies, removeCookies] = useCookies([]);
@@ -294,36 +294,18 @@ function Orders({id}) {
                 orders.map((order) => (
                   <div
                     key={order._id}
-                    className="border-solid  px-2 rounded-2xl p-2 max-w-full mb-5  shadow-inner hover:shadow-xl"
+                    className="border-solid  px-2 rounded-2xl p-2 max-w-full mb-5  shadow-inner "
                   >
                     <div className="md:shrink-0 grid justify-items-center grid-cols-1 ssm:grid-cols-2 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-2">
                       <figure>
                         <img
-                          className="mt-2.5 block ml-auto mr-auto rounded-sm max-w-full max-h-full ssm:w-44 lg:w-80 h-32  object-cover bg-fixed"
+                          className="mt-2.5 block rounded-sm max-w-full max-h-full w-20 h-20  object-cover bg-fixed"
                           src={order.image}
                           alt={order.prodName}
                         />
-                        <div className="bg-gray-900 text-white text-center text-sm rounded-sm p-2 grid">
-                          <p>
-                            Payment Method:{" "}
-                            {order.status ? <>{order.status}</> : <>None</>}
-                          </p>
-                          <button
-                            onClick={() => statusHandler(order)}
-                            className="px-6 w-full mt-1 p-1 border-t-2 hover:bg-gray-800"
-                          >
-                            <strong className="text-sm bottom-2 right-7">
-                              Pay via
-                            </strong>
-                            <div className="flex justify-between">
-                              <BsCashCoin className="text-2xl" />
-                              <p className="ml-2 mr-2">or</p>
-                              <TbCircleLetterG className="text-2xl" />
-                            </div>
-                          </button>
-                        </div>
+                   
                       </figure>
-                      <Card className="grid rounded-md px-2 ssm:w-44 lg:w-72 p-1 mt-2 font-quicksand text-sm space-y-1">
+                      <Card className="grid rounded-md px-2   p-1 mt-2 font-quicksand text-sm space-y-1">
                         <p className="text-xl grid grid-cols-2">
                           <Link to={`/ProductId/${order.productId}`}>
                             <button className="truncate ssm:w-80 lg:w-60 text-start">
@@ -345,21 +327,13 @@ function Orders({id}) {
 
                         <div className="grid grid-cols-2 pt-1">
                           <p className="truncate w-48 flex">
-                            <LinkIcon className="mr-1 mt-1" />
+                            <LinkIcon className=" mt-1" />
                             {order.sellerName}
                           </p>
-                          <p className="text-xs px-1 mt-1 justify-self-end mr-2 rounded-md bg-[#15f85667]">
-                            {order.accountType}
-                          </p>
+                   
                         </div>
-                        <p className="truncate flex">
-                          <AtSignIcon className="mt-1 mr-1" />{" "}
-                          {order.sellerEmail}
-                        </p>
-                        {/* <p className="truncate flex">
-                          <FaFacebookF className="mt-1 mr-1" />{" "}
-                          {order.sellerFacebook}
-                        </p> */}
+                 
+                     
                         <hr />
                         <p className="flex">
                           <p>Quantity:</p>
@@ -367,8 +341,8 @@ function Orders({id}) {
                             {order.quantity}
                           </p>
                         </p>
-                        <p className="flex mr-5">
-                          <p className="mr-1">Price:</p>
+                        <p className="flex ">
+                          <p className="">Price:</p>
                           <p className="underline">
                             {order.price.toLocaleString("en-PH", {
                               style: "currency",
@@ -377,8 +351,8 @@ function Orders({id}) {
                           </p>
                         </p>
 
-                        <p className="flex mr-5">
-                          <p className="mr-1">Total:</p>
+                        <p className="flex">
+                          <p className="">Total:</p>
                           <p className="underline">
                             {order.total.toLocaleString("en-PH", {
                               style: "currency",
@@ -386,31 +360,8 @@ function Orders({id}) {
                             })}
                           </p>
                         </p>
-                        <p className="h-28 overflow-y-auto px-2 mt-1 mb-2 border-solid border-2 rounded-lg w-[100%] ">
-                          <p className="bg-[#0e4f7728] rounded-md">
-                            Type: {order.types}
-                          </p>
-                          {order.message}
-                        </p>
-                        <figure className="grid justify-items-center">
-                          <div className="mt-2">
-                            <button className="px-4 p-3 mx-2 rounded-lg bg-gray-900 text-white">
-                              <MdEmail className="text-2xl" />
-                            </button>
-
-                            <a href={order.sellerFacebook} target="_blank">
-                              <button className="px-4 p-3 mx-2 rounded-lg bg-gray-900 text-white">
-                                <FaFacebookSquare className="text-2xl" />
-                              </button>
-                            </a>
-                            <button
-                              onClick={() => chatButton(order)}
-                              className="px-4 p-3 mx-2 rounded-lg bg-gray-900 text-white"
-                            >
-                              <MdMessage className=" cursor-pointer mx-2  text-2xl" />
-                            </button>
-                          </div>
-                        </figure>
+                       
+                   
                       </Card>
                     </div>
                   </div>
@@ -680,4 +631,4 @@ function Orders({id}) {
   );
 }
 
-export default Orders;
+export default OrdersDrawer;

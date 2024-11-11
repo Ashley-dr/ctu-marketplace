@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 
 function Keyoffering() {
   return (
-    <div className="mx-5 font-thin font-quicksand mt-10 mb-10 justify-self-center ssm:w-[330px] md:w-[500px] lg:w-[1300px]">
+    <div className="mx-5 font-thin font-quicksand mt-10 mb-10 justify-self-center ssm:w-[330px] md:w-[500px] lg:w-[1200px]">
       <figure>
         <article>
           <p className="text-3xl font-semibold font-poppins mb-16">
@@ -24,7 +24,7 @@ function Keyoffering() {
         <figure className="grid ssm:grid-cols-1 lg:grid-cols-2 mt-5">
           <article className="">
             <img
-              className="bg-no-repeat bg-cover bg-center bg-fixed w-[600px] ssm:h-10 lg:h-[600px] opacity-20"
+              className="bg-no-repeat bg-cover bg-center bg-fixed w-[500px] ssm:h-10 lg:h-[600px] opacity-20"
               src="https://i.pinimg.com/736x/8a/f2/dc/8af2dc6970ec293264e724f88ccb1b7b.jpg"
               alt=""
             />
