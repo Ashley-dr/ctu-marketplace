@@ -49,8 +49,8 @@ function Users() {
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 10000); // Update every second
-    return () => clearInterval(interval);
+    // const interval = setInterval(fetchData, 10000); // Update every second
+    // return () => clearInterval(interval);
   }, [fetchData]);
 
   const handleSearchChange = (event) => {
