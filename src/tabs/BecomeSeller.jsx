@@ -207,7 +207,7 @@ function BecomeSeller(props) {
         },
       })
       .then((result) => {
-        // navigate("/");
+        navigate("/");
       })
       .catch((err) => {
         console.log("Error:", err);

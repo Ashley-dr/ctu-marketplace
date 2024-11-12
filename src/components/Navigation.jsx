@@ -610,13 +610,12 @@ function Navigation() {
                         <MdAccountBox /> Account Settings
                       </MenuItem>
                     </Link>
-                    {/* <Link to={`/Orders/${isUsers.id}`}> */}
-                      {" "}
-                      <MenuItem className="gap-2.5 " onClick={onOpenDrawer}>
-                        <PiShoppingCartDuotone /> Orders
-                        <OrdersCount id={isUsers.id} />
-                      </MenuItem>
-                      <Drawer
+                    {/* <Link to={`/Orders/${isUsers.id}`}> */}{" "}
+                    <MenuItem className="gap-2.5 " onClick={onOpenDrawer}>
+                      <PiShoppingCartDuotone /> Orders
+                      <OrdersCount id={isUsers.id} />
+                    </MenuItem>
+                    <Drawer
                       isOpen={isOpenDrawer}
                       placement="right"
                       size={"sm"}
@@ -625,9 +624,15 @@ function Navigation() {
                       <DrawerOverlay />
                       <DrawerContent>
                         <DrawerCloseButton />
-                        <DrawerHeader></DrawerHeader>
+                        <DrawerHeader className="flex items-center gap-2">
+                          <Text>Cart</Text>
+                          <Text className="flex items-cente gap-2 font-thin">
+                            [ Item
+                            <OrdersCount id={isUsers.id} />]
+                          </Text>
+                        </DrawerHeader>
                         <DrawerBody>
-                        
+                          <Divider />
                           <OrdersDrawer id={isUsers.id} />
                         </DrawerBody>
                       </DrawerContent>
@@ -739,14 +744,32 @@ function Navigation() {
                         Account Settings
                       </MenuItem>
                     </Link>
-                    <Link to={`/Orders/${isFaculty.id}`}>
-                      {" "}
-                      <MenuItem className="gap-2 ">
-                        {" "}
-                        <PiShoppingCartDuotone /> Orders
-                        <OrdersCount id={isFaculty.id} />
-                      </MenuItem>
-                    </Link>
+                    <MenuItem className="gap-2.5 " onClick={onOpenDrawer}>
+                      <PiShoppingCartDuotone /> Orders
+                      <OrdersCount id={isFaculty.id} />
+                    </MenuItem>
+                    <Drawer
+                      isOpen={isOpenDrawer}
+                      placement="right"
+                      size={"sm"}
+                      onClose={onCloseDrawer}
+                    >
+                      <DrawerOverlay />
+                      <DrawerContent>
+                        <DrawerCloseButton />
+                        <DrawerHeader className="flex items-center gap-2">
+                          <Text>Cart</Text>
+                          <Text className="flex items-cente gap-2 font-thin">
+                            [ Item
+                            <OrdersCount id={isFaculty.id} />]
+                          </Text>
+                        </DrawerHeader>
+                        <DrawerBody>
+                          <Divider />
+                          <OrdersDrawer id={isFaculty.id} />
+                        </DrawerBody>
+                      </DrawerContent>
+                    </Drawer>
                     {isFaculty.isSeller === true ? (
                       <div>
                         <Link to={`/Transactions/${isFaculty.id}`}>
@@ -1381,7 +1404,7 @@ function Navigation() {
                     <MdOutlineAlternateEmail />
                   </p>
                 </FormLabel>
-                
+
                 <input
                   className="mb-2  w-full bg-transparent pt-1 pl-1 border-b-4 border-gray-900"
                   placeholder="email@"
@@ -1403,30 +1426,32 @@ function Navigation() {
                   </p>
                 </FormLabel>
                 <InputGroup>
-                <InputRightElement>  
-                 <IconButton
-                  variant="ghost"
-                  bg={"transparent"}
-                  _hover={"none"}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                  icon={showPassword ? <FiEyeOff /> : <FiEye />}
-                  onClick={() => setShowPassword(!showPassword)}
-                /></InputRightElement>
-                <input
-                  className="mb-2  w-full bg-transparent pt-1 pl-1 border-b-4 border-gray-900"
-                  placeholder="Password"
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  value={inputLogin.password}
-                  onChange={(e) => {
-                    setInputLogin({
-                      ...inputLogin,
-                      [e.target.name]: e.target.value,
-                    });
-                  }}
-                />
+                  <InputRightElement>
+                    <IconButton
+                      variant="ghost"
+                      bg={"transparent"}
+                      _hover={"none"}
+                      aria-label={
+                        showPassword ? "Hide password" : "Show password"
+                      }
+                      icon={showPassword ? <FiEyeOff /> : <FiEye />}
+                      onClick={() => setShowPassword(!showPassword)}
+                    />
+                  </InputRightElement>
+                  <input
+                    className="mb-2  w-full bg-transparent pt-1 pl-1 border-b-4 border-gray-900"
+                    placeholder="Password"
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    value={inputLogin.password}
+                    onChange={(e) => {
+                      setInputLogin({
+                        ...inputLogin,
+                        [e.target.name]: e.target.value,
+                      });
+                    }}
+                  />
                 </InputGroup>
-            
               </FormControl>
 
               <Button

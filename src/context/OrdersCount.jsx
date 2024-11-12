@@ -65,9 +65,7 @@ function OrdersCount({ id }) {
   return (
     <div>
       {" "}
-      <p className="text-teal-300 text-xs bg-red-500 px-1.5 mx-12 rounded-md">
-        {orderCounts}
-      </p>
+      <p className=" px-1.2 rounded-md">{orderCounts}</p>
     </div>
   );
 }

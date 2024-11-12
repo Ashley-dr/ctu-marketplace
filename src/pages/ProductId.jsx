@@ -235,7 +235,7 @@ function ProductId() {
           sellerGcashNumber: "",
           buyerGcashNumber: "",
         });
-        navigate(`/Orders/${purchasedSchema.userId}`);
+        window.location.reload();
       })
       .catch((err) => {
         console.log("Error submitting:", err);
