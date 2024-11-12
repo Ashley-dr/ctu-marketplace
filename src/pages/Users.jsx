@@ -26,6 +26,7 @@ function Users() {
   const [error, setError] = useState(null);
   const [studentLimit, setStudentLimit] = useState(7);
   const [facultyLimit, setFacultyLimit] = useState(7);
+
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
@@ -36,6 +37,7 @@ function Users() {
 
       setStudentData(studentsResponse.data);
       setFacultyData(facultyResponse.data);
+
       setError(null);
     } catch (err) {
       setError("Error fetching data");
@@ -47,7 +49,7 @@ function Users() {
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 1000); // Update every second
+    const interval = setInterval(fetchData, 10000); // Update every second
     return () => clearInterval(interval);
   }, [fetchData]);
 
@@ -77,10 +79,10 @@ function Users() {
     )
     .slice(0, facultyLimit);
 
-  if ((loading && studentData.length === 0) || facultyData.length === 0) {
+  if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        {/* <Loader /> */}
+        <Loader />
       </div>
     );
   }
