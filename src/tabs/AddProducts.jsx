@@ -21,6 +21,8 @@ import { AiOutlineUpload } from "react-icons/ai";
 function AddProducts() {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [cookies, removeCookies] = useCookies([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setSucess] = useState(false);
   const [isUsers, setisUser] = useState("");
   const [facultysData, setFacultyData] = useState([]);
   const { id } = useParams();
@@ -71,6 +73,7 @@ function AddProducts() {
 
   const productSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     const formData = new FormData();
     formData.append("sellerId", products.sellerId);
     formData.append("sellerName", products.sellerName);
@@ -110,8 +113,12 @@ function AddProducts() {
         sellerGcashNumber: "",
       });
       setProductImage([]);
+
+      navigate("/Account");
     } catch (error) {
       console.log("Error uploading images", error);
+    } finally {
+      setIsLoading(false);
     }
     navigate("/Account");
   };
@@ -177,9 +184,9 @@ function AddProducts() {
                 </li>
               </ol>
             </figure>
-            <form className="mb-32" onSubmit={productSubmit}>
+            <form className="mb-32 " onSubmit={productSubmit}>
               <figure className="grid ssm:grid-cols-1 lg:grid-cols-2 justify-items-center">
-                <article className="grid font-quicksand w-96">
+                <article className="grid font-quicksand ssm:w-80 lg:w-96">
                   <div>
                     <input
                       type="text"
@@ -331,7 +338,7 @@ function AddProducts() {
                   </label>
                 </article>
 
-                <article className="ssm:border-l-0 lg:border-l-2 ssm:pl-0 lg:pl-5 ">
+                <article className="ssm:border-l-0 lg:border-l-2 ssm:pl-0 lg:pl-5 w-80">
                   <label className="grid mb-2">
                     <p className="justify-self-start text-xs">Categories</p>
                     <Select
@@ -353,8 +360,8 @@ function AddProducts() {
                       required
                     />
                   </label>
-                  <label className="flex items-center justify-center w-full">
-                    <label className="flex  flex-col items-center justify-center w-96 h-64 mb-5 border-2 border-gray-900 border-dashed rounded-lg cursor-pointer bg-[#eaf3fffa] hover:bg-[#c5d0f3fa] ">
+                  <label className="flex items-center justify-center justify-self-center ">
+                    <label className="flex  flex-col items-center justify-center ssm:w-80 lg:w-72 h-64 mb-5 border-2 border-gray-900 border-dashed rounded-lg cursor-pointer bg-[#eaf3fffa] hover:bg-[#c5d0f3fa] ">
                       <div className="flex flex-col items-center justify-center pt-5 pb-6">
                         <AiOutlineUpload className="text-5xl text-gray-900" />
                         <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
@@ -371,7 +378,7 @@ function AddProducts() {
                       <input
                         id="dropzone-file"
                         type="file"
-                        className="text-black bg-transparent  relative top-5 mr-16"
+                        className="text-black bg-transparent  relative top-5 mr-16 w-44"
                         value={productImage.image}
                         accept="image/"
                         name="image"
@@ -382,16 +389,25 @@ function AddProducts() {
                       />
                     </label>
                   </label>
-
-                  <center>
-                    {" "}
-                    <button
-                      type="submit"
-                      className="bg-gray-800 w-full justify-center p-2 px-4 rounded-lg text-white font-quicksand font-semibold flex items-center hover:bg-gray-600"
-                    >
-                      Add Item <AddIcon className="ml-2 text-xs" />
-                    </button>
-                  </center>
+                  {isLoading ? (
+                    <>
+                      <p className="bg-gray-800 w-full justify-center p-2 px-4 rounded-lg text-white font-quicksand font-semibold flex items-center  gap-1">
+                        Product upload success
+                        <Link to={`/Account`} className="underline">
+                          View
+                        </Link>
+                      </p>
+                    </>
+                  ) : (
+                    <center>
+                      <button
+                        type="submit"
+                        className="bg-gray-800 w-full justify-center p-2 px-4 rounded-lg text-white font-quicksand font-semibold flex items-center hover:bg-gray-600"
+                      >
+                        Add Item <AddIcon className="ml-2 text-xs" />
+                      </button>
+                    </center>
+                  )}
                 </article>
               </figure>
             </form>

@@ -332,7 +332,7 @@ function OrdersDrawer({ id }) {
 
                               <Flex justifyContent={"end"} mx={1} gap={1}>
                                 <Link
-                                  to={`/ProductId/${order.productId}`}
+                                  to={`/ProductId/${order.productId}#item`}
                                   className="grid justify-self-start justify-start "
                                 >
                                   <button size="xs">

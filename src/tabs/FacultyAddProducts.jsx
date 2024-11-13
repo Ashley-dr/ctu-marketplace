@@ -22,15 +22,29 @@ function FacultyAddProducts() {
   const [isFaculty, setisFaculty] = useState("");
   const { id } = useParams();
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const [productImage, setProductImage] = useState([]);
   const [products, setProducts] = useState({
+    // sellerName: "",
+    // prodName: "",
+    // description: "",
+    // stocks: "",
+    // sellerEmail: "",
+    // price: "",
+    // sellerId: "",
+    // categories: [],
+    // accountType: "",
+    // facebook: "",
+    // marketType: "",
+    // sellerPhoneNumber: "",
+    // sellerGcashNumber: "",
+    sellerId: "",
     sellerName: "",
-    prodName: "",
-    description: "",
     stocks: "",
     sellerEmail: "",
+    prodName: "",
+    description: "",
     price: "",
-    sellerId: "",
     categories: [],
     accountType: "",
     facebook: "",
@@ -67,11 +81,25 @@ function FacultyAddProducts() {
 
   const productSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     const formData = new FormData();
-    formData.append("sellerName", products.sellerName);
-    formData.append("sellerEmail", products.sellerEmail);
-    formData.append("stocks", products.stocks);
+    // formData.append("sellerName", products.sellerName);
+    // formData.append("sellerEmail", products.sellerEmail);
+    // formData.append("stocks", products.stocks);
+    // formData.append("sellerId", products.sellerId);
+    // formData.append("prodName", products.prodName);
+    // formData.append("description", products.description);
+    // formData.append("price", products.price);
+    // formData.append("categories", products.categories);
+    // formData.append("accountType", products.accountType);
+    // formData.append("facebook", products.facebook);
+    // formData.append("marketType", products.marketType);
+    // formData.append("sellerPhoneNumber", products.sellerPhoneNumber);
+    // formData.append("sellerGcashNumber", products.sellerGcashNumber);
     formData.append("sellerId", products.sellerId);
+    formData.append("sellerName", products.sellerName);
+    formData.append("stocks", products.stocks);
+    formData.append("sellerEmail", products.sellerEmail);
     formData.append("prodName", products.prodName);
     formData.append("description", products.description);
     formData.append("price", products.price);
@@ -90,10 +118,10 @@ function FacultyAddProducts() {
       });
       console.log("Image Uploaded", response.data.image);
       setProducts({
-        sellerName: "",
-        sellerEmail: "",
         sellerId: "",
+        sellerName: "",
         stocks: "",
+        sellerEmail: "",
         prodName: "",
         description: "",
         price: "",
@@ -105,8 +133,11 @@ function FacultyAddProducts() {
         sellerGcashNumber: "",
       });
       setProductImage([]);
+      navigate("/Account");
     } catch (error) {
       console.log("Error uploading images", error);
+    } finally {
+      setIsLoading(false);
     }
     navigate("/Account");
   };
@@ -145,7 +176,7 @@ function FacultyAddProducts() {
   return (
     <figure className="max-w-full pt-2 max-h-full bg-gradient-to-tr from-[#00ffdd2d] via-[#0834f515] to-[#08ceff1a] text-center ">
       <figure className="max-w-full w-full ">
-        <article className=" px-9 pt-5 mt-2 rounded-lg pb-5 lg:mx-9">
+        <article className="  px-9 pt-5 mt-2 rounded-lg pb-5 lg:mx-9">
           <article className="grid justify-items-center">
             <h1 className="pt-5 font-bebas text-3xl">Add new product.</h1>
 
@@ -165,19 +196,11 @@ function FacultyAddProducts() {
                   </p>{" "}
                   Inventory on Profile
                 </li>
-                {/* <p className="border-[#15a380] rounded-lg border-2 transform rotate-90  mr-2 ml-2"></p>
-         <li className="flex font-poppins">
-           {" "}
-           <p className="pl-2   pr-2 border-[#077b8a] rounded-full  font-montserrat text-sm border-2 relative bottom-0 mr-2 bg-[#077b8a50] text-[#0b9fb3] font-bold text-center">
-             <p className="ssm:mt-1 lg:mt-0">3</p>
-           </p>{" "}
-           Wait for approval
-         </li> */}
               </ol>
             </figure>
-            <form className="mb-32" onSubmit={productSubmit}>
+            <form className="mb-32 " onSubmit={productSubmit}>
               <figure className="grid ssm:grid-cols-1 lg:grid-cols-2 justify-items-center">
-                <article className="grid font-quicksand w-96">
+                <article className="grid font-quicksand ssm:w-80 lg:w-96">
                   <div>
                     <input
                       type="text"
@@ -333,7 +356,7 @@ function FacultyAddProducts() {
                   </label>
                 </article>
 
-                <article className="ssm:border-l-0 lg:border-l-2 ssm:pl-0 lg:pl-5 ">
+                <article className="ssm:border-l-0 lg:border-l-2 ssm:pl-0 lg:pl-5 w-80">
                   <label className="grid mb-2">
                     <p className="justify-self-start text-xs">Categories</p>
                     <Select
@@ -355,8 +378,8 @@ function FacultyAddProducts() {
                       required
                     />
                   </label>
-                  <label className="flex items-center justify-center w-full">
-                    <label className="flex  flex-col items-center justify-center w-96 h-64 mb-5 border-2 border-gray-900 border-dashed rounded-lg cursor-pointer bg-[#eaf3fffa] hover:bg-[#c5d0f3fa] ">
+                  <label className="flex items-center justify-center justify-self-center ">
+                    <label className="flex  flex-col items-center justify-center ssm:w-80 lg:w-72 h-64 mb-5 border-2 border-gray-900 border-dashed rounded-lg cursor-pointer bg-[#eaf3fffa] hover:bg-[#c5d0f3fa] ">
                       <div className="flex flex-col items-center justify-center pt-5 pb-6">
                         <AiOutlineUpload className="text-5xl text-gray-900" />
                         <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
@@ -373,7 +396,7 @@ function FacultyAddProducts() {
                       <input
                         id="dropzone-file"
                         type="file"
-                        className="text-black bg-transparent  relative top-5 mr-16"
+                        className="text-black bg-transparent  relative top-5 mr-16 w-44"
                         value={productImage.image}
                         accept="image/"
                         name="image"
@@ -384,15 +407,25 @@ function FacultyAddProducts() {
                       />
                     </label>
                   </label>
-                  <center>
-                    {" "}
-                    <button
-                      type="submit"
-                      className="bg-gray-800  w-full justify-center p-2 px-4 rounded-lg text-white font-quicksand font-semibold flex items-center hover:bg-gray-600"
-                    >
-                      Add Item <AddIcon className="ml-2 text-xs" />
-                    </button>
-                  </center>
+                  {isLoading ? (
+                    <>
+                      <p className="bg-gray-800 w-full justify-center p-2 px-4 rounded-lg text-white font-quicksand font-semibold flex items-center  gap-1">
+                        Product upload success
+                        <Link to={`/Account`} className="underline">
+                          View
+                        </Link>
+                      </p>
+                    </>
+                  ) : (
+                    <center>
+                      <button
+                        type="submit"
+                        className="bg-gray-800 w-full justify-center p-2 px-4 rounded-lg text-white font-quicksand font-semibold flex items-center hover:bg-gray-600"
+                      >
+                        Add Item <AddIcon className="ml-2 text-xs" />
+                      </button>
+                    </center>
+                  )}
                 </article>
               </figure>
             </form>

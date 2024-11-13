@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import CopyToClipboard from "react-copy-to-clipboard";
@@ -354,6 +354,16 @@ function ProductId() {
     setCurrentImage(index); // Set the clicked image index
     setOpen(true); // Open the lightbox
   };
+
+  const location = useLocation();
+  useEffect(() => {
+    if (location.hash === "#item") {
+      const element = document.getElementById("item");
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  }, [location]);
 
   return (
     <div

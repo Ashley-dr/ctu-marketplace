@@ -215,7 +215,7 @@ function Products() {
           </div>
 
           <Link
-            to={`/ProductId/${item._id}`}
+            to={`/ProductId/${item._id}#item`}
             className="bg-gray-900 mt-2 pt-1 pb-1 text-white text-center text-sm  rounded-sm p-2 grid hover:bg-gray-950"
           >
             <button className="m-1 font-quicksand">
