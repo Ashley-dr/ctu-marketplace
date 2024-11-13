@@ -55,7 +55,7 @@ function Products() {
   const [placement, setPlacement] = useState("top");
   const [value, setValue] = useState("1");
   const [checkedItems, setCheckedItems] = useState([false, false]);
-  const [productLimit, setProductLimit] = useState(10);
+  const [productLimit, setProductLimit] = useState(8);
 
   useEffect(() => {
     const fetchProductsCount = async () => {
@@ -304,7 +304,7 @@ function Products() {
       </button>
       <div className="flex mt-7 mb-7  pt-5 ssm:px-0 lg:px-5 rounded-lg">
         {/* filter */}
-        <div className=" shrink-0 grid font-quicksand text-sm space-y-2   ssm:hidden lg:grid lg:grid-cols-1  mb-5">
+        <div className=" shrink-0 grid font-quicksand text-sm space-y-2 h-96 ssm:hidden lg:grid lg:grid-cols-1  mb-5">
           <p className="flex text-sm gap-2 font-poppins">
             <p>Total Products</p>
             <p className="font-quicksand text-orange-200 bg-orange-900 px-2 mb-2 ">
@@ -465,11 +465,7 @@ function Products() {
               <p>School Supplies</p>
             </div>
           </Checkbox>
-          <Checkbox value={"Foods"} onChange={(e) => setSearch(e.target.value)}>
-            <div className="flex gap-2 mx-2">
-              <p>Foods</p>
-            </div>
-          </Checkbox>
+
           <Checkbox
             value={"Second Hand Items"}
             onChange={(e) => setSearch(e.target.value)}
@@ -686,14 +682,7 @@ function Products() {
                   <p>School Supplies</p>
                 </div>
               </Checkbox>
-              <Checkbox
-                value={"Foods"}
-                onChange={(e) => setSearch(e.target.value)}
-              >
-                <div className="flex gap-2 mx-2">
-                  <p>Foods</p>
-                </div>
-              </Checkbox>
+
               <Checkbox
                 value={"Second Hand Items"}
                 onChange={(e) => setSearch(e.target.value)}

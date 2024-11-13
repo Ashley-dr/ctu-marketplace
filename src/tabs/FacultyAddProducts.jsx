@@ -162,7 +162,7 @@ function FacultyAddProducts() {
     { value: "School Uniforms", label: "School Uniforms" },
     { value: "Lanyards", label: "Lanyards" },
     { value: "School Supplies", label: "School Supplies" },
-    { value: "Foods", label: "Foods" },
+
     { value: "Second Hand Items", label: "Second Hand Items" },
     { value: "Valuable Items", label: "Valuable Items" },
     { value: "Mens Shoes", label: "Men's Shoes" },

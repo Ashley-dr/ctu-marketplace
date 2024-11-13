@@ -460,7 +460,12 @@ function Navigation() {
   };
   return (
     <div className="max-w-full font-quicksand text-sm fixed w-screen z-20">
-      <ToastContainer />
+      <ToastContainer
+        style={{ zIndex: 2000 }}
+        closeOnClick
+        pauseOnHover
+        draggable
+      />
       <Box
         className=""
         bg={useColorModeValue("brand.light", "brand.dark")}
@@ -817,6 +822,7 @@ function Navigation() {
         isOpen={signupModal.isOpen}
         onClose={signupModal.onClose}
         size={"full"}
+        zIndex={1500}
       >
         <DrawerOverlay />
         <DrawerContent>
@@ -831,6 +837,12 @@ function Navigation() {
           </p>
           <DrawerCloseButton />
           <DrawerBody pb={6} className="grid justify-items-center ">
+            <ToastContainer
+              style={{ zIndex: 2000 }}
+              closeOnClick
+              pauseOnHover
+              draggable
+            />
             <form onSubmit={handleSignupSubmit} className="ssm:w-64 lg:w-96">
               <FormControl>
                 <label className=" font-poppins font-thick uppercase tracking-widest  text-sm">
@@ -1143,6 +1155,7 @@ function Navigation() {
         isOpen={facultysignupModal.isOpen}
         onClose={facultysignupModal.onClose}
         size={"full"}
+        zIndex={1500}
       >
         <DrawerOverlay />
         <DrawerContent>
@@ -1157,6 +1170,12 @@ function Navigation() {
           </p>
           <DrawerCloseButton />
           <DrawerBody pb={6} className="grid justify-items-center ">
+            <ToastContainer
+              style={{ zIndex: 2000 }}
+              closeOnClick
+              pauseOnHover
+              draggable
+            />
             <form
               onSubmit={handleFacultySignupSubmit}
               className="ssm:w-64 lg:w-96"
@@ -1397,6 +1416,12 @@ function Navigation() {
 
           <ModalCloseButton />
           <ModalBody pb={7}>
+            <ToastContainer
+              style={{ zIndex: 2000 }}
+              closeOnClick
+              pauseOnHover
+              draggable
+            />
             <form onSubmit={loginInput}>
               <FormControl className="flex mb-8 mt-4">
                 <FormLabel className="pt-1.5 border bg-[#142138] rounded-md">

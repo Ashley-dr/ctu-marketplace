@@ -310,7 +310,7 @@ function OrdersDrawer({ id }) {
                 <>
                   <Text>Pending</Text>
                   {orders
-                    .filter((order) => order.status === undefined)
+                    .filter((order) => order.status === "" || undefined)
                     .map((order) => (
                       <div
                         key={order._id}
