@@ -251,7 +251,7 @@ function ProductId() {
           title: "Order Added Successfully",
           position: "top-left",
           description:
-            "Your selected items have been addes to your cart. You can review your order and proceed to checkout when you're ready.",
+            "Your selected items have been added to your cart. You can review your order and proceed to checkout when you're ready.",
           status: "success",
           duration: 5000,
           isClosable: true,
