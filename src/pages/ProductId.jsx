@@ -79,6 +79,7 @@ export const formatDateToNow = (date) => {
   }
   return formatDistanceToNow(validDate, { addSuffix: true });
 };
+import { useToast } from "@chakra-ui/react";
 import { LuDot } from "react-icons/lu";
 import { initLightboxJS } from "lightbox.js-react";
 import "lightbox.js-react/dist/index.css";
@@ -88,10 +89,13 @@ import { Zoom } from "yet-another-react-lightbox/plugins";
 import "yet-another-react-lightbox/styles.css";
 import ChatPage from "../tabs/ChatPage";
 import Products from "./Products";
+import OrdersCount from "../context/OrdersCount";
+import OrdersDrawer from "../tabs/OrdersDrawer";
 function ProductId() {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [cookies, removeCookies] = useCookies([]);
   const [productData, setProductData] = useState([]);
+  const toast = useToast();
   const [comments, setComments] = useState([]);
   const [newComment, setNewComments] = useState("");
   const { id } = useParams();
@@ -105,6 +109,11 @@ function ProductId() {
     isOpen: isOpenDrawer,
     onOpen: onOpenDrawer,
     onClose: onCloseDrawer,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenDrawers,
+    onOpen: onOpenDrawers,
+    onClose: onCloseDrawers,
   } = useDisclosure();
   const [textToCopy, setTextToCopy] = useState(""); // The text you want to copy
   const [copyStatus, setCopyStatus] = useState(false);
@@ -235,7 +244,18 @@ function ProductId() {
           sellerGcashNumber: "",
           buyerGcashNumber: "",
         });
-        window.location.reload();
+        // window.location.reload();
+        onOpenDrawers();
+        onClose();
+        toast({
+          title: "Order Added Successfully",
+          position: "top-left",
+          description:
+            "Your selected items have been addes to your cart. You can review your order and proceed to checkout when you're ready.",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
       })
       .catch((err) => {
         console.log("Error submitting:", err);
@@ -581,6 +601,28 @@ function ProductId() {
                                 onClick={drawer}
                                 className=" cursor-pointer mx-2  text-4xl flex  bg-gray-900  text-white text-center w-16  rounded-sm p-2 justify-center hover:bg-gray-950"
                               />
+                              <Drawer
+                                isOpen={isOpenDrawers}
+                                placement="right"
+                                size={"sm"}
+                                onClose={onCloseDrawers}
+                              >
+                                <DrawerOverlay />
+                                <DrawerContent>
+                                  <DrawerCloseButton />
+                                  <DrawerHeader className="flex items-center gap-2">
+                                    <Text>Cart</Text>
+                                    <Text className="flex items-cente gap-2 font-thin">
+                                      [ Item
+                                      <OrdersCount id={isUsers.id} />]
+                                    </Text>
+                                  </DrawerHeader>
+                                  <DrawerBody>
+                                    <Divider />
+                                    <OrdersDrawer id={isUsers.id} />
+                                  </DrawerBody>
+                                </DrawerContent>
+                              </Drawer>
                             </div>
                           </>
                         )}
@@ -601,6 +643,28 @@ function ProductId() {
                                   onClick={drawer}
                                   className=" cursor-pointer mx-2  text-4xl flex  bg-gray-900  text-white text-center w-16  rounded-sm p-2 justify-center hover:bg-gray-950"
                                 />
+                                <Drawer
+                                  isOpen={isOpenDrawers}
+                                  placement="right"
+                                  size={"sm"}
+                                  onClose={onCloseDrawers}
+                                >
+                                  <DrawerOverlay />
+                                  <DrawerContent>
+                                    <DrawerCloseButton />
+                                    <DrawerHeader className="flex items-center gap-2">
+                                      <Text>Cart</Text>
+                                      <Text className="flex items-cente gap-2 font-thin">
+                                        [ Item
+                                        <OrdersCount id={isFaculty.id} />]
+                                      </Text>
+                                    </DrawerHeader>
+                                    <DrawerBody>
+                                      <Divider />
+                                      <OrdersDrawer id={isFaculty.id} />
+                                    </DrawerBody>
+                                  </DrawerContent>
+                                </Drawer>
                               </div>
                             </>
                           )}
@@ -1327,6 +1391,7 @@ function ProductId() {
           </ModalContent>
         </Modal>
       )}
+
       <Divider mt={4} mb={4} />
 
       <Products />

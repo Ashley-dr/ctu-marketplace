@@ -134,7 +134,6 @@ function Navigation() {
           status: "success",
           duration: 5000,
           isClosable: true,
-          zIndex: 40,
         });
         console.log("Email sent");
         setDone(true);
@@ -151,7 +150,7 @@ function Navigation() {
             "Email not found. Please check the email address and try again.",
           status: "error",
           duration: 5000,
-          zIndex: 40,
+
           isClosable: true,
         });
       } else {
@@ -162,7 +161,7 @@ function Navigation() {
             "An error occurred. Please try again.",
           status: "error",
           duration: 5000,
-          zIndex: 40,
+
           isClosable: true,
         });
       }
@@ -177,7 +176,7 @@ function Navigation() {
         title: "Error",
         description: "Passwords do not match.",
         status: "error",
-        zIndex: 40,
+
         duration: 5000,
         isClosable: true,
       });
@@ -190,7 +189,7 @@ function Navigation() {
         description: "Please enter both the reset token and new password.",
         status: "error",
         duration: 5000,
-        zIndex: 40,
+
         isClosable: true,
       });
       return;
@@ -226,7 +225,7 @@ function Navigation() {
         description: "Failed to reset password. Please try again.",
         status: "error",
         duration: 5000,
-        zIndex: 40,
+
         isClosable: true,
       });
     }
@@ -723,7 +722,7 @@ function Navigation() {
                     <Drawer
                       isOpen={isOpen}
                       placement="left"
-                      size={"full"}
+                      size={"sm"}
                       onClose={onClose}
                     >
                       <DrawerOverlay />

@@ -161,7 +161,7 @@ function OrdersDrawer({ id }) {
     axios
       .delete(`${baseUrl}/api/orders/${id}`)
       .then((result) => {
-        navigate("/");
+        // navigate("/");
       })
       .catch((err) => {
         console.log("Error to remove this product", err);
@@ -310,7 +310,7 @@ function OrdersDrawer({ id }) {
                 <>
                   <Text>Pending</Text>
                   {orders
-                    .filter((order) => order.status === "" || undefined)
+                    .filter((order) => order.status === undefined)
                     .map((order) => (
                       <div
                         key={order._id}
@@ -326,7 +326,7 @@ function OrdersDrawer({ id }) {
                           </figure>
                           <div className="grid  rounded-md  mx-5 bottom-2 font-quicksand text-sm">
                             <p className="text-xl grid grid-cols-2">
-                              <button className="truncate ssm:w-80 lg:w-60 text-start">
+                              <button className="truncate ssm:w-32 lg:w-52 pr-2 text-start">
                                 {order.prodName}
                               </button>
 

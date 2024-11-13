@@ -92,7 +92,7 @@ function Products() {
   }, [fetchProducts]);
 
   const loadMoreProducts = () => {
-    setProductLimit((limit) => limit + 10);
+    setProductLimit((limit) => limit + 8);
   };
 
   const filterProducts = useCallback(
