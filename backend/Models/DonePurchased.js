@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 const DonepurchasedSchema = new mongoose.Schema({
   //  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   userId: { type: String },
+  cartId: { type: String },
   sellerId: {
     type: String,
   },
@@ -80,6 +81,9 @@ const DonepurchasedSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: new Date(),
+  },
+  transactionStatus: {
+    type: String,
   },
 });
 

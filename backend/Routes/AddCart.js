@@ -4,16 +4,17 @@ import express from "express";
 import upload from "../config/Cloudinary.js";
 import { v2 as cloudinary } from "cloudinary";
 import { PurchasedModel } from "../Models/Purchased.js";
-import axios from 'axios';
+import axios from "axios";
 const router = express.Router();
 // item purchased add to cart //
 
 const PAYMONGO_SECRET_KEY = process.env.PAYMONGO_SECRET_KEY;
-const PAYMONGO_BASE_URL = 'https://api.paymongo.com/v1';
+const PAYMONGO_BASE_URL = "https://api.paymongo.com/v1";
 
-router.post('/create-payment', async (req, res) => {
+router.post("/create-payment", async (req, res) => {
   try {
-    const { userId, productId, sellerId, buyerName, buyerEmail, total } = req.body;
+    const { userId, productId, sellerId, buyerName, buyerEmail, total } =
+      req.body;
 
     // Create a payment source for GCash
     const response = await axios.post(
@@ -22,24 +23,27 @@ router.post('/create-payment', async (req, res) => {
         data: {
           attributes: {
             amount: total * 100, // Convert total to centavos
-            currency: 'PHP',
-            type: 'gcash',
+            currency: "PHP",
+            type: "gcash",
             redirect: {
-              success: 'http://localhost:3000/success',
-              failed: 'http://localhost:3000/failed',
+              success: "http://localhost:3000/success",
+              failed: "http://localhost:3000/failed",
             },
           },
         },
       },
       {
         headers: {
-          Authorization: `Basic ${Buffer.from(PAYMONGO_SECRET_KEY).toString('base64')}`,
-          'Content-Type': 'application/json',
+          Authorization: `Basic ${Buffer.from(PAYMONGO_SECRET_KEY).toString(
+            "base64"
+          )}`,
+          "Content-Type": "application/json",
         },
       }
     );
 
-    const gcashRedirectUrl = response.data.data.attributes.redirect.checkout_url;
+    const gcashRedirectUrl =
+      response.data.data.attributes.redirect.checkout_url;
     const paymentIntentId = response.data.data.id;
 
     // Save the payment details in the database
@@ -52,20 +56,17 @@ router.post('/create-payment', async (req, res) => {
       total,
       paymentIntentId,
       gcashRedirectUrl,
-      status: 'pending',
+      status: "pending",
     });
 
     await newOrder.save();
 
     res.status(200).json({ gcashRedirectUrl });
   } catch (error) {
-    console.error('Error creating payment:', error.message);
-    res.status(500).json({ success: false, error: 'Failed to create payment' });
+    console.error("Error creating payment:", error.message);
+    res.status(500).json({ success: false, error: "Failed to create payment" });
   }
 });
-
-
-
 
 router.post("/chats/:id", async (req, res) => {
   const chatsvar = await PurchasedModel.findById(req.params.id);
@@ -151,7 +152,12 @@ router.get("/transactions/:sellerId", (req, res) => {
 router.get("/transaction-count/:id", async (req, res) => {
   PurchasedModel.aggregate(
     [
-      { $match: { sellerId: req.params.id } },
+      {
+        $match: {
+          sellerId: req.params.id,
+          transactionStatus: { $exists: false },
+        },
+      },
       { $group: { _id: "$sellerId", count: { $sum: 1 } } },
     ],
     { maxTimeMS: 60000, allowDiskUse: true }

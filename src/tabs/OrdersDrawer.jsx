@@ -561,7 +561,7 @@ function OrdersDrawer({ id }) {
                     ))}
                   <Text>E Payments</Text>
                   {orders
-                    .filter((order) => order.status === "GCash")
+                    .filter((order) => order.status === "E-Payment")
                     .map((order) => (
                       <div
                         key={order._id}
@@ -577,7 +577,7 @@ function OrdersDrawer({ id }) {
                           </figure>
                           <div className="grid  rounded-md  mx-5 bottom-2 font-quicksand text-sm">
                             <p className="text-xl grid grid-cols-2">
-                              <button className="truncate ssm:w-80 lg:w-60 text-start">
+                              <button className="truncate ssm:w-32 lg:w-52 pr-2 text-start">
                                 {order.prodName}
                               </button>
 
@@ -828,7 +828,7 @@ function OrdersDrawer({ id }) {
                           </figure>
                           <div className="grid  rounded-md  mx-5 bottom-2 font-quicksand text-sm">
                             <p className="text-xl grid grid-cols-2">
-                              <button className="truncate ssm:w-80 lg:w-60 text-start">
+                              <button className="truncate ssm:w-32 lg:w-52 pr-2 text-start">
                                 {order.prodName}
                               </button>
 
@@ -1193,21 +1193,26 @@ function OrdersDrawer({ id }) {
                       <button
                         className="m-2 text-center border p-3  "
                         type="button"
-                        onClick={() => buttonStatus("GCash")}
+                        onClick={() => buttonStatus("E-Payment")}
                       >
                         E payment
                       </button>
-                      <button onClick={handleOrder}>
+                      {/* <button onClick={handleOrder}>
                         Add Order & Pay with GCash
-                      </button>
-                      {purchasedSchema.status === "GCash" ? (
+                      </button> */}
+                      {purchasedSchema.status === "E-Payment" ? (
                         <div>
-                          <Img
+                          {/* <Img
                             src={qrmaya}
                             alt=""
                             className="shadow-inner hover:shadow-xl size-96 rounded-md cursor-pointer"
                             onClick={() => setOpen(true)}
-                          />
+                          /> */}
+                          <Link
+                            to={`https://paymaya.me/ctumarketplace?amt=${statusData.total}`}
+                          >
+                            s
+                          </Link>
                         </div>
                       ) : (
                         <>

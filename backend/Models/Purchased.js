@@ -72,6 +72,9 @@ const purchasedSchema = new mongoose.Schema({
   marketType: {
     type: String,
   },
+  transactionStatus: {
+    type: String,
+  },
   chat: [
     {
       chats: { type: String },

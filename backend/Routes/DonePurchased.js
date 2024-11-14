@@ -4,9 +4,10 @@ import express from "express";
 import { DonePurchasedModel } from "../Models/DonePurchased.js";
 import upload from "../config/Cloudinary.js";
 import { v2 as cloudinary } from "cloudinary";
+import { PurchasedModel } from "../Models/Purchased.js";
 
 const PAYMONGO_SECRET_KEY = process.env.PAYMONGO_SECRET_KEY;
-const PAYMONGO_BASE_URL = 'https://api.paymongo.com/v1';
+const PAYMONGO_BASE_URL = "https://api.paymongo.com/v1";
 const router = express.Router();
 
 router.post("/DonePurchased", upload.array("picture", 5), async (req, res) => {
@@ -14,6 +15,7 @@ router.post("/DonePurchased", upload.array("picture", 5), async (req, res) => {
     const {
       userId,
       sellerId,
+      cartId,
       sellerName,
       productId,
       sellerEmail,
@@ -37,6 +39,7 @@ router.post("/DonePurchased", upload.array("picture", 5), async (req, res) => {
       buyerGcashNumber,
       sellerGcashNumber,
       buyerType,
+      transactionStatus,
     } = req.body;
     const imageUrls = [];
     for (const file of req.files) {
@@ -46,6 +49,7 @@ router.post("/DonePurchased", upload.array("picture", 5), async (req, res) => {
     const newImages = new DonePurchasedModel({
       userId,
       sellerId,
+      cartId,
       sellerName,
       productId,
       sellerEmail,
@@ -69,10 +73,9 @@ router.post("/DonePurchased", upload.array("picture", 5), async (req, res) => {
       buyerGcashNumber,
       sellerGcashNumber,
       buyerType,
+      transactionStatus,
     });
     await newImages.save();
-
-    
   } catch (error) {
     console.log("Error uploading images", error);
     res.status(500).json({ success: false, error: "Failed to upload" });
@@ -87,6 +90,37 @@ router.get("/DonePurchased", async (req, res) => {
       res.status(404).json(err);
     });
 });
+router.put("/DonePurchased/:id", async (req, res) => {
+  const { transactionStatus } = req.body;
+
+  DonePurchasedModel.findByIdAndUpdate(
+    req.params.id,
+    { transactionStatus },
+    { new: true }
+  )
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((err) => {
+      res.status(404).json(err);
+    });
+});
+router.put("/transactionStatus/:id", async (req, res) => {
+  const { transactionStatus } = req.body;
+
+  PurchasedModel.findByIdAndUpdate(
+    req.params.id,
+    { transactionStatus },
+    { new: true }
+  )
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((err) => {
+      res.status(404).json(err);
+    });
+});
+
 router.delete("/DonePurchased/:id", async (req, res) => {
   try {
     const deleteProduct = await DonePurchasedModel.findByIdAndDelete(

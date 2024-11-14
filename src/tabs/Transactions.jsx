@@ -49,6 +49,7 @@ function Transactions() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [doneTransactSchema, setDoneTransactSchema] = useState({
     userId: "",
+    cartId: "",
     sellerId: "",
     sellerName: "",
     productId: "",
@@ -78,6 +79,7 @@ function Transactions() {
   const [purchasedSchema, setPurchasedSchema] = useState({
     sellerId: "",
     userId: "",
+    cartId: "",
     productId: "",
     prodName: "",
     message: "",
@@ -261,6 +263,7 @@ function Transactions() {
     const formData = new FormData();
     formData.append("userId", doneTransactSchema.userId);
     formData.append("sellerId", doneTransactSchema.sellerId);
+    formData.append("cartId", doneTransactSchema.cartId);
     formData.append("sellerName", doneTransactSchema.sellerName);
     formData.append("productId", doneTransactSchema.productId);
     formData.append("sellerEmail", doneTransactSchema.sellerEmail);
@@ -294,6 +297,7 @@ function Transactions() {
       setDoneTransactSchema({
         userId: "",
         sellerId: "",
+        cartId: "",
         sellerName: "",
         productId: "",
         sellerEmail: "",
@@ -336,28 +340,29 @@ function Transactions() {
   const price = statusData.price;
   const quantity = statusData.quantity;
   const total = price * quantity;
-  const tax = total * 0.01;
-  const totalWithTax = total - tax;
-  return (
-    <main className="rounded-md pb-4 max-w-full max-h-full   bg-gradient-to-tr ">
-      {" "}
-      <div className="mx-2 mt-2 mb-14  px-4 rounded-md pt-3 pb-4 max-w-full max-h-full ">
-        <div className=" md:shrink-0 grid justify-items-center grid-cols-1 ssm:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 ">
-          {loading ? (
-            <>
-              {" "}
-              <div className="fixed mt-32 ">
-                <Loader />
+  const tax = total * 0.1;
+  const totalWithTax = total / tax;
+
+  const pendingCard = () => {
+    return (
+      <div className=" md:shrink-0 grid justify-items-center grid-cols-1 ssm:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 ">
+        {loading ? (
+          <>
+            {" "}
+            <div className="fixed mt-32 ">
+              <Loader />
+            </div>
+          </>
+        ) : (
+          <>
+            {myTransactions.length === 0 ? (
+              <div className=" absolute  text-xl font-thin font-quicksand  mt-10">
+                Empty Transaction
               </div>
-            </>
-          ) : (
-            <>
-              {myTransactions.length === 0 ? (
-                <div className=" absolute  text-xl font-thin font-quicksand  mt-10">
-                  Empty Transaction
-                </div>
-              ) : (
-                myTransactions.map((item) => (
+            ) : (
+              myTransactions
+                .filter((item) => item.transactionStatus === undefined)
+                .map((item) => (
                   <div
                     className="border-solid border-2  border-black px-2 rounded-2xl p-2  max-w-full w-96  mb-5 bg-slate-400"
                     key={item._id}
@@ -437,10 +442,18 @@ function Transactions() {
                     </div>
                   </div>
                 ))
-              )}
-            </>
-          )}
-        </div>
+            )}
+          </>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <main className="rounded-md pb-4 max-w-full max-h-full   bg-gradient-to-tr ">
+      {" "}
+      <div className="mx-2 mt-2 mb-14  px-4 rounded-md pt-3 pb-4 max-w-full max-h-full ">
+        {pendingCard()}
         {statusData && (
           <Drawer
             isOpen={isOpenDrawer}
@@ -644,8 +657,8 @@ function Transactions() {
                     of a Student/Without id when Faculty Member.
                   </li>
                   <li>
-                    2. Select your method of payment ( Meet up Pay or Gcash
-                    Payment ).
+                    2. Select your method of payment ( Meet up Pay or E-Payment
+                    ).
                   </li>
                   <li>
                     {" "}
@@ -702,9 +715,9 @@ function Transactions() {
                       <button
                         className="m-2 text-center border p-3  "
                         type="button"
-                        onClick={() => buttonStatus("GCash")}
+                        onClick={() => buttonStatus("E-Payment")}
                       >
-                        ( GCash )
+                        ( E-Payment )
                       </button>
                       <div className="hidden">
                         <input
@@ -713,6 +726,12 @@ function Transactions() {
                           value={
                             (doneTransactSchema.userId = statusData.userId)
                           }
+                          onChange={imageHandler}
+                        />
+                        <input
+                          type="text"
+                          name="cartId"
+                          value={(doneTransactSchema.cartId = statusData._id)}
                           onChange={imageHandler}
                         />
                         <br />
