@@ -58,7 +58,7 @@ import logo from "../assets/ctu-logo.jpg";
 import Lightbox from "yet-another-react-lightbox";
 import { Zoom } from "yet-another-react-lightbox/plugins";
 import "yet-another-react-lightbox/styles.css";
-function Inventory({ userId }) {
+function Inventory({ userId, userImage }) {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [cookies, removeCookies] = useCookies([]);
   const [myProducts, setMyProducts] = useState([]);
@@ -292,41 +292,43 @@ function Inventory({ userId }) {
                           alignItems="center"
                           flexWrap="wrap"
                         >
-                          <Avatar src={userId.image} size={"sm"} />
+                          <Avatar src={userImage} size={"sm"} />
 
                           <Box>
                             <Text className="">{item.accountType}</Text>
-                            <Heading size="xss" isTruncated>
+                            <Heading className="w-44" size="xss" isTruncated>
                               {item.sellerName}
                             </Heading>
-                            <Text>{item.sellerEmail}</Text>
+                            <Text className="w-44" isTruncated>
+                              {item.sellerEmail}
+                            </Text>
                           </Box>
                         </Flex>
                       </Flex>
                     </CardHeader>
-                    <Text ml={5} className="font-bold  relative bottom-3">
+                    <Text ml={3} className="font-bold  relative bottom-3">
                       {item.prodName}
                     </Text>
-                    <Text ml={5} className="  relative bottom-3">
+                    <Text ml={3} className="  relative bottom-3">
                       Stocks: {item.stocks}
                     </Text>
                     <Text
-                      ml={5}
+                      ml={3}
                       className="font-semibold text-xs relative bottom-3"
                     >
                       {new Intl.NumberFormat("en-PH", {
                         style: "currency",
                         currency: "PHP",
-                      }).format(viewModal.price)}
+                      }).format(item.price)}
                     </Text>
                     <Text
-                      ml={5}
+                      ml={3}
                       className="font-semibold text-xs relative bottom-3"
                     >
                       {item.marketType === "Selling" && "Trading" ? (
-                        <p className="text-green-200">{item.marketType}</p>
+                        <p className="text-green-500">{item.marketType}</p>
                       ) : (
-                        <p className="text-orange-200">{item.marketType}</p>
+                        <p className="text-orange-500">{item.marketType}</p>
                       )}
                     </Text>
 
@@ -345,7 +347,7 @@ function Inventory({ userId }) {
                           <p key={index}>
                             <Image
                               objectFit="cover"
-                              className="w-full h-64"
+                              className="w-full h-44"
                               src={image}
                               alt={`Image ${index + 1}`}
                             />
@@ -353,7 +355,6 @@ function Inventory({ userId }) {
                         ))}
                       </div>
                     )}
-
                     <div className="bg-gray-900  text-white text-center text-sm  rounded-sm p-2 grid hover:bg-gray-950">
                       <button
                         className="flex w-full justify-center"

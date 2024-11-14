@@ -198,237 +198,251 @@ function FacultyAddProducts() {
                 </li>
               </ol>
             </figure>
-            <form className="mb-32 " onSubmit={productSubmit}>
-              <figure className="grid ssm:grid-cols-1 lg:grid-cols-2 justify-items-center">
-                <article className="grid font-quicksand ssm:w-80 lg:w-96">
-                  <div>
-                    <input
-                      type="text"
-                      value={(products.sellerName = isFaculty.fullname)}
-                      name="sellerName"
-                      onChange={productHandler}
-                      hidden
-                    />
-                    <input
-                      type="text"
-                      value={(products.sellerEmail = isFaculty.email)}
-                      name="sellerEmail"
-                      onChange={productHandler}
-                      hidden
-                    />
-                    <input
-                      type="text"
-                      value={(products.sellerId = isFaculty.id)}
-                      name="sellerId"
-                      onChange={productHandler}
-                      hidden
-                    />
-                    <input
-                      type="number"
-                      value={
-                        (products.sellerPhoneNumber = isFaculty.phoneNumber)
-                      }
-                      name="phoneNumber"
-                      onChange={productHandler}
-                      hidden
-                    />
-                    <input
-                      type="number"
-                      value={
-                        (products.sellerGcashNumber = isFaculty.gcashNumber)
-                      }
-                      name="gcashNumber"
-                      onChange={productHandler}
-                      hidden
-                    />
-                    <input
-                      type="text"
-                      value={(products.accountType = isFaculty.isFaculty)}
-                      name="accountType"
-                      onChange={productHandler}
-                      hidden
-                    />
-                    <input
-                      type="text"
-                      value={(products.facebook = isFaculty.facebook)}
-                      name="facebook"
-                      onChange={productHandler}
-                      hidden
-                    />
-                  </div>
-
-                  <label className="grid mb-2">
-                    <p className="justify-self-start text-xs">Product name</p>
-                    <Input
-                      border="1px"
-                      borderColor="slate"
-                      type="text"
-                      borderBottom={"2px"}
-                      borderLeft={"1px"}
-                      borderRight={"1px"}
-                      borderTop={"1px"}
-                      value={products.prodName}
-                      name="prodName"
-                      placeholder="Product Name"
-                      onChange={productHandler}
-                      required
-                    />
-                  </label>
-
-                  <label className="grid mb-2">
-                    <p className="justify-self-start text-xs">Stocks</p>
-                    <Input
-                      borderBottom={"2px"}
-                      borderLeft={"1px"}
-                      borderRight={"1px"}
-                      borderTop={"1px"}
-                      borderColor="slate"
-                      type="number"
-                      value={products.stocks}
-                      name="stocks"
-                      placeholder="stocks"
-                      onChange={productHandler}
-                      required
-                    />
-                  </label>
-
-                  <label className="grid mb-2">
-                    <p className="justify-self-start text-xs">Price</p>
-                    <InputGroup>
-                      <InputLeftElement
-                        pointerEvents="none"
-                        color="gray.100"
-                        fontSize="1.2em"
-                      >
-                        ₱
-                      </InputLeftElement>
-
-                      <Input
-                        borderBottom={"2px"}
-                        borderLeft={"1px"}
-                        borderRight={"1px"}
-                        borderTop={"1px"}
-                        type="number"
-                        value={products.price}
-                        name="price"
-                        placeholder="Price"
-                        onChange={productHandler}
-                        required
-                      />
-
-                      <InputRightElement></InputRightElement>
-                    </InputGroup>
-                  </label>
-
-                  <label className="grid mb-2">
-                    <p className="justify-self-start text-xs">Market Type</p>
-                    <select
-                      className=" border-slate-400 border-t border-e border-x border-y px-3 rounded-md p-2  bg-transparent"
-                      name="marketType"
-                      value={products.marketType}
-                      onChange={productHandler}
-                      required
-                    >
-                      <option value="">Select</option>
-                      <option value="Trading" className="text-black">
-                        Trading
-                      </option>
-                      <option value="Selling" className="text-black">
-                        Selling
-                      </option>
-                    </select>
-                  </label>
-
-                  <label className="grid mb-2">
-                    <p className="justify-self-start text-xs">Description</p>
-                    <Textarea
-                      borderBottom={"2px"}
-                      borderLeft={"1px"}
-                      borderRight={"1px"}
-                      borderTop={"1px"}
-                      type="text"
-                      value={products.description}
-                      name="description"
-                      required
-                      placeholder="Add Description"
-                      onChange={productHandler}
-                    />{" "}
-                  </label>
-                </article>
-
-                <article className="ssm:border-l-0 lg:border-l-2 ssm:pl-0 lg:pl-5 w-80">
-                  <label className="grid mb-2">
-                    <p className="justify-self-start text-xs">Categories</p>
-                    <Select
-                      isMulti={true}
-                      bg={"transparent"}
-                      options={categoriesOption}
-                      type="text"
-                      borderBottom={"2px"}
-                      borderLeft={"1px"}
-                      borderRight={"1px"}
-                      borderTop={"1px"}
-                      name="categories"
-                      className="  border-t border-e border-x border-y  rounded-md text-black  "
-                      value={categoriesOption.filter((option) =>
-                        products.categories.includes(option.value)
-                      )}
-                      placeholder="Categories"
-                      onChange={categoriesOnChange}
-                      required
-                    />
-                  </label>
-                  <label className="flex items-center justify-center justify-self-center ">
-                    <label className="flex  flex-col items-center justify-center ssm:w-80 lg:w-72 h-64 mb-5 border-2 border-gray-900 border-dashed rounded-lg cursor-pointer bg-[#eaf3fffa] hover:bg-[#c5d0f3fa] ">
-                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                        <AiOutlineUpload className="text-5xl text-gray-900" />
-                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                          <span className="font-semibold text-gray-900 font-quicksand text-lg">
-                            Item image (5 maximum)
-                          </span>
-                          <br />{" "}
-                          <span className="font-semibold">Click to upload</span>{" "}
-                        </p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">
-                          PNG, JPG
-                        </p>
+            {isFaculty.isSeller === true ? (
+              <>
+                <form className="mb-32 " onSubmit={productSubmit}>
+                  <figure className="grid ssm:grid-cols-1 lg:grid-cols-2 justify-items-center">
+                    <article className="grid font-quicksand ssm:w-80 lg:w-96">
+                      <div>
+                        <input
+                          type="text"
+                          value={(products.sellerName = isFaculty.fullname)}
+                          name="sellerName"
+                          onChange={productHandler}
+                          hidden
+                        />
+                        <input
+                          type="text"
+                          value={(products.sellerEmail = isFaculty.email)}
+                          name="sellerEmail"
+                          onChange={productHandler}
+                          hidden
+                        />
+                        <input
+                          type="text"
+                          value={(products.sellerId = isFaculty.id)}
+                          name="sellerId"
+                          onChange={productHandler}
+                          hidden
+                        />
+                        <input
+                          type="number"
+                          value={
+                            (products.sellerPhoneNumber = isFaculty.phoneNumber)
+                          }
+                          name="phoneNumber"
+                          onChange={productHandler}
+                          hidden
+                        />
+                        <input
+                          type="number"
+                          value={
+                            (products.sellerGcashNumber = isFaculty.gcashNumber)
+                          }
+                          name="gcashNumber"
+                          onChange={productHandler}
+                          hidden
+                        />
+                        <input
+                          type="text"
+                          value={(products.accountType = isFaculty.isFaculty)}
+                          name="accountType"
+                          onChange={productHandler}
+                          hidden
+                        />
+                        <input
+                          type="text"
+                          value={(products.facebook = isFaculty.facebook)}
+                          name="facebook"
+                          onChange={productHandler}
+                          hidden
+                        />
                       </div>
-                      <input
-                        id="dropzone-file"
-                        type="file"
-                        className="text-black bg-transparent  relative top-5 mr-16 w-44"
-                        value={productImage.image}
-                        accept="image/"
-                        name="image"
-                        placeholder="image"
-                        multiple
-                        required
-                        onChange={productHandlerFile}
-                      />
-                    </label>
-                  </label>
-                  {isLoading ? (
-                    <>
-                      <p className="bg-gray-800 w-full justify-center p-2 px-4 rounded-lg text-white font-quicksand font-semibold flex items-center  gap-1">
-                        Product upload success
-                        <Link to={`/Account`} className="underline">
-                          View
-                        </Link>
-                      </p>
-                    </>
-                  ) : (
-                    <center>
-                      <button
-                        type="submit"
-                        className="bg-gray-800 w-full justify-center p-2 px-4 rounded-lg text-white font-quicksand font-semibold flex items-center hover:bg-gray-600"
-                      >
-                        Add Item <AddIcon className="ml-2 text-xs" />
-                      </button>
-                    </center>
-                  )}
-                </article>
-              </figure>
-            </form>
+
+                      <label className="grid mb-2">
+                        <p className="justify-self-start text-xs">
+                          Product name
+                        </p>
+                        <Input
+                          border="1px"
+                          borderColor="slate"
+                          type="text"
+                          borderBottom={"2px"}
+                          borderLeft={"1px"}
+                          borderRight={"1px"}
+                          borderTop={"1px"}
+                          value={products.prodName}
+                          name="prodName"
+                          placeholder="Product Name"
+                          onChange={productHandler}
+                          required
+                        />
+                      </label>
+
+                      <label className="grid mb-2">
+                        <p className="justify-self-start text-xs">Stocks</p>
+                        <Input
+                          borderBottom={"2px"}
+                          borderLeft={"1px"}
+                          borderRight={"1px"}
+                          borderTop={"1px"}
+                          borderColor="slate"
+                          type="number"
+                          value={products.stocks}
+                          name="stocks"
+                          placeholder="stocks"
+                          onChange={productHandler}
+                          required
+                        />
+                      </label>
+
+                      <label className="grid mb-2">
+                        <p className="justify-self-start text-xs">Price</p>
+                        <InputGroup>
+                          <InputLeftElement
+                            pointerEvents="none"
+                            color="gray.100"
+                            fontSize="1.2em"
+                          >
+                            ₱
+                          </InputLeftElement>
+
+                          <Input
+                            borderBottom={"2px"}
+                            borderLeft={"1px"}
+                            borderRight={"1px"}
+                            borderTop={"1px"}
+                            type="number"
+                            value={products.price}
+                            name="price"
+                            placeholder="Price"
+                            onChange={productHandler}
+                            required
+                          />
+
+                          <InputRightElement></InputRightElement>
+                        </InputGroup>
+                      </label>
+
+                      <label className="grid mb-2">
+                        <p className="justify-self-start text-xs">
+                          Market Type
+                        </p>
+                        <select
+                          className=" border-slate-400 border-t border-e border-x border-y px-3 rounded-md p-2  bg-transparent"
+                          name="marketType"
+                          value={products.marketType}
+                          onChange={productHandler}
+                          required
+                        >
+                          <option value="">Select</option>
+                          <option value="Trading" className="text-black">
+                            Trading
+                          </option>
+                          <option value="Selling" className="text-black">
+                            Selling
+                          </option>
+                        </select>
+                      </label>
+
+                      <label className="grid mb-2">
+                        <p className="justify-self-start text-xs">
+                          Description
+                        </p>
+                        <Textarea
+                          borderBottom={"2px"}
+                          borderLeft={"1px"}
+                          borderRight={"1px"}
+                          borderTop={"1px"}
+                          type="text"
+                          value={products.description}
+                          name="description"
+                          required
+                          placeholder="Add Description"
+                          onChange={productHandler}
+                        />{" "}
+                      </label>
+                    </article>
+
+                    <article className="ssm:border-l-0 lg:border-l-2 ssm:pl-0 lg:pl-5 w-80">
+                      <label className="grid mb-2">
+                        <p className="justify-self-start text-xs">Categories</p>
+                        <Select
+                          isMulti={true}
+                          bg={"transparent"}
+                          options={categoriesOption}
+                          type="text"
+                          borderBottom={"2px"}
+                          borderLeft={"1px"}
+                          borderRight={"1px"}
+                          borderTop={"1px"}
+                          name="categories"
+                          className="  border-t border-e border-x border-y  rounded-md text-black  "
+                          value={categoriesOption.filter((option) =>
+                            products.categories.includes(option.value)
+                          )}
+                          placeholder="Categories"
+                          onChange={categoriesOnChange}
+                          required
+                        />
+                      </label>
+                      <label className="flex items-center justify-center justify-self-center ">
+                        <label className="flex  flex-col items-center justify-center ssm:w-80 lg:w-72 h-64 mb-5 border-2 border-gray-900 border-dashed rounded-lg cursor-pointer bg-[#eaf3fffa] hover:bg-[#c5d0f3fa] ">
+                          <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                            <AiOutlineUpload className="text-5xl text-gray-900" />
+                            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                              <span className="font-semibold text-gray-900 font-quicksand text-lg">
+                                Item image (5 maximum)
+                              </span>
+                              <br />{" "}
+                              <span className="font-semibold">
+                                Click to upload
+                              </span>{" "}
+                            </p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                              PNG, JPG
+                            </p>
+                          </div>
+                          <input
+                            id="dropzone-file"
+                            type="file"
+                            className="text-black bg-transparent  relative top-5 mr-16 w-44"
+                            value={productImage.image}
+                            accept="image/"
+                            name="image"
+                            placeholder="image"
+                            multiple
+                            required
+                            onChange={productHandlerFile}
+                          />
+                        </label>
+                      </label>
+                      {isLoading ? (
+                        <>
+                          <p className="bg-gray-800 w-full justify-center p-2 px-4 rounded-lg text-white font-quicksand font-semibold flex items-center  gap-1">
+                            Product upload success
+                            <Link to={`/Account`} className="underline">
+                              View
+                            </Link>
+                          </p>
+                        </>
+                      ) : (
+                        <center>
+                          <button
+                            type="submit"
+                            className="bg-gray-800 w-full justify-center p-2 px-4 rounded-lg text-white font-quicksand font-semibold flex items-center hover:bg-gray-600"
+                          >
+                            Add Item <AddIcon className="ml-2 text-xs" />
+                          </button>
+                        </center>
+                      )}
+                    </article>
+                  </figure>
+                </form>
+              </>
+            ) : (
+              <></>
+            )}
           </article>
         </article>
       </figure>

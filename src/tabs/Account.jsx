@@ -1085,7 +1085,7 @@ function Account() {
             </TabList>
             <TabPanels>
               <TabPanel>
-                <Inventory userId={isUsers.id} />
+                <Inventory userImage={isUsers.image} userId={isUsers.id} />
               </TabPanel>
               <TabPanel>
                 <Box

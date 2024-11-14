@@ -215,7 +215,7 @@ function FacultyAccount() {
           </TabList>
           <TabPanels>
             <TabPanel>
-              <UserInventory userId={user._id} />
+              <UserInventory userImage={user.image} userId={user._id} />
             </TabPanel>
             <TabPanel>
               <Box
