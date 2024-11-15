@@ -137,7 +137,7 @@ router.delete("/DonePurchased/:id", async (req, res) => {
 router.get("/item-sold/:id", async (req, res) => {
   DonePurchasedModel.aggregate(
     [
-      { $match: { sellerId: req.params.id } },
+      { $match: { sellerId: req.params.id, transactionStatus: "Success" } },
       { $group: { _id: "$sellerId", count: { $sum: 1 } } },
     ],
     { maxTimeMS: 60000, allowDiskUse: true }

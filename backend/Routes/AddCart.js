@@ -82,7 +82,7 @@ router.post("/chats/:id", async (req, res) => {
   res.json(newChat);
 });
 
-router.post("/purchasedItem", (req, res) => {
+router.post("/purchasedItem", upload.single("tradeImage"), (req, res) => {
   PurchasedModel.create(req.body)
     .then((result) => {
       res.json(result);
@@ -90,6 +90,21 @@ router.post("/purchasedItem", (req, res) => {
     .catch((err) => {
       console.log("error", err);
     });
+});
+
+router.post("/tradeItem", upload.single("tradeImage"), async (req, res) => {
+  try {
+    const tradeImageUrl = req.file.path;
+
+    const newItem = { ...req.body, tradeImage: tradeImageUrl };
+
+    const result = await PurchasedModel.create(newItem);
+
+    res.status(201).json(result);
+  } catch (error) {
+    console.error("Error creating purchased item:", error);
+    res.status(500).json({ message: "Error creating purchased item", error });
+  }
 });
 router.get("/user-orders/:id", async (req, res) => {
   const { id } = req.params;

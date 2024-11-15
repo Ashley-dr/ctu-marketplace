@@ -5,6 +5,7 @@ import { Link, useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import CopyToClipboard from "react-copy-to-clipboard";
+import { GrDocumentVerified, GrTransaction } from "react-icons/gr";
 import {
   Modal,
   ModalOverlay,
@@ -54,8 +55,16 @@ import {
   Flex,
   Center,
   Divider,
+  InputGroup,
+  InputRightElement,
+  IconButton,
+  Tooltip,
 } from "@chakra-ui/react";
-import { RiSendPlane2Fill } from "react-icons/ri";
+import {
+  RiFileUploadLine,
+  RiImage2Line,
+  RiSendPlane2Fill,
+} from "react-icons/ri";
 import { CgNametag } from "react-icons/cg";
 import { MdArrowUpward, MdDelete, MdMessage } from "react-icons/md";
 import { FaFacebookSquare } from "react-icons/fa";
@@ -63,7 +72,11 @@ import { formatDate, formatDistanceToNow } from "date-fns";
 import { AtSignIcon, CalendarIcon, LinkIcon } from "@chakra-ui/icons";
 import { RiAccountCircleLine } from "react-icons/ri";
 import { IoPricetagOutline } from "react-icons/io5";
-import { TbLetterT, TbSquareLetterS } from "react-icons/tb";
+import {
+  TbLetterT,
+  TbSquareLetterS,
+  TbTransactionBitcoin,
+} from "react-icons/tb";
 import { CiShoppingCart, CiShoppingTag } from "react-icons/ci";
 import { BsBox2 } from "react-icons/bs";
 import "slick-carousel/slick/slick.css";
@@ -105,6 +118,11 @@ function ProductId() {
   const [FacultySelectedProduct, FacultysetSelectedProduct] = useState("");
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenTradeModal,
+    onOpen: onOpenTradeModal,
+    onClose: onCloseTradeModal,
+  } = useDisclosure();
   const {
     isOpen: isOpenDrawer,
     onOpen: onOpenDrawer,
@@ -148,6 +166,9 @@ function ProductId() {
     buyerPhoneNumber: "",
     sellerGcashNumber: "",
     buyerGcashNumber: "",
+    tradeImage: "",
+    addTradeMoney: "",
+    tradeSchedule: "",
   });
   useEffect(() => {
     const verifyCookie = async () => {
@@ -205,9 +226,20 @@ function ProductId() {
     UsersetSelectedProduct(products);
     onOpen();
   };
+
+  const handleUserTradeModal = (products) => {
+    UsersetSelectedProduct(products);
+    onOpenTradeModal();
+  };
+
   const handleFacultyModal = (products) => {
     FacultysetSelectedProduct(products);
     onOpen();
+  };
+
+  const handleFacultyTradeModal = (products) => {
+    FacultysetSelectedProduct(products);
+    onOpenTradeModal();
   };
   const purchasedOnChange = (e) => {
     setPurchasedSchema({ ...purchasedSchema, [e.target.name]: e.target.value });
@@ -261,6 +293,99 @@ function ProductId() {
         console.log("Error submitting:", err);
       });
   };
+
+  const [file, setFile] = useState(null);
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+  const tradePurchase = (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("sellerId", purchasedSchema.sellerEmail);
+    formData.append("userId", purchasedSchema.userId);
+    formData.append("productId", purchasedSchema.productId);
+    formData.append("prodName", purchasedSchema.prodName);
+    formData.append("message", purchasedSchema.message);
+    formData.append("sellerEmail", purchasedSchema.sellerEmail);
+    formData.append("accountType", purchasedSchema.accountType);
+    formData.append("sellerName", purchasedSchema.sellerName);
+    formData.append("quantity", purchasedSchema.quantity);
+    formData.append("price", purchasedSchema.price);
+    formData.append("buyerName", purchasedSchema.buyerName);
+    formData.append("buyerEmail", purchasedSchema.buyerEmail);
+
+    formData.append("total", purchasedSchema.total);
+    formData.append("types", purchasedSchema.types);
+    formData.append("marketType", purchasedSchema.marketType);
+    formData.append("image", purchasedSchema.image);
+    formData.append("sellerFacebook", purchasedSchema.sellerFacebook);
+    formData.append("buyerFacebook", purchasedSchema.buyerFacebook);
+    formData.append("sellerPhoneNumber", purchasedSchema.sellerPhoneNumber);
+    formData.append("buyerPhoneNumber", purchasedSchema.buyerPhoneNumber);
+    formData.append("sellerGcashNumber", purchasedSchema.sellerGcashNumber);
+    formData.append("buyerGcashNumber", purchasedSchema.buyerGcashNumber);
+
+    formData.append("addTradeMoney", purchasedSchema.addTradeMoney);
+    formData.append("tradeSchedule", purchasedSchema.tradeSchedule);
+    if (file) {
+      formData.append("tradeImage", file);
+    }
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data", // For file uploads
+      },
+    };
+    axios
+      .post(`${baseUrl}/api/tradeItem`, formData, config)
+      .then((result) => {
+        setPurchasedSchema({
+          sellerId: "",
+          userId: "",
+          productId: "",
+          prodName: "",
+          message: "",
+          sellerEmail: "",
+          accountType: "",
+          buyerType: "",
+          sellerName: "",
+          quantity: "",
+          price: "",
+          buyerName: "",
+          buyerEmail: "",
+
+          total: "",
+          types: "",
+          marketType: "",
+          image: "",
+          sellerFacebook: "",
+          buyerFacebook: "",
+          sellerPhoneNumber: "",
+          buyerPhoneNumber: "",
+          sellerGcashNumber: "",
+          buyerGcashNumber: "",
+          tradeImage: "",
+          addTradeMoney: "",
+          tradeSchedule: "",
+        });
+        setFile(null);
+        // window.location.reload();
+        onOpenDrawers();
+        onClose();
+        toast({
+          title: "Order Added Successfully",
+          position: "top-left",
+          description:
+            "Your selected items have been added to your cart. You can review your order and proceed to checkout when you're ready.",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+      })
+      .catch((err) => {
+        console.log("Error submitting:", err);
+      });
+  };
+
   const commentHandler = (e) => {
     e.preventDefault();
 
@@ -590,13 +715,26 @@ function ProductId() {
                         {isUsers && (
                           <>
                             <div className="flex">
-                              <button
-                                className="flex w-full bg-gray-900  text-white text-center text-sm  rounded-sm p-2 justify-center hover:bg-gray-950"
-                                onClick={() => handleUserModal(productData)}
-                              >
-                                Add to orders{" "}
-                                <CiShoppingCart className="text-xl ml-2" />
-                              </button>
+                              {productData.marketType === "Selling" && (
+                                <button
+                                  className="flex w-full bg-gray-900  text-white text-center text-sm  rounded-sm p-2 justify-center hover:bg-gray-950"
+                                  onClick={() => handleUserModal(productData)}
+                                >
+                                  Add to orders{" "}
+                                  <CiShoppingCart className="text-xl ml-2" />
+                                </button>
+                              )}
+                              {productData.marketType === "Trading" && (
+                                <button
+                                  className="flex w-full bg-gray-900  text-white text-center text-sm  rounded-sm p-2 justify-center hover:bg-gray-950"
+                                  onClick={() =>
+                                    handleUserTradeModal(productData)
+                                  }
+                                >
+                                  Trade Item{" "}
+                                  <GrTransaction className="text-xl ml-2" />
+                                </button>
+                              )}
                               <MdMessage
                                 onClick={drawer}
                                 className=" cursor-pointer mx-2  text-4xl flex  bg-gray-900  text-white text-center w-16  rounded-sm p-2 justify-center hover:bg-gray-950"
@@ -630,15 +768,28 @@ function ProductId() {
                           {isFaculty && (
                             <>
                               <div className="flex">
-                                <button
-                                  className="flex w-full bg-gray-900  text-white text-center text-sm  rounded-sm p-2 justify-center hover:bg-gray-950"
-                                  onClick={() =>
-                                    handleFacultyModal(productData)
-                                  }
-                                >
-                                  Add to orders{" "}
-                                  <CiShoppingCart className="text-xl ml-2" />
-                                </button>
+                                {productData.marketType === "Selling" && (
+                                  <button
+                                    className="flex w-full bg-gray-900  text-white text-center text-sm  rounded-sm p-2 justify-center hover:bg-gray-950"
+                                    onClick={() =>
+                                      handleFacultyModal(productData)
+                                    }
+                                  >
+                                    Add to orders{" "}
+                                    <CiShoppingCart className="text-xl ml-2" />
+                                  </button>
+                                )}
+                                {productData.marketType === "Trading" && (
+                                  <button
+                                    className="flex w-full bg-gray-900  text-white text-center text-sm  rounded-sm p-2 justify-center hover:bg-gray-950"
+                                    onClick={() =>
+                                      handleFacultyTradeModal(productData)
+                                    }
+                                  >
+                                    Trade item{" "}
+                                    <GrTransaction className="text-xl ml-2" />
+                                  </button>
+                                )}
                                 <MdMessage
                                   onClick={drawer}
                                   className=" cursor-pointer mx-2  text-4xl flex  bg-gray-900  text-white text-center w-16  rounded-sm p-2 justify-center hover:bg-gray-950"
@@ -890,204 +1041,210 @@ function ProductId() {
         </article>
       </figure>
       {UserSelectedProduct && (
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>
-              Item name: {UserSelectedProduct.prodName} <br />
-              Price:{" "}
-              {UserSelectedProduct.price.toLocaleString("en-PH", {
-                style: "currency",
-                currency: "PHP",
-              })}
-            </ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              <form onSubmit={productPurchased} className="grid">
-                <div className="hidden">
-                  <input
-                    name="productId"
-                    value={
-                      (purchasedSchema.productId = UserSelectedProduct._id)
-                    }
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    name="sellerId"
-                    value={
-                      (purchasedSchema.sellerId = UserSelectedProduct.sellerId)
-                    }
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    name="status"
-                    value={
-                      (purchasedSchema.status = UserSelectedProduct.status)
-                    }
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    name="userId"
-                    value={(purchasedSchema.userId = isUsers.id)}
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    type="text"
-                    name="prodName"
-                    value={
-                      (purchasedSchema.prodName = UserSelectedProduct.prodName)
-                    }
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    type="text"
-                    name="marketType"
-                    value={
-                      (purchasedSchema.marketType =
-                        UserSelectedProduct.marketType)
-                    }
-                    onChange={purchasedOnChange}
-                  />
+        <>
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>
+                Item name: {UserSelectedProduct.prodName} <br />
+                Price:{" "}
+                {UserSelectedProduct.price.toLocaleString("en-PH", {
+                  style: "currency",
+                  currency: "PHP",
+                })}
+              </ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <form onSubmit={productPurchased} className="grid">
+                  <div className="hidden">
+                    <input
+                      name="productId"
+                      value={
+                        (purchasedSchema.productId = UserSelectedProduct._id)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      name="sellerId"
+                      value={
+                        (purchasedSchema.sellerId =
+                          UserSelectedProduct.sellerId)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      name="status"
+                      value={
+                        (purchasedSchema.status = UserSelectedProduct.status)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      name="userId"
+                      value={(purchasedSchema.userId = isUsers.id)}
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="prodName"
+                      value={
+                        (purchasedSchema.prodName =
+                          UserSelectedProduct.prodName)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="marketType"
+                      value={
+                        (purchasedSchema.marketType =
+                          UserSelectedProduct.marketType)
+                      }
+                      onChange={purchasedOnChange}
+                    />
 
-                  <input
-                    type="text"
-                    name="prodName"
-                    value={
-                      (purchasedSchema.prodName = UserSelectedProduct.prodName)
-                    }
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    type="text"
-                    name="buyerName"
-                    value={(purchasedSchema.buyerName = isUsers.fullname)}
-                    onChange={purchasedOnChange}
-                  />
+                    <input
+                      type="text"
+                      name="prodName"
+                      value={
+                        (purchasedSchema.prodName =
+                          UserSelectedProduct.prodName)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="buyerName"
+                      value={(purchasedSchema.buyerName = isUsers.fullname)}
+                      onChange={purchasedOnChange}
+                    />
 
-                  <input
-                    type="number"
-                    name="buyerPhoneNumber"
-                    value={
-                      (purchasedSchema.buyerPhoneNumber = isUsers.phoneNumber)
-                    }
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    type="number"
-                    name="buyerGcashNumber"
-                    value={
-                      (purchasedSchema.buyerGcashNumber = isUsers.gcashNumber)
-                    }
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    type="number"
-                    name="sellerGcashNumber"
-                    value={
-                      (purchasedSchema.sellerGcashNumber =
-                        UserSelectedProduct.sellerGcashNumber)
-                    }
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    type="number"
-                    name="sellerPhoneNumber"
-                    value={
-                      (purchasedSchema.sellerPhoneNumber =
-                        UserSelectedProduct.sellerPhoneNumber)
-                    }
-                    onChange={purchasedOnChange}
-                  />
+                    <input
+                      type="number"
+                      name="buyerPhoneNumber"
+                      value={
+                        (purchasedSchema.buyerPhoneNumber = isUsers.phoneNumber)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="number"
+                      name="buyerGcashNumber"
+                      value={
+                        (purchasedSchema.buyerGcashNumber = isUsers.gcashNumber)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="number"
+                      name="sellerGcashNumber"
+                      value={
+                        (purchasedSchema.sellerGcashNumber =
+                          UserSelectedProduct.sellerGcashNumber)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="number"
+                      name="sellerPhoneNumber"
+                      value={
+                        (purchasedSchema.sellerPhoneNumber =
+                          UserSelectedProduct.sellerPhoneNumber)
+                      }
+                      onChange={purchasedOnChange}
+                    />
 
-                  <input
-                    name="buyerFacebook"
-                    className="bg-gray-200"
-                    value={(purchasedSchema.buyerFacebook = isUsers.facebook)}
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    name="sellerFacebook"
-                    value={
-                      (purchasedSchema.sellerFacebook =
-                        UserSelectedProduct.facebook)
-                    }
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    type="text"
-                    name="buyerEmail"
-                    value={(purchasedSchema.buyerEmail = isUsers.email)}
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    type="text"
-                    name="sellerName"
-                    value={
-                      (purchasedSchema.sellerName =
-                        UserSelectedProduct.sellerName)
-                    }
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    type="text"
-                    name="sellerEmail"
-                    value={
-                      (purchasedSchema.sellerEmail =
-                        UserSelectedProduct.sellerEmail)
-                    }
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    type="text"
-                    name="accountType"
-                    value={
-                      (purchasedSchema.accountType =
-                        UserSelectedProduct.accountType)
-                    }
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    type="text"
-                    name="buyerType"
-                    value={(purchasedSchema.buyerType = isUsers.isUser)}
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    type="number"
-                    name="price"
-                    value={(purchasedSchema.price = UserSelectedProduct.price)}
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    type="number"
-                    name="total"
-                    value={
-                      (purchasedSchema.total =
-                        UserSelectedProduct.price * quantity)
-                    }
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    type="text"
-                    name="image"
-                    value={
-                      (purchasedSchema.image = UserSelectedProduct.image[0])
-                    }
-                    onChange={purchasedOnChange}
-                    required
-                  />
-                </div>
-                <div className=" space-y-3">
-                  <label>Types:</label>
-                  <Input
-                    placeholder="Ex. Red Item. Blue Item, etc."
-                    type="text"
-                    name="types"
-                    value={purchasedSchema.types}
-                    onChange={purchasedOnChange}
-                    required
-                  />
-                  {/* {isUsers.gcashNumber === null ? (
+                    <input
+                      name="buyerFacebook"
+                      className="bg-gray-200"
+                      value={(purchasedSchema.buyerFacebook = isUsers.facebook)}
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      name="sellerFacebook"
+                      value={
+                        (purchasedSchema.sellerFacebook =
+                          UserSelectedProduct.facebook)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="buyerEmail"
+                      value={(purchasedSchema.buyerEmail = isUsers.email)}
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="sellerName"
+                      value={
+                        (purchasedSchema.sellerName =
+                          UserSelectedProduct.sellerName)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="sellerEmail"
+                      value={
+                        (purchasedSchema.sellerEmail =
+                          UserSelectedProduct.sellerEmail)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="accountType"
+                      value={
+                        (purchasedSchema.accountType =
+                          UserSelectedProduct.accountType)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="buyerType"
+                      value={(purchasedSchema.buyerType = isUsers.isUser)}
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="number"
+                      name="price"
+                      value={
+                        (purchasedSchema.price = UserSelectedProduct.price)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="number"
+                      name="total"
+                      value={
+                        (purchasedSchema.total =
+                          UserSelectedProduct.price * quantity)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="image"
+                      value={
+                        (purchasedSchema.image = UserSelectedProduct.image[0])
+                      }
+                      onChange={purchasedOnChange}
+                      required
+                    />
+                  </div>
+                  <div className=" space-y-3">
+                    <label>Types:</label>
+                    <Input
+                      placeholder="Ex. Red Item. Blue Item, etc."
+                      type="text"
+                      name="types"
+                      value={purchasedSchema.types}
+                      onChange={purchasedOnChange}
+                      required
+                    />
+                    {/* {isUsers.gcashNumber === null ? (
                     <>
                       <label>Input Gcash Number if online payment:</label>
                       <Input
@@ -1105,291 +1262,927 @@ function ProductId() {
                     <></>
                   )} */}
 
-                  <label>Quantity:</label>
-                  <NumberInput
-                    type="number"
-                    min={1}
-                    max={productData.stocks}
-                    name="quantity"
-                    value={(purchasedSchema.quantity = quantity)}
-                    onChange={purchasedOnChange}
-                    required
-                  >
-                    <NumberInputField required onChange={quantityHandler} />
-                    <NumberInputStepper>
-                      <NumberIncrementStepper onClick={incrementQnty} />
-                      <NumberDecrementStepper onClick={decrementQnty} />
-                    </NumberInputStepper>
-                  </NumberInput>
-                  <label>Message:</label>
-                  <Textarea
-                    placeholder="Input a message about the item."
-                    type="text"
-                    name="message"
-                    value={purchasedSchema.message}
-                    onChange={purchasedOnChange}
-                    required
-                  />
-                  <p>
-                    Total ₱
-                    {
-                      (purchasedSchema.total =
-                        UserSelectedProduct.price * quantity)
-                    }
-                  </p>
-                </div>
-                <div className="bg-gray-900  text-white text-center text-sm  rounded-sm p-2 grid hover:bg-gray-950">
-                  <button type="submit" className="flex w-full justify-center">
-                    Add to orders <CiShoppingCart className="text-xl ml-2" />
-                  </button>
-                </div>
-              </form>
-            </ModalBody>
+                    <label>Quantity:</label>
+                    <NumberInput
+                      type="number"
+                      min={1}
+                      max={productData.stocks}
+                      name="quantity"
+                      value={(purchasedSchema.quantity = quantity)}
+                      onChange={purchasedOnChange}
+                      required
+                    >
+                      <NumberInputField required onChange={quantityHandler} />
+                      <NumberInputStepper>
+                        <NumberIncrementStepper onClick={incrementQnty} />
+                        <NumberDecrementStepper onClick={decrementQnty} />
+                      </NumberInputStepper>
+                    </NumberInput>
+                    <label>Message:</label>
+                    <Textarea
+                      placeholder="Input a message about the item."
+                      type="text"
+                      name="message"
+                      value={purchasedSchema.message}
+                      onChange={purchasedOnChange}
+                      required
+                    />
+                    <p>
+                      Total ₱
+                      {
+                        (purchasedSchema.total =
+                          UserSelectedProduct.price * quantity)
+                      }
+                    </p>
+                  </div>
+                  <div className="bg-gray-900  text-white text-center text-sm  rounded-sm p-2 grid hover:bg-gray-950">
+                    <button
+                      type="submit"
+                      className="flex w-full justify-center"
+                    >
+                      Add to orders <CiShoppingCart className="text-xl ml-2" />
+                    </button>
+                  </div>
+                </form>
+              </ModalBody>
 
-            <ModalFooter></ModalFooter>
-          </ModalContent>
-        </Modal>
+              <ModalFooter></ModalFooter>
+            </ModalContent>
+          </Modal>
+          <Modal isOpen={isOpenTradeModal} onClose={onCloseTradeModal}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader className="">
+                <Text className="text-sm font-thin">
+                  Item name: {UserSelectedProduct.prodName} <br />
+                  Add Price:{" "}
+                  {UserSelectedProduct.price.toLocaleString("en-PH", {
+                    style: "currency",
+                    currency: "PHP",
+                  })}
+                </Text>
+              </ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <form onSubmit={tradePurchase} className="grid">
+                  <div className="hidden">
+                    <input
+                      name="productId"
+                      value={
+                        (purchasedSchema.productId = UserSelectedProduct._id)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      name="sellerId"
+                      value={
+                        (purchasedSchema.sellerId =
+                          UserSelectedProduct.sellerId)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      name="status"
+                      value={
+                        (purchasedSchema.status = UserSelectedProduct.status)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      name="userId"
+                      value={(purchasedSchema.userId = isUsers.id)}
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="prodName"
+                      value={
+                        (purchasedSchema.prodName =
+                          UserSelectedProduct.prodName)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="marketType"
+                      value={
+                        (purchasedSchema.marketType =
+                          UserSelectedProduct.marketType)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+
+                    <input
+                      type="text"
+                      name="prodName"
+                      value={
+                        (purchasedSchema.prodName =
+                          UserSelectedProduct.prodName)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="buyerName"
+                      value={(purchasedSchema.buyerName = isUsers.fullname)}
+                      onChange={purchasedOnChange}
+                    />
+
+                    <input
+                      type="number"
+                      name="buyerPhoneNumber"
+                      value={
+                        (purchasedSchema.buyerPhoneNumber = isUsers.phoneNumber)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="number"
+                      name="buyerGcashNumber"
+                      value={
+                        (purchasedSchema.buyerGcashNumber = isUsers.gcashNumber)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="number"
+                      name="sellerGcashNumber"
+                      value={
+                        (purchasedSchema.sellerGcashNumber =
+                          UserSelectedProduct.sellerGcashNumber)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="number"
+                      name="sellerPhoneNumber"
+                      value={
+                        (purchasedSchema.sellerPhoneNumber =
+                          UserSelectedProduct.sellerPhoneNumber)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+
+                    <input
+                      name="buyerFacebook"
+                      className="bg-gray-200"
+                      value={(purchasedSchema.buyerFacebook = isUsers.facebook)}
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      name="sellerFacebook"
+                      value={
+                        (purchasedSchema.sellerFacebook =
+                          UserSelectedProduct.facebook)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="buyerEmail"
+                      value={(purchasedSchema.buyerEmail = isUsers.email)}
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="sellerName"
+                      value={
+                        (purchasedSchema.sellerName =
+                          UserSelectedProduct.sellerName)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="sellerEmail"
+                      value={
+                        (purchasedSchema.sellerEmail =
+                          UserSelectedProduct.sellerEmail)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="accountType"
+                      value={
+                        (purchasedSchema.accountType =
+                          UserSelectedProduct.accountType)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="buyerType"
+                      value={(purchasedSchema.buyerType = isUsers.isUser)}
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="number"
+                      name="price"
+                      value={
+                        (purchasedSchema.price = UserSelectedProduct.price)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="number"
+                      name="total"
+                      value={
+                        (purchasedSchema.total =
+                          UserSelectedProduct.price +
+                          purchasedSchema.addTradeMoney * quantity)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="image"
+                      value={
+                        (purchasedSchema.image = UserSelectedProduct.image[0])
+                      }
+                      onChange={purchasedOnChange}
+                      required
+                    />
+                  </div>
+                  <div className=" space-y-3">
+                    <label className="text-xs font-quicksand">Types:</label>
+                    <Input
+                      placeholder="Ex. Red Item. Blue Item, etc."
+                      type="text"
+                      name="types"
+                      value={purchasedSchema.types}
+                      onChange={purchasedOnChange}
+                      required
+                    />
+
+                    <label className="text-xs font-quicksand">Quantity:</label>
+                    <NumberInput
+                      type="number"
+                      min={1}
+                      max={productData.stocks}
+                      name="quantity"
+                      value={(purchasedSchema.quantity = quantity)}
+                      onChange={purchasedOnChange}
+                      required
+                    >
+                      <NumberInputField required onChange={quantityHandler} />
+                      <NumberInputStepper>
+                        <NumberIncrementStepper onClick={incrementQnty} />
+                        <NumberDecrementStepper onClick={decrementQnty} />
+                      </NumberInputStepper>
+                    </NumberInput>
+                    <label className="text-xs font-quicksand">Message:</label>
+                    <Textarea
+                      placeholder="Input a message about the item."
+                      type="text"
+                      name="message"
+                      value={purchasedSchema.message}
+                      onChange={purchasedOnChange}
+                      required
+                    />
+                    <Box className="flex">
+                      <Box className="grid">
+                        <label className="text-xs font-quicksand">
+                          Add trade money & trade Image
+                        </label>
+                        <Input
+                          mr={20}
+                          placeholder="Input Trade Money (Optional)"
+                          type="number"
+                          name="addTradeMoney"
+                          value={purchasedSchema.addTradeMoney}
+                          onChange={purchasedOnChange}
+                        />
+                      </Box>
+                      <Box className="mx-5 mt-5 ">
+                        <label
+                          htmlFor="file-upload"
+                          className="cursor-pointer flex"
+                        >
+                          <Tooltip label="Input your Item image here (Required)">
+                            <IconButton
+                              bg={"gray.600"}
+                              size="lg"
+                              icon={<RiImage2Line />}
+                              aria-label="Upload file"
+                              as="span"
+                            />
+                          </Tooltip>
+                          <GrTransaction className="ml-3 transform rotate-90 mt-4" />{" "}
+                        </label>
+
+                        <Input
+                          id="file-upload"
+                          type="file"
+                          name="tradeImage"
+                          accept=".jpeg,.jpg,.png,.gif,.pdf,.doc,.docx"
+                          onChange={handleFileChange}
+                          required
+                          display="none"
+                        />
+                      </Box>
+                    </Box>
+                    <Box className="grid">
+                      <label className="text-xs font-quicksand">
+                        Schedule for trading:
+                      </label>
+                      <Input
+                        type="date"
+                        name="tradeSchedule"
+                        value={purchasedSchema.tradeSchedule}
+                        onChange={purchasedOnChange}
+                        required
+                      />
+                    </Box>
+                    <p>
+                      Total ₱
+                      {
+                        (purchasedSchema.total =
+                          UserSelectedProduct.price +
+                          purchasedSchema.addTradeMoney * quantity)
+                      }
+                    </p>
+                  </div>
+                  <div className="bg-gray-900  text-white text-center text-sm  rounded-sm p-2 grid hover:bg-gray-950">
+                    <button
+                      type="submit"
+                      className="flex w-full justify-center"
+                    >
+                      Trade on Cart <GrTransaction className="text-xl ml-2" />
+                    </button>
+                  </div>
+                </form>
+              </ModalBody>
+
+              <ModalFooter></ModalFooter>
+            </ModalContent>
+          </Modal>
+        </>
       )}
 
       {FacultySelectedProduct && (
-        <Modal isOpen={isOpen} onClose={onClose}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>
-              Item name: {FacultySelectedProduct.prodName} <br />
-              Price:{" "}
-              {FacultySelectedProduct.price.toLocaleString("en-PH", {
-                style: "currency",
-                currency: "PHP",
-              })}
-            </ModalHeader>
-            <ModalCloseButton />
-            <ModalBody>
-              <form onSubmit={productPurchased} className="grid">
-                <div className="hidden">
-                  <input
-                    name="productId"
-                    value={
-                      (purchasedSchema.productId = FacultySelectedProduct._id)
-                    }
-                    onChange={purchasedOnChange}
-                  />
+        <>
+          <Modal isOpen={isOpen} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>
+                Item name: {FacultySelectedProduct.prodName} <br />
+                Price:{" "}
+                {FacultySelectedProduct.price.toLocaleString("en-PH", {
+                  style: "currency",
+                  currency: "PHP",
+                })}
+              </ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <form onSubmit={productPurchased} className="grid">
+                  <div className="hidden">
+                    <input
+                      name="productId"
+                      value={
+                        (purchasedSchema.productId = FacultySelectedProduct._id)
+                      }
+                      onChange={purchasedOnChange}
+                    />
 
-                  <input
-                    name="sellerId"
-                    value={
-                      (purchasedSchema.sellerId =
-                        FacultySelectedProduct.sellerId)
-                    }
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    name="status"
-                    value={
-                      (purchasedSchema.status = FacultySelectedProduct.status)
-                    }
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    type="text"
-                    name="buyerType"
-                    value={(purchasedSchema.buyerType = isFaculty.isFaculty)}
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    type="number"
-                    name="buyerPhoneNumber"
-                    value={
-                      (purchasedSchema.buyerPhoneNumber = isFaculty.phoneNumber)
-                    }
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    type="number"
-                    name="buyerGcashNumber"
-                    value={
-                      (purchasedSchema.buyerGcashNumber = isFaculty.gcashNumber)
-                    }
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    type="number"
-                    name="sellerGcashNumber"
-                    value={
-                      (purchasedSchema.sellerGcashNumber =
-                        FacultySelectedProduct.sellerGcashNumber)
-                    }
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    type="number"
-                    name="sellerPhoneNumber"
-                    value={
-                      (purchasedSchema.sellerPhoneNumber =
-                        FacultySelectedProduct.sellerPhoneNumber)
-                    }
-                    onChange={purchasedOnChange}
-                  />
+                    <input
+                      name="sellerId"
+                      value={
+                        (purchasedSchema.sellerId =
+                          FacultySelectedProduct.sellerId)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      name="status"
+                      value={
+                        (purchasedSchema.status = FacultySelectedProduct.status)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="buyerType"
+                      value={(purchasedSchema.buyerType = isFaculty.isFaculty)}
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="number"
+                      name="buyerPhoneNumber"
+                      value={
+                        (purchasedSchema.buyerPhoneNumber =
+                          isFaculty.phoneNumber)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="number"
+                      name="buyerGcashNumber"
+                      value={
+                        (purchasedSchema.buyerGcashNumber =
+                          isFaculty.gcashNumber)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="number"
+                      name="sellerGcashNumber"
+                      value={
+                        (purchasedSchema.sellerGcashNumber =
+                          FacultySelectedProduct.sellerGcashNumber)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="number"
+                      name="sellerPhoneNumber"
+                      value={
+                        (purchasedSchema.sellerPhoneNumber =
+                          FacultySelectedProduct.sellerPhoneNumber)
+                      }
+                      onChange={purchasedOnChange}
+                    />
 
-                  <input
-                    name="userId"
-                    value={(purchasedSchema.userId = isFaculty.id)}
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    type="text"
-                    name="prodName"
-                    value={
-                      (purchasedSchema.prodName =
-                        FacultySelectedProduct.prodName)
-                    }
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    type="text"
-                    name="prodName"
-                    value={
-                      (purchasedSchema.prodName =
-                        FacultySelectedProduct.prodName)
-                    }
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    type="text"
-                    name="buyerName"
-                    value={(purchasedSchema.buyerName = isFaculty.fullname)}
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    name="buyerFacebook"
-                    className="bg-gray-200"
-                    value={(purchasedSchema.buyerFacebook = isFaculty.facebook)}
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    name="sellerFacebook"
-                    className="bg-gray-200"
-                    value={
-                      (purchasedSchema.sellerFacebook =
-                        FacultySelectedProduct.facebook)
-                    }
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    type="text"
-                    name="buyerEmail"
-                    value={(purchasedSchema.buyerEmail = isFaculty.email)}
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    type="text"
-                    name="sellerName"
-                    value={
-                      (purchasedSchema.sellerName =
-                        FacultySelectedProduct.sellerName)
-                    }
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    type="text"
-                    name="sellerEmail"
-                    value={
-                      (purchasedSchema.sellerEmail =
-                        FacultySelectedProduct.sellerEmail)
-                    }
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    type="text"
-                    name="accountType"
-                    value={
-                      (purchasedSchema.accountType =
-                        FacultySelectedProduct.accountType)
-                    }
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    type="number"
-                    name="price"
-                    value={
-                      (purchasedSchema.price = FacultySelectedProduct.price)
-                    }
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    type="number"
-                    name="total"
-                    value={
-                      (purchasedSchema.total =
-                        FacultySelectedProduct.price * quantity)
-                    }
-                    onChange={purchasedOnChange}
-                  />
-                  <input
-                    type="text"
-                    name="image"
-                    value={
-                      (purchasedSchema.image = FacultySelectedProduct.image[0])
-                    }
-                    onChange={purchasedOnChange}
-                    required
-                  />
-                </div>
-                <div className=" space-y-3">
-                  <label>Types:</label>
-                  <Input
-                    placeholder="Ex. Red Item. Blue Item, etc."
-                    type="text"
-                    name="types"
-                    value={purchasedSchema.types}
-                    onChange={purchasedOnChange}
-                    required
-                  />
+                    <input
+                      name="userId"
+                      value={(purchasedSchema.userId = isFaculty.id)}
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="prodName"
+                      value={
+                        (purchasedSchema.prodName =
+                          FacultySelectedProduct.prodName)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="prodName"
+                      value={
+                        (purchasedSchema.prodName =
+                          FacultySelectedProduct.prodName)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="buyerName"
+                      value={(purchasedSchema.buyerName = isFaculty.fullname)}
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="marketType"
+                      value={
+                        (purchasedSchema.marketType =
+                          FacultySelectedProduct.marketType)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      name="buyerFacebook"
+                      className="bg-gray-200"
+                      value={
+                        (purchasedSchema.buyerFacebook = isFaculty.facebook)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      name="sellerFacebook"
+                      className="bg-gray-200"
+                      value={
+                        (purchasedSchema.sellerFacebook =
+                          FacultySelectedProduct.facebook)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="buyerEmail"
+                      value={(purchasedSchema.buyerEmail = isFaculty.email)}
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="sellerName"
+                      value={
+                        (purchasedSchema.sellerName =
+                          FacultySelectedProduct.sellerName)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="sellerEmail"
+                      value={
+                        (purchasedSchema.sellerEmail =
+                          FacultySelectedProduct.sellerEmail)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="accountType"
+                      value={
+                        (purchasedSchema.accountType =
+                          FacultySelectedProduct.accountType)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="number"
+                      name="price"
+                      value={
+                        (purchasedSchema.price = FacultySelectedProduct.price)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="number"
+                      name="total"
+                      value={
+                        (purchasedSchema.total =
+                          FacultySelectedProduct.price * quantity)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="image"
+                      value={
+                        (purchasedSchema.image =
+                          FacultySelectedProduct.image[0])
+                      }
+                      onChange={purchasedOnChange}
+                      required
+                    />
+                  </div>
+                  <div className=" space-y-3">
+                    <label>Types:</label>
+                    <Input
+                      placeholder="Ex. Red Item. Blue Item, etc."
+                      type="text"
+                      name="types"
+                      value={purchasedSchema.types}
+                      onChange={purchasedOnChange}
+                      required
+                    />
 
-                  <label>Quantity:</label>
-                  <NumberInput
-                    type="number"
-                    min={1}
-                    max={productData.stocks}
-                    name="quantity"
-                    value={(purchasedSchema.quantity = quantity)}
-                    onChange={purchasedOnChange}
-                    required
-                  >
-                    <NumberInputField required onChange={quantityHandler} />
-                    <NumberInputStepper>
-                      <NumberIncrementStepper onClick={incrementQnty} />
-                      <NumberDecrementStepper onClick={decrementQnty} />
-                    </NumberInputStepper>
-                  </NumberInput>
-                  <label>Message:</label>
-                  <Textarea
-                    placeholder="Input a message about the item."
-                    type="text"
-                    name="message"
-                    value={purchasedSchema.message}
-                    onChange={purchasedOnChange}
-                    required
-                  />
-                  <p>
-                    Total ₱
-                    {
-                      (purchasedSchema.total =
-                        FacultySelectedProduct.price * quantity)
-                    }
-                  </p>
-                </div>
-                <div className="bg-gray-900  text-white text-center text-sm  rounded-sm p-2 grid hover:bg-gray-950">
-                  <button type="submit" className="flex w-full justify-center">
-                    Add to orders <CiShoppingCart className="text-xl ml-2" />
-                  </button>
-                </div>
-              </form>
-            </ModalBody>
+                    <label>Quantity:</label>
+                    <NumberInput
+                      type="number"
+                      min={1}
+                      max={productData.stocks}
+                      name="quantity"
+                      value={(purchasedSchema.quantity = quantity)}
+                      onChange={purchasedOnChange}
+                      required
+                    >
+                      <NumberInputField required onChange={quantityHandler} />
+                      <NumberInputStepper>
+                        <NumberIncrementStepper onClick={incrementQnty} />
+                        <NumberDecrementStepper onClick={decrementQnty} />
+                      </NumberInputStepper>
+                    </NumberInput>
+                    <label>Message:</label>
+                    <Textarea
+                      placeholder="Input a message about the item."
+                      type="text"
+                      name="message"
+                      value={purchasedSchema.message}
+                      onChange={purchasedOnChange}
+                      required
+                    />
+                    <p>
+                      Total ₱
+                      {
+                        (purchasedSchema.total =
+                          FacultySelectedProduct.price * quantity)
+                      }
+                    </p>
+                  </div>
+                  <div className="bg-gray-900  text-white text-center text-sm  rounded-sm p-2 grid hover:bg-gray-950">
+                    <button
+                      type="submit"
+                      className="flex w-full justify-center"
+                    >
+                      Add to orders <CiShoppingCart className="text-xl ml-2" />
+                    </button>
+                  </div>
+                </form>
+              </ModalBody>
 
-            <ModalFooter></ModalFooter>
-          </ModalContent>
-        </Modal>
+              <ModalFooter></ModalFooter>
+            </ModalContent>
+          </Modal>
+
+          <Modal isOpen={isOpenTradeModal} onClose={onCloseTradeModal}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>
+                <Text className="text-sm font-thin">
+                  Item name: {FacultySelectedProduct.prodName} <br />
+                  Add Price:{" "}
+                  {FacultySelectedProduct.price.toLocaleString("en-PH", {
+                    style: "currency",
+                    currency: "PHP",
+                  })}
+                </Text>
+              </ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <form onSubmit={tradePurchase} className="grid">
+                  <div className="hidden">
+                    <input
+                      name="productId"
+                      value={
+                        (purchasedSchema.productId = FacultySelectedProduct._id)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+
+                    <input
+                      name="sellerId"
+                      value={
+                        (purchasedSchema.sellerId =
+                          FacultySelectedProduct.sellerId)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      name="status"
+                      value={
+                        (purchasedSchema.status = FacultySelectedProduct.status)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="buyerType"
+                      value={(purchasedSchema.buyerType = isFaculty.isFaculty)}
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="number"
+                      name="buyerPhoneNumber"
+                      value={
+                        (purchasedSchema.buyerPhoneNumber =
+                          isFaculty.phoneNumber)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="number"
+                      name="buyerGcashNumber"
+                      value={
+                        (purchasedSchema.buyerGcashNumber =
+                          isFaculty.gcashNumber)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="number"
+                      name="sellerGcashNumber"
+                      value={
+                        (purchasedSchema.sellerGcashNumber =
+                          FacultySelectedProduct.sellerGcashNumber)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="number"
+                      name="sellerPhoneNumber"
+                      value={
+                        (purchasedSchema.sellerPhoneNumber =
+                          FacultySelectedProduct.sellerPhoneNumber)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+
+                    <input
+                      name="userId"
+                      value={(purchasedSchema.userId = isFaculty.id)}
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="prodName"
+                      value={
+                        (purchasedSchema.prodName =
+                          FacultySelectedProduct.prodName)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="prodName"
+                      value={
+                        (purchasedSchema.prodName =
+                          FacultySelectedProduct.prodName)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="buyerName"
+                      value={(purchasedSchema.buyerName = isFaculty.fullname)}
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      name="buyerFacebook"
+                      className="bg-gray-200"
+                      value={
+                        (purchasedSchema.buyerFacebook = isFaculty.facebook)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      name="sellerFacebook"
+                      className="bg-gray-200"
+                      value={
+                        (purchasedSchema.sellerFacebook =
+                          FacultySelectedProduct.facebook)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="buyerEmail"
+                      value={(purchasedSchema.buyerEmail = isFaculty.email)}
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="sellerName"
+                      value={
+                        (purchasedSchema.sellerName =
+                          FacultySelectedProduct.sellerName)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="sellerEmail"
+                      value={
+                        (purchasedSchema.sellerEmail =
+                          FacultySelectedProduct.sellerEmail)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="accountType"
+                      value={
+                        (purchasedSchema.accountType =
+                          FacultySelectedProduct.accountType)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="number"
+                      name="price"
+                      value={
+                        (purchasedSchema.price = FacultySelectedProduct.price)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="number"
+                      name="total"
+                      value={
+                        (purchasedSchema.total =
+                          FacultySelectedProduct.price +
+                          purchasedSchema.addTradeMoney * quantity)
+                      }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="image"
+                      value={
+                        (purchasedSchema.image =
+                          FacultySelectedProduct.image[0])
+                      }
+                      onChange={purchasedOnChange}
+                      required
+                    />
+                  </div>
+                  <div className=" space-y-3">
+                    <label className="text-xs font-quicksand">Types:</label>
+                    <Input
+                      placeholder="Ex. Red Item. Blue Item, etc."
+                      type="text"
+                      name="types"
+                      value={purchasedSchema.types}
+                      onChange={purchasedOnChange}
+                      required
+                    />
+
+                    <label className="text-xs font-quicksand">Quantity:</label>
+                    <NumberInput
+                      type="number"
+                      min={1}
+                      max={productData.stocks}
+                      name="quantity"
+                      value={(purchasedSchema.quantity = quantity)}
+                      onChange={purchasedOnChange}
+                      required
+                    >
+                      <NumberInputField required onChange={quantityHandler} />
+                      <NumberInputStepper>
+                        <NumberIncrementStepper onClick={incrementQnty} />
+                        <NumberDecrementStepper onClick={decrementQnty} />
+                      </NumberInputStepper>
+                    </NumberInput>
+                    <label className="text-xs font-quicksand">Message:</label>
+                    <Textarea
+                      placeholder="Input a message about the item."
+                      type="text"
+                      name="message"
+                      value={purchasedSchema.message}
+                      onChange={purchasedOnChange}
+                      required
+                    />
+                    <Box className="flex">
+                      <Box className="grid">
+                        <label className="text-xs font-quicksand">
+                          Add trade money & trade Image
+                        </label>
+                        <Input
+                          mr={20}
+                          placeholder="Input Trade Money (Optional)"
+                          type="number"
+                          name="addTradeMoney"
+                          value={purchasedSchema.addTradeMoney}
+                          onChange={purchasedOnChange}
+                        />
+                      </Box>
+                      <Box className="mx-5 mt-5 ">
+                        <label
+                          htmlFor="file-upload"
+                          className="cursor-pointer flex"
+                        >
+                          <Tooltip label="Input your Item image here (Required)">
+                            <IconButton
+                              bg={"gray.600"}
+                              size="lg"
+                              icon={<RiImage2Line />}
+                              aria-label="Upload file"
+                              as="span"
+                            />
+                          </Tooltip>
+                          <GrTransaction className="ml-3 transform rotate-90 mt-4" />{" "}
+                        </label>
+
+                        <Input
+                          id="file-upload"
+                          type="file"
+                          name="tradeImage"
+                          accept=".jpeg,.jpg,.png,.gif,.pdf,.doc,.docx"
+                          onChange={handleFileChange}
+                          required
+                          display="none"
+                        />
+                      </Box>
+                    </Box>
+                    <Box className="grid">
+                      <label className="text-xs font-quicksand">
+                        Schedule for trading:
+                      </label>
+                      <Input
+                        type="date"
+                        name="tradeSchedule"
+                        value={purchasedSchema.tradeSchedule}
+                        onChange={purchasedOnChange}
+                        required
+                      />
+                    </Box>
+                    <p>
+                      Total ₱
+                      {
+                        (purchasedSchema.total =
+                          FacultySelectedProduct.price +
+                          purchasedSchema.addTradeMoney * quantity)
+                      }
+                    </p>
+                  </div>
+                  <div className="bg-gray-900  text-white text-center text-sm  rounded-sm p-2 grid hover:bg-gray-950">
+                    <button
+                      type="submit"
+                      className="flex w-full justify-center"
+                    >
+                      Trade on Cart <GrTransaction className="text-xl ml-2" />
+                    </button>
+                  </div>
+                </form>
+              </ModalBody>
+
+              <ModalFooter></ModalFooter>
+            </ModalContent>
+          </Modal>
+        </>
       )}
 
       <Divider mt={4} mb={4} />

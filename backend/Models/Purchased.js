@@ -75,6 +75,17 @@ const purchasedSchema = new mongoose.Schema({
   transactionStatus: {
     type: String,
   },
+
+  tradeImage: {
+    type: String,
+  },
+  addTradeMoney: {
+    type: Number,
+  },
+  tradeSchedule: {
+    type: Date,
+  },
+
   chat: [
     {
       chats: { type: String },
