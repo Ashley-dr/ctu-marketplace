@@ -28,6 +28,8 @@ import { CiCircleCheck, CiMenuBurger } from "react-icons/ci";
 import { LuMenu } from "react-icons/lu";
 import { BiHome } from "react-icons/bi";
 import { GrDocumentVerified, GrTransaction } from "react-icons/gr";
+import { BsDatabase } from "react-icons/bs";
+import { MdDashboard } from "react-icons/md";
 function SideNavigation() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [placement, setPlacement] = React.useState("left");
@@ -61,6 +63,33 @@ function SideNavigation() {
                 <Link to="/MainAdmDash/Transactions" className="flex gap-2">
                   <GrTransaction className="text-sm mt-0.5" />
                   <Text>Transactions</Text>
+                </Link>
+              </p>
+              <p>
+                <Link
+                  to="https://cloud.mongodb.com/v2/65eef687cb31c2774fba69df#/metrics/replicaSet/65eef860c2ab643ecac6fb55/explorer/shop"
+                  className="flex gap-2"
+                >
+                  <BsDatabase className="text-sm mt-0.5" />
+                  <Text>Access Database</Text>
+                </Link>
+              </p>
+              <p>
+                <Link
+                  to="https://pbm.paymaya.com/transactions/6159bec8-e7bd-4d06-9ff4-010cb39ba9f0"
+                  className="flex gap-2"
+                >
+                  <GrTransaction className="text-sm mt-0.5" />
+                  <Text>Paymaya Transaction</Text>
+                </Link>
+              </p>
+              <p>
+                <Link
+                  to="https://pbm.paymaya.com/dashboard"
+                  className="flex gap-2"
+                >
+                  <MdDashboard className="text-sm mt-0.5" />
+                  <Text>Paymaya Dashboard</Text>
                 </Link>
               </p>
               {/* MIMK-138 */}

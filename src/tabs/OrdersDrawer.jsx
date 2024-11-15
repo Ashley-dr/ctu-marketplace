@@ -7,7 +7,7 @@ import { Link, useParams, useNavigate, Navigate } from "react-router-dom";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import { FaRegMessage } from "react-icons/fa6";
-import { MdEmail, MdMessage } from "react-icons/md";
+import { MdEmail, MdError, MdMessage } from "react-icons/md";
 import { FaFacebookSquare } from "react-icons/fa";
 import { BsCashCoin } from "react-icons/bs";
 import { TbCircleLetterG, TbViewportWide } from "react-icons/tb";
@@ -47,6 +47,12 @@ import {
   AccordionButton,
   AccordionPanel,
   AccordionIcon,
+  Tooltip,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanels,
+  TabPanel,
 } from "@chakra-ui/react";
 import { MdDelete } from "react-icons/md";
 import qrmaya from "../assets/PYMY CTU Marketplace.png";
@@ -287,10 +293,901 @@ function OrdersDrawer({ id }) {
     setCurrentImage(index); // Set the clicked image index
     setOpen(true); // Open the lightbox
   };
+
+  const pendingCard = () => {
+    return (
+      <>
+        {" "}
+        {orders
+          .filter((order) => order.status === undefined)
+          .map((order) => (
+            <div
+              key={order._id}
+              className="mt-1 border-solid rounded-2xl mb-5 max-w-full   "
+            >
+              <div className=" flex ">
+                <figure>
+                  <img
+                    className="  max-w-full max-h-full ssm:w-72 lg:w-40 h-20 object-cover bg-fixed"
+                    src={order.image}
+                    alt={order.prodName}
+                  />
+                </figure>
+                <div className="grid  rounded-md  ssm:mx-1 lg:mx-3 bottom-2 font-quicksand text-sm">
+                  <p className="text-xl grid grid-cols-2">
+                    <button className="truncate ssm:w-32 lg:w-52 pr-2 text-start">
+                      {order.prodName}
+                    </button>
+
+                    <Flex justifyContent={"end"} mx={1} gap={1}>
+                      <Tooltip label={`View ${order.prodName}`}>
+                        <Link
+                          to={`/ProductId/${order.productId}#item`}
+                          className="grid justify-self-start justify-start "
+                        >
+                          <button size="xs">
+                            <Box as="span" flex="1" textAlign="right">
+                              <TbViewportWide className="text-base" />
+                            </Box>
+
+                            {/* <AccordionIcon /> */}
+                          </button>
+                        </Link>
+                      </Tooltip>
+                      <Popover>
+                        <PopoverTrigger>
+                          <button size="xs">
+                            <Box as="span" flex="1" textAlign="right">
+                              <MdDelete className="text-base" />
+                            </Box>
+
+                            {/* <AccordionIcon /> */}
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent mr={8}>
+                          <PopoverArrow />
+                          <PopoverCloseButton />
+                          <PopoverHeader textAlign={"center"}>
+                            <Text>
+                              Cancel this order? <br /> {order.prodName}
+                            </Text>
+                          </PopoverHeader>
+                          <PopoverBody>
+                            <button
+                              className="justify-self-center flex text-sm hover:shadow-inner hover:scale-110"
+                              onClick={() => removeItemClick(order._id)}
+                            >
+                              Confirm
+                            </button>
+                          </PopoverBody>
+                        </PopoverContent>
+                      </Popover>
+                    </Flex>
+                    <figure>
+                      {/* <Link
+                              to={`/ProductId/${order.productId}`}
+                              className="grid justify-self-start justify-start "
+                            >
+                              <button className="text-xs underline">
+                                View Item
+                              </button>
+                            </Link> */}
+                      <div>{order.status}</div>
+                      <div className="grid grid-cols-2 pt-1">
+                        <p className="w-32 text-sm flex">
+                          <p className="truncate">{order.sellerName}</p>
+                        </p>
+                      </div>
+                    </figure>
+                    <figure className="justify-self-end text-xs ">
+                      <article>
+                        {" "}
+                        <p className="flex">
+                          <p className="">{order.quantity}</p>
+                        </p>
+                        <p className="flex ">
+                          <p className="">
+                            {order.price.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                          </p>
+                        </p>
+                        <p className="flex">
+                          <p className="">
+                            {order.total.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                          </p>
+                        </p>
+                      </article>
+                    </figure>
+                  </p>
+                </div>
+              </div>
+
+              {/* <Divider mt={5} /> */}
+              <Accordion mt={2} allowToggle>
+                <AccordionItem border={"none"} borderBottom={"solid"}>
+                  <h2>
+                    <AccordionButton>
+                      <Box as="span" flex="1" textAlign="left">
+                        <Text className="text-xs">Checkout</Text>
+                      </Box>
+                      <AccordionIcon />
+                    </AccordionButton>
+                  </h2>
+                  <AccordionPanel pb={4} bg={"#ffffff0a"} roundedTop={"md"}>
+                    <div className="grid grid-cols-2 pt-1">
+                      <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                        <LinkIcon className="mr-1 mt-1" />
+                        {order.sellerName}
+                      </p>
+                      <p className="text-xs px-1 mt-1 justify-self-end mr-2 rounded-md bg-[#15f85667]">
+                        {order.accountType}
+                      </p>
+                    </div>
+                    {order.accountType === "Student" && (
+                      <>
+                        {" "}
+                        <Link to={`/UserAccount/${order.sellerEmail}`}>
+                          <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                            <AtSignIcon className="mt-1 mr-1" />
+                            {order.sellerEmail}
+                          </p>
+                        </Link>
+                      </>
+                    )}
+                    {order.accountType === "Faculty" && (
+                      <>
+                        {" "}
+                        <Link to={`/FacultyAccount/${order.sellerEmail}`}>
+                          <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                            <AtSignIcon className="mt-1 mr-1" />
+                            {order.sellerEmail}
+                          </p>
+                        </Link>
+                      </>
+                    )}
+                    {/* <p className="truncate flex">
+                          <FaFacebookF className="mt-1 mr-1" />{" "}
+                          {order.sellerFacebook}
+                        </p> */}
+                    <Divider className="m-2" />
+                    <div className="space-y-1">
+                      <p className="flex justify-between ">
+                        <p className="text-xs font-light">Item:</p>
+                        <p className="px-2 text-xs text-right w-64 font-bold ">
+                          {order.prodName}
+                        </p>
+                      </p>
+                      <p className="flex justify-between">
+                        <p className="text-xs font-light">Quantity:</p>
+                        <p className="px-2 text-xs  text-right w-64  font-bold ">
+                          {order.quantity}{" "}
+                        </p>
+                      </p>
+                      <p className="flex justify-between">
+                        <p className="text-xs font-light">Price:</p>
+                        <p className="px-2 text-xs  text-right w-64  font-semibold ">
+                          {order.price.toLocaleString("en-PH", {
+                            style: "currency",
+                            currency: "PHP",
+                          })}{" "}
+                        </p>
+                      </p>
+
+                      <p className="flex justify-between">
+                        <p className="text-xs font-light">Total:</p>
+                        <p className="px-2 text-xs  text-right w-64 font-semibold ">
+                          {order.total.toLocaleString("en-PH", {
+                            style: "currency",
+                            currency: "PHP",
+                          })}
+                        </p>
+                      </p>
+                      <p className="flex justify-between">
+                        <p className="text-xs font-light">Status:</p>
+                        <p className="px-2 text-xs font-bold ">
+                          <p>
+                            {order.status ? <>{order.status}</> : <>Pending</>}
+                          </p>
+                        </p>
+                      </p>
+                    </div>
+                    <Divider className="m-2" />
+                    <Accordion mt={2} allowToggle>
+                      <AccordionItem border={"none"}>
+                        <h2>
+                          <AccordionButton>
+                            <Box as="span" flex="1" textAlign="left">
+                              <Text className="text-xs">More info.</Text>
+                            </Box>
+                            <AccordionIcon />
+                          </AccordionButton>
+                        </h2>
+                        <AccordionPanel
+                          pb={4}
+                          bg={"#ffffff0a"}
+                          roundedTop={"md"}
+                        >
+                          {" "}
+                          <p className="h-full space-y-1 overflow-y-auto  mt-1 mb-2 border-solid  rounded-lg  ">
+                            <p className="text-xs font-quicksand">
+                              Type: {order.types}
+                            </p>
+                            <p className="text-xs font-quicksand">
+                              Message: {order.message}
+                            </p>
+                          </p>
+                          <Divider />
+                          <figure className="flex flex-col items-center  ">
+                            <div className="flex gap-4 mt-4">
+                              {/* Email Button */}
+                              <Tooltip label={<MdError />}>
+                                <button className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-800 text-white hover:bg-gray-700 transition-all shadow-md">
+                                  <MdEmail className="text-2xl" />
+                                </button>
+                              </Tooltip>
+
+                              {/* Facebook Button */}
+                              <a
+                                href={order.sellerFacebook}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <Tooltip label="Visit seller facebook Page.">
+                                  <button className="flex items-center justify-center  w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-500 transition-all shadow-md">
+                                    <FaFacebookSquare className="text-2xl" />
+                                  </button>
+                                </Tooltip>
+                              </a>
+
+                              {/* Chat Button */}
+                              <Tooltip label="Message this seller.">
+                                <button
+                                  onClick={() => chatButton(order)}
+                                  className="flex items-center justify-center  w-10 h-10 rounded-full bg-green-600 text-white hover:bg-green-500 transition-all shadow-md"
+                                >
+                                  <MdMessage className="text-2xl" />
+                                </button>
+                              </Tooltip>
+                            </div>
+                          </figure>
+                        </AccordionPanel>{" "}
+                      </AccordionItem>
+                    </Accordion>
+
+                    <button
+                      onClick={() => statusHandler(order)}
+                      className="px-6 w-full pt-2 pb-2 font-quicksand mt-1 p-1 bg-gray-900 text-white text-center text-sm rounded-md grid  hover:bg-gray-800"
+                    >
+                      Pay now
+                    </button>
+                  </AccordionPanel>
+                </AccordionItem>
+              </Accordion>
+            </div>
+          ))}
+      </>
+    );
+  };
+
+  const EpaymentCard = () => {
+    return (
+      <>
+        {" "}
+        {orders
+          .filter((order) => order.status === "E-Payment")
+          .map((order) => (
+            <div
+              key={order._id}
+              className="mt-1 border-solid rounded-2xl mb-5 max-w-full   "
+            >
+              <div className=" flex ">
+                <figure>
+                  <img
+                    className="  max-w-full max-h-full ssm:w-72 lg:w-40 h-20 object-cover bg-fixed"
+                    src={order.image}
+                    alt={order.prodName}
+                  />
+                </figure>
+                <div className="grid  rounded-md  ssm:mx-1 lg:mx-3 bottom-2 font-quicksand text-sm">
+                  <p className="text-xl grid grid-cols-2">
+                    <button className="truncate ssm:w-32 lg:w-52 pr-2 text-start">
+                      {order.prodName}
+                    </button>
+
+                    <Flex justifyContent={"end"} mx={1} gap={1}>
+                      <Tooltip label={`View ${order.prodName}`}>
+                        <Link
+                          to={`/ProductId/${order.productId}#item`}
+                          className="grid justify-self-start justify-start "
+                        >
+                          <button size="xs">
+                            <Box as="span" flex="1" textAlign="right">
+                              <TbViewportWide className="text-base" />
+                            </Box>
+
+                            {/* <AccordionIcon /> */}
+                          </button>
+                        </Link>
+                      </Tooltip>
+                      <Popover>
+                        <PopoverTrigger>
+                          <button size="xs">
+                            <Box as="span" flex="1" textAlign="right">
+                              <MdDelete className="text-base" />
+                            </Box>
+
+                            {/* <AccordionIcon /> */}
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent mr={8}>
+                          <PopoverArrow />
+                          <PopoverCloseButton />
+                          <PopoverHeader textAlign={"center"}>
+                            <Text>
+                              Cancel this order? <br /> {order.prodName}
+                            </Text>
+                          </PopoverHeader>
+                          <PopoverBody>
+                            <button
+                              className="justify-self-center flex text-sm hover:shadow-inner hover:scale-110"
+                              onClick={() => removeItemClick(order._id)}
+                            >
+                              Confirm
+                            </button>
+                          </PopoverBody>
+                        </PopoverContent>
+                      </Popover>
+                    </Flex>
+                    <figure>
+                      {/* <Link
+                              to={`/ProductId/${order.productId}`}
+                              className="grid justify-self-start justify-start "
+                            >
+                              <button className="text-xs underline">
+                                View Item
+                              </button>
+                            </Link> */}
+                      {order.transactionStatus === "Success" && (
+                        <>
+                          {" "}
+                          <Tooltip label="Transaction Success: Item Received">
+                            <div className="bg-emerald-700 text-center rounded-lg text-xs w-20">
+                              {order.transactionStatus}
+                            </div>
+                          </Tooltip>
+                        </>
+                      )}
+                      {order.transactionStatus === undefined && (
+                        <Tooltip label="Transaction Status Pending">
+                          <div className="bg-gray-800 text-center rounded-lg text-xs w-20">
+                            In Proccess
+                          </div>
+                        </Tooltip>
+                      )}
+                      {order.transactionStatus === "Item Returned" && (
+                        <>
+                          <Tooltip label="Transaction Status: Item Returned.">
+                            <div className="bg-orange-600 text-center rounded-lg text-xs w-24">
+                              {order.transactionStatus}
+                            </div>
+                          </Tooltip>
+                        </>
+                      )}
+                      <div className="grid grid-cols-2 pt-1">
+                        <p className="w-32 text-sm flex">
+                          <p className="truncate">{order.sellerName}</p>
+                        </p>
+                      </div>
+                    </figure>
+                    <figure className="justify-self-end text-xs ">
+                      <article>
+                        {" "}
+                        <p className="flex">
+                          <p className="">{order.quantity}</p>
+                        </p>
+                        <p className="flex ">
+                          <p className="">
+                            {order.price.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                          </p>
+                        </p>
+                        <p className="flex">
+                          <p className="">
+                            {order.total.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                          </p>
+                        </p>
+                      </article>
+                    </figure>
+                  </p>
+                </div>
+              </div>
+
+              {/* <Divider mt={5} /> */}
+              <Accordion mt={2} allowToggle>
+                <AccordionItem border={"none"} borderBottom={"solid"}>
+                  <h2>
+                    <AccordionButton>
+                      <Box as="span" flex="1" textAlign="left">
+                        <Text className="text-xs">Checkout</Text>
+                      </Box>
+                      <AccordionIcon />
+                    </AccordionButton>
+                  </h2>
+                  <AccordionPanel pb={4} bg={"#ffffff0a"} roundedTop={"md"}>
+                    <div className="grid grid-cols-2 pt-1">
+                      <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                        <LinkIcon className="mr-1 mt-1" />
+                        {order.sellerName}
+                      </p>
+                      <p className="text-xs px-1 mt-1 justify-self-end mr-2 rounded-md bg-[#15f85667]">
+                        {order.accountType}
+                      </p>
+                    </div>
+                    {order.accountType === "Student" && (
+                      <>
+                        {" "}
+                        <Link to={`/UserAccount/${order.sellerEmail}`}>
+                          <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                            <AtSignIcon className="mt-1 mr-1" />
+                            {order.sellerEmail}
+                          </p>
+                        </Link>
+                      </>
+                    )}
+                    {order.accountType === "Faculty" && (
+                      <>
+                        {" "}
+                        <Link to={`/FacultyAccount/${order.sellerEmail}`}>
+                          <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                            <AtSignIcon className="mt-1 mr-1" />
+                            {order.sellerEmail}
+                          </p>
+                        </Link>
+                      </>
+                    )}
+                    {/* <p className="truncate flex">
+                          <FaFacebookF className="mt-1 mr-1" />{" "}
+                          {order.sellerFacebook}
+                        </p> */}
+                    <Divider className="m-2" />
+                    <div className="space-y-1">
+                      <p className="flex justify-between ">
+                        <p className="text-xs font-light">Item:</p>
+                        <p className="px-2 text-xs text-right w-64 font-bold ">
+                          {order.prodName}
+                        </p>
+                      </p>
+                      <p className="flex justify-between">
+                        <p className="text-xs font-light">Quantity:</p>
+                        <p className="px-2 text-xs  text-right w-64  font-bold ">
+                          {order.quantity}{" "}
+                        </p>
+                      </p>
+                      <p className="flex justify-between">
+                        <p className="text-xs font-light">Price:</p>
+                        <p className="px-2 text-xs  text-right w-64  font-semibold ">
+                          {order.price.toLocaleString("en-PH", {
+                            style: "currency",
+                            currency: "PHP",
+                          })}{" "}
+                        </p>
+                      </p>
+
+                      <p className="flex justify-between">
+                        <p className="text-xs font-light">Total:</p>
+                        <p className="px-2 text-xs  text-right w-64 font-semibold ">
+                          {order.total.toLocaleString("en-PH", {
+                            style: "currency",
+                            currency: "PHP",
+                          })}
+                        </p>
+                      </p>
+                      <p className="flex justify-between">
+                        <p className="text-xs font-light">Status:</p>
+                        <p className="px-2 text-xs font-bold ">
+                          <p>
+                            {order.status ? <>{order.status}</> : <>Pending</>}
+                          </p>
+                        </p>
+                      </p>
+                    </div>
+                    <Divider className="m-2" />
+                    <Accordion mt={2} allowToggle>
+                      <AccordionItem border={"none"}>
+                        <h2>
+                          <AccordionButton>
+                            <Box as="span" flex="1" textAlign="left">
+                              <Text className="text-xs">More info.</Text>
+                            </Box>
+                            <AccordionIcon />
+                          </AccordionButton>
+                        </h2>
+                        <AccordionPanel
+                          pb={4}
+                          bg={"#ffffff0a"}
+                          roundedTop={"md"}
+                        >
+                          {" "}
+                          <p className="h-full space-y-1 overflow-y-auto  mt-1 mb-2 border-solid  rounded-lg  ">
+                            <p className="text-xs font-quicksand">
+                              Type: {order.types}
+                            </p>
+                            <p className="text-xs font-quicksand">
+                              Message: {order.message}
+                            </p>
+                          </p>
+                          <Divider />
+                          <figure className="flex flex-col items-center  ">
+                            <div className="flex gap-4 mt-4">
+                              {/* Email Button */}
+                              <Tooltip label={<MdError />}>
+                                <button className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-800 text-white hover:bg-gray-700 transition-all shadow-md">
+                                  <MdEmail className="text-2xl" />
+                                </button>
+                              </Tooltip>
+
+                              {/* Facebook Button */}
+                              <a
+                                href={order.sellerFacebook}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <Tooltip label="Visit seller facebook Page.">
+                                  <button className="flex items-center justify-center  w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-500 transition-all shadow-md">
+                                    <FaFacebookSquare className="text-2xl" />
+                                  </button>
+                                </Tooltip>
+                              </a>
+
+                              {/* Chat Button */}
+                              <Tooltip label="Message this seller.">
+                                <button
+                                  onClick={() => chatButton(order)}
+                                  className="flex items-center justify-center  w-10 h-10 rounded-full bg-green-600 text-white hover:bg-green-500 transition-all shadow-md"
+                                >
+                                  <MdMessage className="text-2xl" />
+                                </button>
+                              </Tooltip>
+                            </div>
+                          </figure>
+                        </AccordionPanel>{" "}
+                      </AccordionItem>
+                    </Accordion>
+
+                    {/* <button
+                      onClick={() => statusHandler(order)}
+                      className="px-6 w-full pt-2 pb-2 font-quicksand mt-1 p-1 bg-gray-900 text-white text-center text-sm rounded-md grid  hover:bg-gray-800"
+                    >
+                      Pay now
+                    </button> */}
+                  </AccordionPanel>
+                </AccordionItem>
+              </Accordion>
+            </div>
+          ))}
+      </>
+    );
+  };
+
+  const meetUpPayCard = () => {
+    return (
+      <dic className="max-w-full">
+        {" "}
+        {orders
+          .filter((order) => order.status === "Meet up Pay")
+          .map((order) => (
+            <div
+              key={order._id}
+              className="mt-1 border-solid rounded-2xl mb-5 max-w-full   "
+            >
+              <div className=" flex ">
+                <figure>
+                  <img
+                    className="  max-w-full max-h-full ssm:w-72 lg:w-40 h-20 object-cover bg-fixed"
+                    src={order.image}
+                    alt={order.prodName}
+                  />
+                </figure>
+                <div className="grid  rounded-md  ssm:mx-1 lg:mx-3 bottom-2 font-quicksand text-sm">
+                  <p className="text-xl grid grid-cols-2">
+                    <button className="truncate ssm:w-32 lg:w-52 pr-2 text-start">
+                      {order.prodName}
+                    </button>
+
+                    <Flex justifyContent={"end"} mx={1} gap={1}>
+                      <Tooltip label={`View ${order.prodName}`}>
+                        <Link
+                          to={`/ProductId/${order.productId}#item`}
+                          className="grid justify-self-start justify-start "
+                        >
+                          <button size="xs">
+                            <Box as="span" flex="1" textAlign="right">
+                              <TbViewportWide className="text-base" />
+                            </Box>
+
+                            {/* <AccordionIcon /> */}
+                          </button>
+                        </Link>
+                      </Tooltip>
+                      <Popover>
+                        <PopoverTrigger>
+                          <button size="xs">
+                            <Box as="span" flex="1" textAlign="right">
+                              <MdDelete className="text-base" />
+                            </Box>
+
+                            {/* <AccordionIcon /> */}
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent mr={8}>
+                          <PopoverArrow />
+                          <PopoverCloseButton />
+                          <PopoverHeader textAlign={"center"}>
+                            <Text>
+                              Cancel this order? <br /> {order.prodName}
+                            </Text>
+                          </PopoverHeader>
+                          <PopoverBody>
+                            <button
+                              className="justify-self-center flex text-sm hover:shadow-inner hover:scale-110"
+                              onClick={() => removeItemClick(order._id)}
+                            >
+                              Confirm
+                            </button>
+                          </PopoverBody>
+                        </PopoverContent>
+                      </Popover>
+                    </Flex>
+                    <figure>
+                      {/* <Link
+                              to={`/ProductId/${order.productId}`}
+                              className="grid justify-self-start justify-start "
+                            >
+                              <button className="text-xs underline">
+                                View Item
+                              </button>
+                            </Link> */}
+                      {order.transactionStatus === "Success" && (
+                        <>
+                          {" "}
+                          <Tooltip label="Transaction Success: Item Received">
+                            <div className="bg-emerald-700 text-center rounded-lg text-xs w-20">
+                              {order.transactionStatus}
+                            </div>
+                          </Tooltip>
+                        </>
+                      )}
+                      {order.transactionStatus === undefined && (
+                        <Tooltip label="Transaction Status Pending">
+                          <div className="bg-gray-800 text-center rounded-lg text-xs w-20">
+                            In Process
+                          </div>
+                        </Tooltip>
+                      )}
+                      {order.transactionStatus === "Item Returned" && (
+                        <>
+                          <Tooltip label="Transaction Status: Item Returned.">
+                            <div className="bg-orange-600 text-center rounded-lg text-xs w-20">
+                              {order.transactionStatus}
+                            </div>
+                          </Tooltip>
+                        </>
+                      )}
+
+                      <div className="grid grid-cols-2 pt-1">
+                        <p className="w-32 text-sm flex">
+                          <p className="truncate">{order.sellerName}</p>
+                        </p>
+                      </div>
+                    </figure>
+                    <figure className="justify-self-end text-xs ">
+                      <article>
+                        {" "}
+                        <p className="flex">
+                          <p className="">{order.quantity}</p>
+                        </p>
+                        <p className="flex ">
+                          <p className="">
+                            {order.price.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                          </p>
+                        </p>
+                        <p className="flex">
+                          <p className="">
+                            {order.total.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                          </p>
+                        </p>
+                      </article>
+                    </figure>
+                  </p>
+                </div>
+              </div>
+
+              {/* <Divider mt={5} /> */}
+              <Accordion mt={2} allowToggle>
+                <AccordionItem border={"none"} borderBottom={"solid"}>
+                  <h2>
+                    <AccordionButton>
+                      <Box as="span" flex="1" textAlign="left">
+                        <Text className="text-xs">Checkout</Text>
+                      </Box>
+                      <AccordionIcon />
+                    </AccordionButton>
+                  </h2>
+                  <AccordionPanel pb={4} bg={"#ffffff0a"} roundedTop={"md"}>
+                    <div className="grid grid-cols-2 pt-1">
+                      <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                        <LinkIcon className="mr-1 mt-1" />
+                        {order.sellerName}
+                      </p>
+                      <p className="text-xs px-1 mt-1 justify-self-end mr-2 rounded-md bg-[#15f85667]">
+                        {order.accountType}
+                      </p>
+                    </div>
+                    {order.accountType === "Student" && (
+                      <>
+                        {" "}
+                        <Link to={`/UserAccount/${order.sellerEmail}`}>
+                          <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                            <AtSignIcon className="mt-1 mr-1" />
+                            {order.sellerEmail}
+                          </p>
+                        </Link>
+                      </>
+                    )}
+                    {order.accountType === "Faculty" && (
+                      <>
+                        {" "}
+                        <Link to={`/FacultyAccount/${order.sellerEmail}`}>
+                          <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                            <AtSignIcon className="mt-1 mr-1" />
+                            {order.sellerEmail}
+                          </p>
+                        </Link>
+                      </>
+                    )}
+                    {/* <p className="truncate flex">
+                          <FaFacebookF className="mt-1 mr-1" />{" "}
+                          {order.sellerFacebook}
+                        </p> */}
+                    <Divider className="m-2" />
+                    <div className="space-y-1">
+                      <p className="flex justify-between ">
+                        <p className="text-xs font-light">Item:</p>
+                        <p className="px-2 text-xs text-right w-64 font-bold ">
+                          {order.prodName}
+                        </p>
+                      </p>
+                      <p className="flex justify-between">
+                        <p className="text-xs font-light">Quantity:</p>
+                        <p className="px-2 text-xs  text-right w-64  font-bold ">
+                          {order.quantity}{" "}
+                        </p>
+                      </p>
+                      <p className="flex justify-between">
+                        <p className="text-xs font-light">Price:</p>
+                        <p className="px-2 text-xs  text-right w-64  font-semibold ">
+                          {order.price.toLocaleString("en-PH", {
+                            style: "currency",
+                            currency: "PHP",
+                          })}{" "}
+                        </p>
+                      </p>
+
+                      <p className="flex justify-between">
+                        <p className="text-xs font-light">Total:</p>
+                        <p className="px-2 text-xs  text-right w-64 font-semibold ">
+                          {order.total.toLocaleString("en-PH", {
+                            style: "currency",
+                            currency: "PHP",
+                          })}
+                        </p>
+                      </p>
+                      <p className="flex justify-between">
+                        <p className="text-xs font-light">Status:</p>
+                        <p className="px-2 text-xs font-bold ">
+                          <p>
+                            {order.status ? <>{order.status}</> : <>Pending</>}
+                          </p>
+                        </p>
+                      </p>
+                    </div>
+                    <Divider className="m-2" />
+                    <Accordion mt={2} allowToggle>
+                      <AccordionItem border={"none"}>
+                        <h2>
+                          <AccordionButton>
+                            <Box as="span" flex="1" textAlign="left">
+                              <Text className="text-xs">More info.</Text>
+                            </Box>
+                            <AccordionIcon />
+                          </AccordionButton>
+                        </h2>
+                        <AccordionPanel
+                          pb={4}
+                          bg={"#ffffff0a"}
+                          roundedTop={"md"}
+                        >
+                          {" "}
+                          <p className="h-full space-y-1 overflow-y-auto  mt-1 mb-2 border-solid  rounded-lg  ">
+                            <p className="text-xs font-quicksand">
+                              Type: {order.types}
+                            </p>
+                            <p className="text-xs font-quicksand">
+                              Message: {order.message}
+                            </p>
+                          </p>
+                          <Divider />
+                          <figure className="flex flex-col items-center  ">
+                            <div className="flex gap-4 mt-4">
+                              {/* Email Button */}
+                              <Tooltip label={<MdError />}>
+                                <button className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-800 text-white hover:bg-gray-700 transition-all shadow-md">
+                                  <MdEmail className="text-2xl" />
+                                </button>
+                              </Tooltip>
+
+                              {/* Facebook Button */}
+                              <a
+                                href={order.sellerFacebook}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <Tooltip label="Visit seller facebook Page.">
+                                  <button className="flex items-center justify-center  w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-500 transition-all shadow-md">
+                                    <FaFacebookSquare className="text-2xl" />
+                                  </button>
+                                </Tooltip>
+                              </a>
+
+                              {/* Chat Button */}
+                              <Tooltip label="Message this seller.">
+                                <button
+                                  onClick={() => chatButton(order)}
+                                  className="flex items-center justify-center  w-10 h-10 rounded-full bg-green-600 text-white hover:bg-green-500 transition-all shadow-md"
+                                >
+                                  <MdMessage className="text-2xl" />
+                                </button>
+                              </Tooltip>
+                            </div>
+                          </figure>
+                        </AccordionPanel>{" "}
+                      </AccordionItem>
+                    </Accordion>
+                    {/* 
+                    <button
+                      onClick={() => statusHandler(order)}
+                      className="px-6 w-full pt-2 pb-2 font-quicksand mt-1 p-1 bg-gray-900 text-white text-center text-sm rounded-md grid  hover:bg-gray-800"
+                    >
+                      Pay now
+                    </button> */}
+                  </AccordionPanel>
+                </AccordionItem>
+              </Accordion>
+            </div>
+          ))}
+      </dic>
+    );
+  };
   return (
     <main className="rounded-md pb-4 max-w-full max-h-full justify-items-center grid  bg-gradient-to-tr">
       {" "}
-      <div className="mt-2 mb-14  rounded-md pt-3 pb-4 max-w-full max-h-full ">
+      <div className=" mb-14  rounded-md pt-3 pb-4 max-w-full max-h-full ">
         <div className=" md:shrink-0 grid  justify-items-center grid-cols-1 ssm:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 ">
           {/* <OrdersCount id={id} /> */}
           {loading ? (
@@ -308,759 +1205,36 @@ function OrdersDrawer({ id }) {
                 </div>
               ) : (
                 <>
-                  <Text>Pending</Text>
-                  {orders
-                    .filter((order) => order.status === undefined)
-                    .map((order) => (
-                      <div
-                        key={order._id}
-                        className="mt-1 border-solid rounded-2xl p-2 max-w-full   "
+                  <Tabs isFitted w={"96"}>
+                    <TabList>
+                      <Tab
+                        fontSize={11}
+                        color={"black.600"}
+                        className="font-quicksand"
                       >
-                        <div className="md:shrink-0 flex ">
-                          <figure>
-                            <img
-                              className="  max-w-full max-h-full ssm:w-72 lg:w-40 h-20 object-cover bg-fixed"
-                              src={order.image}
-                              alt={order.prodName}
-                            />
-                          </figure>
-                          <div className="grid  rounded-md  mx-5 bottom-2 font-quicksand text-sm">
-                            <p className="text-xl grid grid-cols-2">
-                              <button className="truncate ssm:w-32 lg:w-52 pr-2 text-start">
-                                {order.prodName}
-                              </button>
-
-                              <Flex justifyContent={"end"} mx={1} gap={1}>
-                                <Link
-                                  to={`/ProductId/${order.productId}#item`}
-                                  className="grid justify-self-start justify-start "
-                                >
-                                  <button size="xs">
-                                    <Box as="span" flex="1" textAlign="right">
-                                      <TbViewportWide className="text-base" />
-                                    </Box>
-
-                                    {/* <AccordionIcon /> */}
-                                  </button>
-                                </Link>
-                                <Popover>
-                                  <PopoverTrigger>
-                                    <button size="xs">
-                                      <Box as="span" flex="1" textAlign="right">
-                                        <MdDelete className="text-base" />
-                                      </Box>
-
-                                      {/* <AccordionIcon /> */}
-                                    </button>
-                                  </PopoverTrigger>
-                                  <PopoverContent mr={8}>
-                                    <PopoverArrow />
-                                    <PopoverCloseButton />
-                                    <PopoverHeader textAlign={"center"}>
-                                      <Text>
-                                        Cancel this order? <br />{" "}
-                                        {order.prodName}
-                                      </Text>
-                                    </PopoverHeader>
-                                    <PopoverBody>
-                                      <button
-                                        className="justify-self-center flex text-sm hover:shadow-inner hover:scale-110"
-                                        onClick={() =>
-                                          removeItemClick(order._id)
-                                        }
-                                      >
-                                        Confirm
-                                      </button>
-                                    </PopoverBody>
-                                  </PopoverContent>
-                                </Popover>
-                              </Flex>
-                              <figure>
-                                {/* <Link
-                              to={`/ProductId/${order.productId}`}
-                              className="grid justify-self-start justify-start "
-                            >
-                              <button className="text-xs underline">
-                                View Item
-                              </button>
-                            </Link> */}
-                                <div>{order.status}</div>
-                                <div className="grid grid-cols-2 pt-1">
-                                  <p className="w-32 text-sm flex">
-                                    <p className="truncate">
-                                      {order.sellerName}
-                                    </p>
-                                  </p>
-                                </div>
-                              </figure>
-                              <figure className="justify-self-end text-xs ">
-                                <article>
-                                  {" "}
-                                  <p className="flex">
-                                    <p className="">{order.quantity}</p>
-                                  </p>
-                                  <p className="flex ">
-                                    <p className="">
-                                      {order.price.toLocaleString("en-PH", {
-                                        style: "currency",
-                                        currency: "PHP",
-                                      })}
-                                    </p>
-                                  </p>
-                                  <p className="flex">
-                                    <p className="">
-                                      {order.total.toLocaleString("en-PH", {
-                                        style: "currency",
-                                        currency: "PHP",
-                                      })}
-                                    </p>
-                                  </p>
-                                </article>
-                              </figure>
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* <Divider mt={5} /> */}
-                        <Accordion mt={2} allowToggle>
-                          <AccordionItem border={"none"} borderBottom={"solid"}>
-                            <h2>
-                              <AccordionButton>
-                                <Box as="span" flex="1" textAlign="left">
-                                  <Text className="text-xs">Checkout</Text>
-                                </Box>
-                                <AccordionIcon />
-                              </AccordionButton>
-                            </h2>
-                            <AccordionPanel
-                              pb={4}
-                              bg={"#ffd8f547"}
-                              roundedTop={"md"}
-                            >
-                              <div className="bg-gray-900 text-white text-center text-sm rounded-sm p-2 grid">
-                                <p>
-                                  Payment Method:{" "}
-                                  {order.status ? (
-                                    <>{order.status}</>
-                                  ) : (
-                                    <>None</>
-                                  )}
-                                </p>
-                                <button
-                                  onClick={() => statusHandler(order)}
-                                  className="px-6 w-full mt-1 p-1 border-t-2 hover:bg-gray-800"
-                                >
-                                  <strong className="text-sm bottom-2 right-7">
-                                    Pay via
-                                  </strong>
-                                  <div className="flex justify-between">
-                                    <BsCashCoin className="text-2xl" />
-                                    <p className="ml-2 mr-2">or</p>
-                                    <TbCircleLetterG className="text-2xl" />
-                                  </div>
-                                </button>
-                              </div>
-                              <div className="grid grid-cols-2 pt-1">
-                                <p className="text-xs font-thin font-quicksand truncate w-52 underline">
-                                  <LinkIcon className="mr-1 mt-1" />
-                                  {order.sellerName}
-                                </p>
-                                <p className="text-xs px-1 mt-1 justify-self-end mr-2 rounded-md bg-[#15f85667]">
-                                  {order.accountType}
-                                </p>
-                              </div>
-                              {order.accountType === "Student" && (
-                                <>
-                                  {" "}
-                                  <Link
-                                    to={`/UserAccount/${order.sellerEmail}`}
-                                  >
-                                    <p className="text-xs font-thin font-quicksand truncate w-52 underline">
-                                      <AtSignIcon className="mt-1 mr-1" />
-                                      {order.sellerEmail}
-                                    </p>
-                                  </Link>
-                                </>
-                              )}
-                              {order.accountType === "Faculty" && (
-                                <>
-                                  {" "}
-                                  <Link
-                                    to={`/FacultyAccount/${order.sellerEmail}`}
-                                  >
-                                    <p className="text-xs font-thin font-quicksand truncate w-52 underline">
-                                      <AtSignIcon className="mt-1 mr-1" />
-                                      {order.sellerEmail}
-                                    </p>
-                                  </Link>
-                                </>
-                              )}
-
-                              {/* <p className="truncate flex">
-                          <FaFacebookF className="mt-1 mr-1" />{" "}
-                          {order.sellerFacebook}
-                        </p> */}
-                              <hr />
-                              <p className="flex">
-                                <p>Quantity:</p>
-                                <p className="px-2 font-bold underline">
-                                  {order.quantity}
-                                </p>
-                              </p>
-                              <p className="flex mr-5">
-                                <p className="mr-1">Price:</p>
-                                <p className="underline">
-                                  {order.price.toLocaleString("en-PH", {
-                                    style: "currency",
-                                    currency: "PHP",
-                                  })}
-                                </p>
-                              </p>
-
-                              <p className="flex mr-5">
-                                <p className="mr-1">Total:</p>
-                                <p className="underline">
-                                  {order.total.toLocaleString("en-PH", {
-                                    style: "currency",
-                                    currency: "PHP",
-                                  })}
-                                </p>
-                              </p>
-                              <p className="h-28 overflow-y-auto px-2 mt-1 mb-2 border-solid border-2 rounded-lg w-[100%] ">
-                                <p className="bg-[#0e4f7728] rounded-md">
-                                  Type: {order.types}
-                                </p>
-                                {order.message}
-                              </p>
-                              <figure className="grid justify-items-center">
-                                <div className="mt-2">
-                                  <button className="px-4 p-3 mx-2 rounded-lg bg-gray-900 text-white">
-                                    <MdEmail className="text-2xl" />
-                                  </button>
-
-                                  <a
-                                    href={order.sellerFacebook}
-                                    target="_blank"
-                                  >
-                                    <button className="px-4 p-3 mx-2 rounded-lg bg-gray-900 text-white">
-                                      <FaFacebookSquare className="text-2xl" />
-                                    </button>
-                                  </a>
-                                  <button
-                                    onClick={() => chatButton(order)}
-                                    className="px-4 p-3 mx-2 rounded-lg bg-gray-900 text-white"
-                                  >
-                                    <MdMessage className=" cursor-pointer mx-2  text-2xl" />
-                                  </button>
-                                </div>
-                              </figure>
-                            </AccordionPanel>
-                          </AccordionItem>
-                        </Accordion>
-                      </div>
-                    ))}
-                  <Text>E Payments</Text>
-                  {orders
-                    .filter((order) => order.status === "E-Payment")
-                    .map((order) => (
-                      <div
-                        key={order._id}
-                        className="mt-1 border-solid rounded-2xl p-2 max-w-full   "
+                        Pending Checkout
+                      </Tab>
+                      <Tab
+                        fontSize={9}
+                        color={"black.600"}
+                        className="font-quicksand"
                       >
-                        <div className="md:shrink-0 flex ">
-                          <figure>
-                            <img
-                              className="  max-w-full max-h-full ssm:w-72 lg:w-40 h-20 object-cover bg-fixed"
-                              src={order.image}
-                              alt={order.prodName}
-                            />
-                          </figure>
-                          <div className="grid  rounded-md  mx-5 bottom-2 font-quicksand text-sm">
-                            <p className="text-xl grid grid-cols-2">
-                              <button className="truncate ssm:w-32 lg:w-52 pr-2 text-start">
-                                {order.prodName}
-                              </button>
-
-                              <Flex justifyContent={"end"} mx={1} gap={1}>
-                                <Link
-                                  to={`/ProductId/${order.productId}`}
-                                  className="grid justify-self-start justify-start "
-                                >
-                                  <button size="xs">
-                                    <Box as="span" flex="1" textAlign="right">
-                                      <TbViewportWide className="text-base" />
-                                    </Box>
-
-                                    {/* <AccordionIcon /> */}
-                                  </button>
-                                </Link>
-                                <Popover>
-                                  <PopoverTrigger>
-                                    <button size="xs">
-                                      <Box as="span" flex="1" textAlign="right">
-                                        <MdDelete className="text-base" />
-                                      </Box>
-
-                                      {/* <AccordionIcon /> */}
-                                    </button>
-                                  </PopoverTrigger>
-                                  <PopoverContent mr={8}>
-                                    <PopoverArrow />
-                                    <PopoverCloseButton />
-                                    <PopoverHeader textAlign={"center"}>
-                                      <Text>
-                                        Cancel this order? <br />{" "}
-                                        {order.prodName}
-                                      </Text>
-                                    </PopoverHeader>
-                                    <PopoverBody>
-                                      <button
-                                        className="justify-self-center flex text-sm hover:shadow-inner hover:scale-110"
-                                        onClick={() =>
-                                          removeItemClick(order._id)
-                                        }
-                                      >
-                                        Confirm
-                                      </button>
-                                    </PopoverBody>
-                                  </PopoverContent>
-                                </Popover>
-                              </Flex>
-                              <figure>
-                                {/* <Link
-                              to={`/ProductId/${order.productId}`}
-                              className="grid justify-self-start justify-start "
-                            >
-                              <button className="text-xs underline">
-                                View Item
-                              </button>
-                            </Link> */}
-                                <div>{order.status}</div>
-                                <div className="grid grid-cols-2 pt-1">
-                                  <p className="w-32 text-sm flex">
-                                    <p className="truncate">
-                                      {order.sellerName}
-                                    </p>
-                                  </p>
-                                </div>
-                              </figure>
-                              <figure className="justify-self-end text-xs ">
-                                <article>
-                                  {" "}
-                                  <p className="flex">
-                                    <p className="">{order.quantity}</p>
-                                  </p>
-                                  <p className="flex ">
-                                    <p className="">
-                                      {order.price.toLocaleString("en-PH", {
-                                        style: "currency",
-                                        currency: "PHP",
-                                      })}
-                                    </p>
-                                  </p>
-                                  <p className="flex">
-                                    <p className="">
-                                      {order.total.toLocaleString("en-PH", {
-                                        style: "currency",
-                                        currency: "PHP",
-                                      })}
-                                    </p>
-                                  </p>
-                                </article>
-                              </figure>
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* <Divider mt={5} /> */}
-                        <Accordion mt={2} allowToggle>
-                          <AccordionItem border={"none"} borderBottom={"solid"}>
-                            <h2>
-                              <AccordionButton>
-                                <Box as="span" flex="1" textAlign="left">
-                                  <Text className="text-xs">Checkout</Text>
-                                </Box>
-                                <AccordionIcon />
-                              </AccordionButton>
-                            </h2>
-                            <AccordionPanel
-                              pb={4}
-                              bg={"#ffd8f547"}
-                              roundedTop={"md"}
-                            >
-                              <div className="bg-gray-900 text-white text-center text-sm rounded-sm p-2 grid">
-                                <p>
-                                  Payment Method:{" "}
-                                  {order.status ? (
-                                    <>{order.status}</>
-                                  ) : (
-                                    <>None</>
-                                  )}
-                                </p>
-                                <button
-                                  onClick={() => statusHandler(order)}
-                                  className="px-6 w-full mt-1 p-1 border-t-2 hover:bg-gray-800"
-                                >
-                                  <strong className="text-sm bottom-2 right-7">
-                                    Pay via
-                                  </strong>
-                                  <div className="flex justify-between">
-                                    <BsCashCoin className="text-2xl" />
-                                    <p className="ml-2 mr-2">or</p>
-                                    <TbCircleLetterG className="text-2xl" />
-                                  </div>
-                                </button>
-                              </div>
-                              <div className="grid grid-cols-2 pt-1">
-                                <p className="text-xs font-thin font-quicksand truncate w-52 underline">
-                                  <LinkIcon className="mr-1 mt-1" />
-                                  {order.sellerName}
-                                </p>
-                                <p className="text-xs px-1 mt-1 justify-self-end mr-2 rounded-md bg-[#15f85667]">
-                                  {order.accountType}
-                                </p>
-                              </div>
-                              {order.accountType === "Student" && (
-                                <>
-                                  {" "}
-                                  <Link
-                                    to={`/UserAccount/${order.sellerEmail}`}
-                                  >
-                                    <p className="text-xs font-thin font-quicksand truncate w-52 underline">
-                                      <AtSignIcon className="mt-1 mr-1" />
-                                      {order.sellerEmail}
-                                    </p>
-                                  </Link>
-                                </>
-                              )}
-                              {order.accountType === "Faculty" && (
-                                <>
-                                  {" "}
-                                  <Link
-                                    to={`/FacultyAccount/${order.sellerEmail}`}
-                                  >
-                                    <p className="text-xs font-thin font-quicksand truncate w-52 underline">
-                                      <AtSignIcon className="mt-1 mr-1" />
-                                      {order.sellerEmail}
-                                    </p>
-                                  </Link>
-                                </>
-                              )}
-
-                              {/* <p className="truncate flex">
-                          <FaFacebookF className="mt-1 mr-1" />{" "}
-                          {order.sellerFacebook}
-                        </p> */}
-                              <hr />
-                              <p className="flex">
-                                <p>Quantity:</p>
-                                <p className="px-2 font-bold underline">
-                                  {order.quantity}
-                                </p>
-                              </p>
-                              <p className="flex mr-5">
-                                <p className="mr-1">Price:</p>
-                                <p className="underline">
-                                  {order.price.toLocaleString("en-PH", {
-                                    style: "currency",
-                                    currency: "PHP",
-                                  })}
-                                </p>
-                              </p>
-
-                              <p className="flex mr-5">
-                                <p className="mr-1">Total:</p>
-                                <p className="underline">
-                                  {order.total.toLocaleString("en-PH", {
-                                    style: "currency",
-                                    currency: "PHP",
-                                  })}
-                                </p>
-                              </p>
-                              <p className="h-28 overflow-y-auto px-2 mt-1 mb-2 border-solid border-2 rounded-lg w-[100%] ">
-                                <p className="bg-[#0e4f7728] rounded-md">
-                                  Type: {order.types}
-                                </p>
-                                {order.message}
-                              </p>
-                              <figure className="grid justify-items-center">
-                                <div className="mt-2">
-                                  <button className="px-4 p-3 mx-2 rounded-lg bg-gray-900 text-white">
-                                    <MdEmail className="text-2xl" />
-                                  </button>
-
-                                  <a
-                                    href={order.sellerFacebook}
-                                    target="_blank"
-                                  >
-                                    <button className="px-4 p-3 mx-2 rounded-lg bg-gray-900 text-white">
-                                      <FaFacebookSquare className="text-2xl" />
-                                    </button>
-                                  </a>
-                                  <button
-                                    onClick={() => chatButton(order)}
-                                    className="px-4 p-3 mx-2 rounded-lg bg-gray-900 text-white"
-                                  >
-                                    <MdMessage className=" cursor-pointer mx-2  text-2xl" />
-                                  </button>
-                                </div>
-                              </figure>
-                            </AccordionPanel>
-                          </AccordionItem>
-                        </Accordion>
-                      </div>
-                    ))}
-                  <Text>Meet up Payment</Text>
-                  {orders
-                    .filter((order) => order.status === "Meet up Pay")
-                    .map((order) => (
-                      <div
-                        key={order._id}
-                        className="mt-1 border-solid rounded-2xl p-2 max-w-full   "
+                        Completed E-Payment
+                      </Tab>
+                      <Tab
+                        fontSize={11}
+                        color={"black.600"}
+                        className="font-quicksand"
                       >
-                        <div className="md:shrink-0 flex ">
-                          <figure>
-                            <img
-                              className="  max-w-full max-h-full ssm:w-72 lg:w-40 h-20 object-cover bg-fixed"
-                              src={order.image}
-                              alt={order.prodName}
-                            />
-                          </figure>
-                          <div className="grid  rounded-md  mx-5 bottom-2 font-quicksand text-sm">
-                            <p className="text-xl grid grid-cols-2">
-                              <button className="truncate ssm:w-32 lg:w-52 pr-2 text-start">
-                                {order.prodName}
-                              </button>
-
-                              <Flex justifyContent={"end"} mx={1} gap={1}>
-                                <Link
-                                  to={`/ProductId/${order.productId}`}
-                                  className="grid justify-self-start justify-start "
-                                >
-                                  <button size="xs">
-                                    <Box as="span" flex="1" textAlign="right">
-                                      <TbViewportWide className="text-base" />
-                                    </Box>
-
-                                    {/* <AccordionIcon /> */}
-                                  </button>
-                                </Link>
-                                <Popover>
-                                  <PopoverTrigger>
-                                    <button size="xs">
-                                      <Box as="span" flex="1" textAlign="right">
-                                        <MdDelete className="text-base" />
-                                      </Box>
-
-                                      {/* <AccordionIcon /> */}
-                                    </button>
-                                  </PopoverTrigger>
-                                  <PopoverContent mr={8}>
-                                    <PopoverArrow />
-                                    <PopoverCloseButton />
-                                    <PopoverHeader textAlign={"center"}>
-                                      <Text>
-                                        Cancel this order? <br />{" "}
-                                        {order.prodName}
-                                      </Text>
-                                    </PopoverHeader>
-                                    <PopoverBody>
-                                      <button
-                                        className="justify-self-center flex text-sm hover:shadow-inner hover:scale-110"
-                                        onClick={() =>
-                                          removeItemClick(order._id)
-                                        }
-                                      >
-                                        Confirm
-                                      </button>
-                                    </PopoverBody>
-                                  </PopoverContent>
-                                </Popover>
-                              </Flex>
-                              <figure>
-                                {/* <Link
-                              to={`/ProductId/${order.productId}`}
-                              className="grid justify-self-start justify-start "
-                            >
-                              <button className="text-xs underline">
-                                View Item
-                              </button>
-                            </Link> */}
-                                <div>{order.status}</div>
-                                <div className="grid grid-cols-2 pt-1">
-                                  <p className="w-32 text-sm flex">
-                                    <p className="truncate">
-                                      {order.sellerName}
-                                    </p>
-                                  </p>
-                                </div>
-                              </figure>
-                              <figure className="justify-self-end text-xs ">
-                                <article>
-                                  {" "}
-                                  <p className="flex">
-                                    <p className="">{order.quantity}</p>
-                                  </p>
-                                  <p className="flex ">
-                                    <p className="">
-                                      {order.price.toLocaleString("en-PH", {
-                                        style: "currency",
-                                        currency: "PHP",
-                                      })}
-                                    </p>
-                                  </p>
-                                  <p className="flex">
-                                    <p className="">
-                                      {order.total.toLocaleString("en-PH", {
-                                        style: "currency",
-                                        currency: "PHP",
-                                      })}
-                                    </p>
-                                  </p>
-                                </article>
-                              </figure>
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* <Divider mt={5} /> */}
-                        <Accordion mt={2} allowToggle>
-                          <AccordionItem border={"none"} borderBottom={"solid"}>
-                            <h2>
-                              <AccordionButton>
-                                <Box as="span" flex="1" textAlign="left">
-                                  <Text className="text-xs">Checkout</Text>
-                                </Box>
-                                <AccordionIcon />
-                              </AccordionButton>
-                            </h2>
-                            <AccordionPanel
-                              pb={4}
-                              bg={"#ffd8f547"}
-                              roundedTop={"md"}
-                            >
-                              <div className="bg-gray-900 text-white text-center text-sm rounded-sm p-2 grid">
-                                <p>
-                                  Payment Method:{" "}
-                                  {order.status ? (
-                                    <>{order.status}</>
-                                  ) : (
-                                    <>None</>
-                                  )}
-                                </p>
-                                <button
-                                  onClick={() => statusHandler(order)}
-                                  className="px-6 w-full mt-1 p-1 border-t-2 hover:bg-gray-800"
-                                >
-                                  <strong className="text-sm bottom-2 right-7">
-                                    Pay via
-                                  </strong>
-                                  <div className="flex justify-between">
-                                    <BsCashCoin className="text-2xl" />
-                                    <p className="ml-2 mr-2">or</p>
-                                    <TbCircleLetterG className="text-2xl" />
-                                  </div>
-                                </button>
-                              </div>
-                              <div className="grid grid-cols-2 pt-1">
-                                <p className="text-xs font-thin font-quicksand truncate w-52 underline">
-                                  <LinkIcon className="mr-1 mt-1" />
-                                  {order.sellerName}
-                                </p>
-                                <p className="text-xs px-1 mt-1 justify-self-end mr-2 rounded-md bg-[#15f85667]">
-                                  {order.accountType}
-                                </p>
-                              </div>
-                              {order.accountType === "Student" && (
-                                <>
-                                  {" "}
-                                  <Link
-                                    to={`/UserAccount/${order.sellerEmail}`}
-                                  >
-                                    <p className="text-xs font-thin font-quicksand truncate w-52 underline">
-                                      <AtSignIcon className="mt-1 mr-1" />
-                                      {order.sellerEmail}
-                                    </p>
-                                  </Link>
-                                </>
-                              )}
-                              {order.accountType === "Faculty" && (
-                                <>
-                                  {" "}
-                                  <Link
-                                    to={`/FacultyAccount/${order.sellerEmail}`}
-                                  >
-                                    <p className="text-xs font-thin font-quicksand truncate w-52 underline">
-                                      <AtSignIcon className="mt-1 mr-1" />
-                                      {order.sellerEmail}
-                                    </p>
-                                  </Link>
-                                </>
-                              )}
-
-                              {/* <p className="truncate flex">
-                          <FaFacebookF className="mt-1 mr-1" />{" "}
-                          {order.sellerFacebook}
-                        </p> */}
-                              <hr />
-                              <p className="flex">
-                                <p>Quantity:</p>
-                                <p className="px-2 font-bold underline">
-                                  {order.quantity}
-                                </p>
-                              </p>
-                              <p className="flex mr-5">
-                                <p className="mr-1">Price:</p>
-                                <p className="underline">
-                                  {order.price.toLocaleString("en-PH", {
-                                    style: "currency",
-                                    currency: "PHP",
-                                  })}
-                                </p>
-                              </p>
-
-                              <p className="flex mr-5">
-                                <p className="mr-1">Total:</p>
-                                <p className="underline">
-                                  {order.total.toLocaleString("en-PH", {
-                                    style: "currency",
-                                    currency: "PHP",
-                                  })}
-                                </p>
-                              </p>
-                              <p className="h-28 overflow-y-auto px-2 mt-1 mb-2 border-solid border-2 rounded-lg w-[100%] ">
-                                <p className="bg-[#0e4f7728] rounded-md">
-                                  Type: {order.types}
-                                </p>
-                                {order.message}
-                              </p>
-                              <figure className="grid justify-items-center">
-                                <div className="mt-2">
-                                  <button className="px-4 p-3 mx-2 rounded-lg bg-gray-900 text-white">
-                                    <MdEmail className="text-2xl" />
-                                  </button>
-
-                                  <a
-                                    href={order.sellerFacebook}
-                                    target="_blank"
-                                  >
-                                    <button className="px-4 p-3 mx-2 rounded-lg bg-gray-900 text-white">
-                                      <FaFacebookSquare className="text-2xl" />
-                                    </button>
-                                  </a>
-                                  <button
-                                    onClick={() => chatButton(order)}
-                                    className="px-4 p-3 mx-2 rounded-lg bg-gray-900 text-white"
-                                  >
-                                    <MdMessage className=" cursor-pointer mx-2  text-2xl" />
-                                  </button>
-                                </div>
-                              </figure>
-                            </AccordionPanel>
-                          </AccordionItem>
-                        </Accordion>
-                      </div>
-                    ))}
+                        Meet up Pay
+                      </Tab>
+                    </TabList>
+                    <TabPanels>
+                      <TabPanel> {pendingCard()}</TabPanel>
+                      <TabPanel> {EpaymentCard()}</TabPanel>
+                      <TabPanel> {meetUpPayCard()}</TabPanel>
+                    </TabPanels>
+                  </Tabs>
                 </>
               )}
             </>
@@ -1172,9 +1346,9 @@ function OrdersDrawer({ id }) {
                     1. Cooperate taking a picture of you with ID and product
                     when doing transaction.
                   </li>
-                  <li>
-                    2. Select your method of payment ( Meet up Pay or Gcash
-                    Payment ).
+                  <li className="">
+                    2. Select your method of payment <br />
+                    <p className="text-center">( Meet up Pay or E-Payment ).</p>
                   </li>
                 </ul>
                 <br />
@@ -1211,7 +1385,7 @@ function OrdersDrawer({ id }) {
                           <Link
                             to={`https://paymaya.me/ctumarketplace?amt=${statusData.total}`}
                           >
-                            s
+                            Proceed to
                           </Link>
                         </div>
                       ) : (

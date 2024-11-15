@@ -96,7 +96,12 @@ router.get("/user-orders/:id", async (req, res) => {
   try {
     const result = await PurchasedModel.aggregate(
       [
-        { $match: { userId: id } },
+        {
+          $match: {
+            userId: id,
+            transactionStatus: { $eq: undefined }, // Filter where transactionStatus is undefined
+          },
+        },
         { $group: { _id: "$userId", count: { $sum: 1 } } },
       ],
       { maxTimeMS: 60000, allowDiskUse: true }
