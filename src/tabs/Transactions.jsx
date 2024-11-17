@@ -340,8 +340,8 @@ function Transactions() {
   const price = statusData.price;
   const quantity = statusData.quantity;
   const total = price * quantity;
-  const tax = total * 0.1;
-  const totalWithTax = total / tax;
+  const tax = total * 0.01;
+  const totalWithTax = total - tax;
 
   const pendingCard = () => {
     return (
@@ -663,7 +663,7 @@ function Transactions() {
                   <li>
                     {" "}
                     <label className="flex mt-5 text-lg font-montserrat">
-                      <p className="pr-1">3. With a tax fee of: ₱</p>
+                      <p className="pr-1">3. Sold earned: ₱</p>
                       <input
                         type="number"
                         name="tax"

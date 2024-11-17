@@ -68,6 +68,8 @@ import { useCookies } from "react-cookie";
 import {
   MdAccountBox,
   MdAddBox,
+  MdArrowBackIosNew,
+  MdArrowForwardIos,
   MdContactPage,
   MdDashboard,
   MdHome,
@@ -583,6 +585,12 @@ function Navigation() {
                       <p>Student Member</p>
                     </Center>
                     <MenuDivider />{" "}
+                    <Link to="/">
+                      {" "}
+                      <MenuItem className="gap-2 ">
+                        <MdHome /> Home
+                      </MenuItem>
+                    </Link>
                     <MenuItem className="gap-2 " onClick={onOpen}>
                       <MdContactPage /> Contacts
                     </MenuItem>
@@ -594,7 +602,13 @@ function Navigation() {
                     >
                       <DrawerOverlay />
                       <DrawerContent>
-                        <DrawerCloseButton />
+                        <DrawerCloseButton
+                          as={IconButton}
+                          icon={<MdArrowBackIosNew />}
+                          size={"lg"}
+                          top={3}
+                          right={10}
+                        />
                         <DrawerHeader></DrawerHeader>
                         <DrawerBody>
                           {/* Load the UsersMessage Component within the Drawer */}
@@ -602,12 +616,6 @@ function Navigation() {
                         </DrawerBody>
                       </DrawerContent>
                     </Drawer>
-                    <Link to="/">
-                      {" "}
-                      <MenuItem className="gap-2 ">
-                        <MdHome /> Home
-                      </MenuItem>
-                    </Link>
                     <Link to="/Account">
                       {" "}
                       <MenuItem className="gap-2 ">
@@ -627,7 +635,13 @@ function Navigation() {
                     >
                       <DrawerOverlay />
                       <DrawerContent>
-                        <DrawerCloseButton />
+                        <DrawerCloseButton
+                          as={IconButton}
+                          icon={<MdArrowForwardIos />}
+                          size={"lg"}
+                          top={3}
+                          right={10}
+                        />
                         <DrawerHeader className="flex items-center gap-2">
                           <Text>Cart</Text>
                           <Text className="flex items-cente gap-2 font-thin">
@@ -716,6 +730,12 @@ function Navigation() {
                       <p>Faculty Member</p>
                     </Center>
                     <MenuDivider />
+                    <Link to="/">
+                      {" "}
+                      <MenuItem className="gap-2 ">
+                        <MdHome /> Home
+                      </MenuItem>
+                    </Link>
                     <MenuItem className="gap-2 " onClick={onOpen}>
                       <MdContactPage /> Contacts
                     </MenuItem>
@@ -727,7 +747,13 @@ function Navigation() {
                     >
                       <DrawerOverlay />
                       <DrawerContent>
-                        <DrawerCloseButton />
+                        <DrawerCloseButton
+                          as={IconButton}
+                          icon={<MdArrowBackIosNew />}
+                          size={"lg"}
+                          top={3}
+                          right={10}
+                        />
                         <DrawerHeader></DrawerHeader>
                         <DrawerBody>
                           {/* Load the UsersMessage Component within the Drawer */}
@@ -735,12 +761,6 @@ function Navigation() {
                         </DrawerBody>
                       </DrawerContent>
                     </Drawer>
-                    <Link to="/">
-                      {" "}
-                      <MenuItem className="gap-2 ">
-                        <MdHome /> Home
-                      </MenuItem>
-                    </Link>
 
                     <Link to="/Account">
                       <MenuItem className="gap-2 ">
@@ -760,7 +780,13 @@ function Navigation() {
                     >
                       <DrawerOverlay />
                       <DrawerContent>
-                        <DrawerCloseButton />
+                        <DrawerCloseButton
+                          as={IconButton}
+                          icon={<MdArrowForwardIos />}
+                          size={"lg"}
+                          top={3}
+                          right={10}
+                        />
                         <DrawerHeader className="flex items-center gap-2">
                           <Text>Cart</Text>
                           <Text className="flex items-cente gap-2 font-thin">

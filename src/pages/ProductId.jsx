@@ -903,20 +903,34 @@ function ProductId() {
                 <div className="bg-gray-900 mt-8 text-white  text-sm  rounded-sm p-2 grid ">
                   <form onSubmit={commentHandler} className="flex">
                     <textarea
-                      className="text-black w-full rounded-sm px-2  font-quicksand bg-[#e4eaec]"
+                      className="text-black w-full mr-2 rounded-sm px-2  font-quicksand bg-[#e4eaec]"
                       type="text"
                       value={newComment}
                       onChange={(event) => setNewComments(event.target.value)}
                       placeholder="Add a comment"
                     />
-
-                    <button
-                      className="flex float-right px-2 border rounded-md p-1 pl-4 pt-2 hover:bg-[#c1cec633] pr-3 h-10"
-                      type="submit"
-                    >
-                      Comment{" "}
-                      <RiSendPlane2Fill className="mt-0.5 ml-2 text-base" />
-                    </button>
+                    {newComment.length > 0 ? (
+                      <>
+                        {" "}
+                        <button
+                          className="flex float-right px-2 border rounded-md p-1 pl-4 pt-2 hover:bg-[#c1cec633] pr-3 h-10"
+                          type="submit"
+                        >
+                          Comment{" "}
+                          <RiSendPlane2Fill className="mt-0.5 ml-2 text-base" />
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          disabled
+                          className="flex bg-[#c1cec60b] cursor-not-allowed float-right px-2 border rounded-md p-1 pl-4 pt-2 hover:bg-[#c1cec633] pr-3 h-10"
+                        >
+                          Comment{" "}
+                          <RiSendPlane2Fill className="mt-0.5 ml-2 text-base" />
+                        </button>
+                      </>
+                    )}
                   </form>
                 </div>
               ) : (

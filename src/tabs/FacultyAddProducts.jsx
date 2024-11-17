@@ -173,6 +173,8 @@ function FacultyAddProducts() {
     const categoriesVar = select.map((option) => option.value);
     setProducts({ ...products, categories: categoriesVar });
   };
+  const tax = products.price * 0.05;
+  const earning = products.price - tax;
   return (
     <figure className="max-w-full pt-2 max-h-full bg-gradient-to-tr from-[#00ffdd2d] via-[#0834f515] to-[#08ceff1a] text-center ">
       <figure className="max-w-full w-full ">
@@ -322,6 +324,15 @@ function FacultyAddProducts() {
 
                           <InputRightElement></InputRightElement>
                         </InputGroup>
+                        <p className="text-left flex justify-between">
+                          <label className="mr-2">Seller Earnings (95%):</label>
+                          <p className="mr-5">
+                            {earning.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                          </p>
+                        </p>
                       </label>
 
                       <label className="grid mb-2">

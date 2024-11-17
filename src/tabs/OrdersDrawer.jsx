@@ -7,7 +7,16 @@ import { Link, useParams, useNavigate, Navigate } from "react-router-dom";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import { FaRegMessage } from "react-icons/fa6";
-import { MdEmail, MdError, MdMessage } from "react-icons/md";
+import {
+  MdArrowBack,
+  MdArrowBackIosNew,
+  MdEmail,
+  MdError,
+  MdMessage,
+  MdPayments,
+  MdPeople,
+} from "react-icons/md";
+import orderImg from "../assets/order.png";
 import { FaFacebookSquare } from "react-icons/fa";
 import { BsCashCoin } from "react-icons/bs";
 import { TbCircleLetterG, TbViewportWide } from "react-icons/tb";
@@ -54,6 +63,7 @@ import {
   TabPanels,
   TabPanel,
   Image,
+  IconButton,
 } from "@chakra-ui/react";
 import { MdDelete } from "react-icons/md";
 import qrmaya from "../assets/PYMY CTU Marketplace.png";
@@ -89,6 +99,18 @@ function OrdersDrawer({ id }) {
     isOpen: isOpenSecond,
     onOpen: onOpenSecond,
     onClose: onClosedSecond,
+  } = useDisclosure();
+
+  const {
+    isOpen: isOpenSecondDrawer,
+    onOpen: onOpenSecondDrawer,
+    onClose: onClosedSecondDrawer,
+  } = useDisclosure();
+
+  const {
+    isOpen: isOpenThirdDrawer,
+    onOpen: onOpenThirdDrawer,
+    onClose: onClosedThirdDrawer,
   } = useDisclosure();
 
   const size = ["xl"];
@@ -887,7 +909,7 @@ function OrdersDrawer({ id }) {
                         <>
                           {" "}
                           <Tooltip label="Transaction Success: Item Received">
-                            <div className="bg-emerald-700 text-center rounded-lg text-xs w-20">
+                            <div className="bg-emerald-700 text-white text-center rounded-lg text-xs w-20">
                               {order.transactionStatus}
                             </div>
                           </Tooltip>
@@ -895,7 +917,7 @@ function OrdersDrawer({ id }) {
                       )}
                       {order.transactionStatus === undefined && (
                         <Tooltip label="Transaction Status Pending">
-                          <div className="bg-gray-800 text-center rounded-lg text-xs w-20">
+                          <div className="bg-gray-800 text-white text-center rounded-lg text-xs w-20">
                             In Proccess
                           </div>
                         </Tooltip>
@@ -903,7 +925,7 @@ function OrdersDrawer({ id }) {
                       {order.transactionStatus === "Item Returned" && (
                         <>
                           <Tooltip label="Transaction Status: Item Returned.">
-                            <div className="bg-orange-600 text-center rounded-lg text-xs w-24">
+                            <div className="bg-orange-600 text-white text-center rounded-lg text-xs w-24">
                               {order.transactionStatus}
                             </div>
                           </Tooltip>
@@ -1198,7 +1220,7 @@ function OrdersDrawer({ id }) {
                         <>
                           {" "}
                           <Tooltip label="Transaction Success: Item Received">
-                            <div className="bg-emerald-700 text-center rounded-lg text-xs w-20">
+                            <div className="bg-emerald-700 text-white text-center rounded-lg text-xs w-20">
                               {order.transactionStatus}
                             </div>
                           </Tooltip>
@@ -1206,7 +1228,7 @@ function OrdersDrawer({ id }) {
                       )}
                       {order.transactionStatus === undefined && (
                         <Tooltip label="Transaction Status Pending">
-                          <div className="bg-gray-800 text-center rounded-lg text-xs w-20">
+                          <div className="bg-gray-800  text-white text-center rounded-lg text-xs w-20">
                             In Process
                           </div>
                         </Tooltip>
@@ -1214,7 +1236,7 @@ function OrdersDrawer({ id }) {
                       {order.transactionStatus === "Item Returned" && (
                         <>
                           <Tooltip label="Transaction Status: Item Returned.">
-                            <div className="bg-orange-600 text-center rounded-lg text-xs w-20">
+                            <div className="bg-orange-600 text-white text-center rounded-lg text-xs w-20">
                               {order.transactionStatus}
                             </div>
                           </Tooltip>
@@ -1551,127 +1573,187 @@ function OrdersDrawer({ id }) {
         )}
 
         {statusData && (
-          <Modal isOpen={isOpen} onClose={onClose}>
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>
-                <p className="text-center font-quicksand">
-                  Transaction of Payment
-                </p>
-              </ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
-                <p className=" text-sm font-bold font-bebos">
-                  When doing Transaction with a Seller please input payment
-                  method below for the rules of our CTU Marketplace. as a Buyer
-                  please Cooperate, Thank you.
-                </p>
-                <br />
-                <p className=" text-lg font-bebos">Strict Rules:</p>
-                <ul className="text-sm font-quicksand">
-                  <li>
-                    1. Transaction will only be inside of campus so we can
-                    ensure you're safety.
-                  </li>
-                  <li>
-                    2. We are always monitoring users not to do something not
-                    right and scams for a seller and so on we can restrict your
-                    account and report to school student affairs office.
-                  </li>
-                  <li>3. Avoid using spam account to purchase item.</li>
-                </ul>
-                <br />
-                <p className=" text-lg font-bebos">
-                  Our Rules of transactions:
-                </p>
-                <ul className="text-sm font-quicksand">
-                  <li>
-                    1. Cooperate taking a picture of you with ID and product
-                    when doing transaction.
-                  </li>
-                  <li className="">
-                    2. Select your method of payment <br />
-                    <p className="text-center">( Meet up Pay or E-Payment ).</p>
-                  </li>
-                </ul>
-                <br />
-                <form onSubmit={productPurchased}>
-                  <div className="text-center p-1 px-4 border rounded-md">
-                    <div className="m-5 mx-14 grid border text-center rounded-md">
-                      <p className="m-1">Select Payment Method</p>
-                      <button
-                        type="button"
-                        className="m-2 border p-3"
-                        onClick={() => buttonStatus("Meet up Pay")}
-                      >
-                        Meet up Pay
-                      </button>
+          <>
+            <Modal isOpen={isOpen} onClose={onClose}>
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>
+                  <p className="text-center font-quicksand">
+                    Transaction of Payment
+                  </p>
+                </ModalHeader>
+                <ModalCloseButton />
+                <ModalBody className="grid">
+                  <Img
+                    className="w-44 h-52 justify-self-center"
+                    src={orderImg}
+                    mb={4}
+                  ></Img>
+                  <p className=" text-sm font-bold font-bebos">
+                    When doing Transaction with a Seller please input payment
+                    method below for the rules of our CTU Marketplace. as a
+                    Buyer please Cooperate, Thank you.
+                  </p>
+                  <br />
+                  <p className=" text-lg font-bebos">Strict Rules:</p>
+                  <ul className="text-sm font-quicksand">
+                    <li>
+                      1. Transaction will only be inside of campus so we can
+                      ensure you're safety.
+                    </li>
+                    <li>
+                      2. We are always monitoring users not to do something not
+                      right and scams for a seller and so on we can restrict
+                      your account and report to school student affairs office.
+                    </li>
+                    <li>3. Avoid using spam account to purchase item.</li>
+                  </ul>
+                  <br />
 
-                      <button
-                        className="m-2 text-center border p-3  "
-                        type="button"
-                        onClick={() => buttonStatus("E-Payment")}
-                      >
-                        E payment
-                      </button>
-                      {/* <button onClick={handleOrder}>
-                        Add Order & Pay with GCash
-                      </button> */}
-                      {purchasedSchema.status === "E-Payment" ? (
-                        <div>
-                          {/* <Img
-                            src={qrmaya}
-                            alt=""
-                            className="shadow-inner hover:shadow-xl size-96 rounded-md cursor-pointer"
-                            onClick={() => setOpen(true)}
-                          /> */}
-                          <Link
-                            to={`https://paymaya.me/ctumarketplace?amt=${statusData.total}`}
-                          >
-                            Proceed to
-                          </Link>
-                        </div>
-                      ) : (
-                        <>
-                          {" "}
-                          <input
-                            className="bg-transparent text-center mb-1"
-                            readOnly
-                            disabled
-                            type="text"
-                            name="status"
-                            placeholder="None"
-                            value={
-                              (purchasedSchema.status =
-                                statusData.status || purchasedSchema.status)
-                            }
-                            onChange={purchasedOnChange}
-                          />
-                        </>
-                      )}
-                      <Lightbox
-                        open={open}
-                        close={() => setOpen(false)}
-                        plugins={[Zoom]}
-                        slides={[{ src: qrmaya }]}
-                      />
+                  <br />
+                  <Button justifySelf={"center"} onClick={onOpenSecondDrawer}>
+                    Choose Payment Method
+                  </Button>
+                </ModalBody>
+
+                <ModalFooter></ModalFooter>
+              </ModalContent>
+            </Modal>
+            <Drawer
+              placement={"bottom"}
+              onClose={onClosedSecondDrawer}
+              isOpen={isOpenSecondDrawer}
+            >
+              <DrawerOverlay />
+              <DrawerContent roundedTop={16} justifySelf={"center"} w={"600px"}>
+                <DrawerCloseButton
+                  as={IconButton}
+                  icon={<MdArrowBackIosNew />}
+                  size={"lg"}
+                  top={3}
+                  right={10}
+                />
+                <DrawerHeader textAlign={"center"}>
+                  <Text>Payment</Text>
+                </DrawerHeader>
+                <DrawerBody>
+                  <Img
+                    className="w-44 h-52 justify-self-center"
+                    src={orderImg}
+                    mb={4}
+                  ></Img>
+                  <form onSubmit={productPurchased}>
+                    <div className=" grid  rounded-md">
+                      <p className=" text-lg font-bebos">
+                        Our Rules of transactions:
+                      </p>
+                      <ul className="text-sm font-quicksand">
+                        <li>
+                          1. Cooperate taking a picture of you with ID and
+                          product when doing transaction.
+                        </li>
+
+                        <li className="">
+                          2. Select your method of payment <br />
+                        </li>
+                      </ul>
+                      <div className="m-5 grid gap-6 text-center rounded-md  p-5 shadow-lg">
+                        <h2 className="text-lg font-bold font-bebos mb-4 ">
+                          Select Your Payment Method
+                        </h2>
+
+                        {/* Meet up Pay */}
+                        <button
+                          type="button"
+                          className="flex items-center justify-center gap-2 border p-4 rounded-lg bg-white hover:bg-green-100 hover:scale-105 transition-transform duration-200 shadow-sm"
+                          onClick={() => buttonStatus("Meet up Pay")}
+                        >
+                          <MdPeople className="text-xl text-green-600" />
+                          <span className="font-semibold text-gray-700">
+                            Meet up Pay
+                          </span>
+                        </button>
+                        {purchasedSchema.status === "Meet up Pay" && (
+                          <div>
+                            <center>
+                              <button
+                                className="mt-4 uppercase font-bebos font-semibold bg-[#ffffff] text-black rounded-md p-2 border hover:bg-green-200 px-7 hover:scale-105 shadow-md"
+                                type="submit"
+                              >
+                                Submit Meet up Pay
+                              </button>
+                            </center>
+                          </div>
+                        )}
+
+                        {/* E-Payment */}
+                        <button
+                          type="button"
+                          className="flex items-center justify-center gap-2 border p-4 rounded-lg bg-white hover:bg-blue-100 hover:scale-105 transition-transform duration-200 shadow-sm"
+                          onClick={() => {
+                            buttonStatus("E-Payment");
+                            onOpenThirdDrawer();
+                          }}
+                        >
+                          <MdPayments className="text-xl text-blue-600" />
+                          <span className="font-semibold text-gray-700">
+                            E-Payment
+                          </span>
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                  </form>
+                </DrawerBody>
+              </DrawerContent>
+            </Drawer>
+            <Drawer
+              placement={"bottom"}
+              onClose={onClosedThirdDrawer}
+              isOpen={isOpenThirdDrawer}
+            >
+              <DrawerOverlay />
+              <DrawerContent roundedTop={16} justifySelf={"center"} w={"600px"}>
+                <DrawerCloseButton
+                  as={IconButton}
+                  icon={<MdArrowBackIosNew />}
+                  size={"lg"}
+                  top={3}
+                  right={10}
+                />
+                <DrawerHeader>
+                  <Text>E Payment Portal</Text>
+                </DrawerHeader>
+
+                <form onSubmit={productPurchased}>
+                  <iframe
+                    src={`https://paymaya.me/ctumarketplace?amt=${statusData.total}`}
+                    style={{
+                      width: "100%",
+                      height: "470px",
+                      border: "none",
+
+                      borderRadius: "10px",
+                    }}
+                  />
                   <center>
                     {" "}
+                    <p className="text-xs mt-0.5  font-quicksand">
+                      If Payment is Done, Click submit below.
+                    </p>
                     <button
-                      className="mt-4 bg-teal-800 rounded-md p-2 border  mb-2 px-10"
+                      className="mt-2  bg-[#ffffff] text-black uppercase rounded-md p-1 border  mb-5  px-6 text-xs  font-bebos font-semibold hover:scale-105"
                       type="submit"
+                      onClick={() => {
+                        buttonStatus("E-Payment");
+                      }}
                     >
-                      Submit
+                      Submit complete
                     </button>
                   </center>
                 </form>
-              </ModalBody>
-
-              <ModalFooter></ModalFooter>
-            </ModalContent>
-          </Modal>
+              </DrawerContent>
+            </Drawer>
+          </>
         )}
         {statusData && (
           <Modal onClose={onClosedSecond} size={size} isOpen={isOpenSecond}>

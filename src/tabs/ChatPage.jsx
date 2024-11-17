@@ -24,6 +24,7 @@ import {
   PopoverHeader,
   PopoverTrigger,
   Text,
+  Tooltip,
 } from "@chakra-ui/react";
 import { MdDelete, MdSend } from "react-icons/md";
 import { formatDateToNow } from "../pages/Products";
@@ -257,13 +258,15 @@ function ChatPage({ userEmail }) {
               {" "}
               <Flex align="center">
                 <label htmlFor="file-upload" className="cursor-pointer">
-                  <IconButton
-                    bg={"transparent"}
-                    icon={<RiFileUploadFill />}
-                    aria-label="Upload file"
-                    as="span"
-                    size="md"
-                  />
+                  <Tooltip label="Send File Image.">
+                    <IconButton
+                      bg={"transparent"}
+                      icon={<RiFileUploadFill />}
+                      aria-label="Upload file"
+                      as="span"
+                      size="md"
+                    />
+                  </Tooltip>
                 </label>
                 <Input
                   id="file-upload"
@@ -273,9 +276,11 @@ function ChatPage({ userEmail }) {
                   display="none"
                 />
               </Flex>
-              <Button bg={"transparent"} type="submit">
-                <MdSend className="text-2xl " />
-              </Button>
+              <Tooltip label="Send">
+                <Button bg={"transparent"} type="submit">
+                  <MdSend className="text-2xl " />
+                </Button>
+              </Tooltip>
             </InputRightElement>
             <Input
               type="text"

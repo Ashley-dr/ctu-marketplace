@@ -304,7 +304,7 @@ function Products() {
       </button>
       <div className="flex mt-7 mb-7  pt-5 ssm:px-0 lg:px-5 rounded-lg">
         {/* filter */}
-        <div className=" shrink-0 grid font-quicksand text-sm space-y-2 h-96 ssm:hidden lg:grid lg:grid-cols-1  mb-5">
+        <div className=" shrink-0 grid font-quicksand text-sm space-y-2 h-96  ssm:hidden lg:grid lg:grid-cols-1  mb-64">
           <p className="flex text-sm gap-2 font-poppins">
             <p>Total Products</p>
             <p className="font-quicksand text-orange-200 bg-orange-900 px-2 mb-2 ">
