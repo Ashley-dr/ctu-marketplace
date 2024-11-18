@@ -80,12 +80,13 @@ import {
 import { UserContext } from "../../backend/Context/userContext";
 import { CiLogout } from "react-icons/ci";
 import { PiPasswordBold, PiShoppingCartDuotone } from "react-icons/pi";
-import { AiOutlineUpload } from "react-icons/ai";
+import { AiOutlineLoading, AiOutlineUpload } from "react-icons/ai";
 import OrdersCount from "../context/OrdersCount";
 import TransactionCount from "../context/TransactionCount";
 import UsersMessage from "../pages/UsersMessage";
 import Orders from "../tabs/Orders";
 import OrdersDrawer from "../tabs/OrdersDrawer";
+import Transactions from "../tabs/Transactions";
 function Navigation() {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const { colorMode, toggleColorMode } = useColorMode();
@@ -94,6 +95,11 @@ function Navigation() {
     isOpen: isOpenDrawer,
     onOpen: onOpenDrawer,
     onClose: onCloseDrawer,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenDrawerTransaction,
+    onOpen: onOpenDrawerTransaction,
+    onClose: onCloseDrawerTransaction,
   } = useDisclosure();
   const [cookies, removeCookies] = useCookies([]);
   const [isUsers, setisUser] = useState("");
@@ -110,6 +116,8 @@ function Navigation() {
 
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [signUpLoading, setSignUpLoading] = useState(false);
   const [done, setDone] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -276,15 +284,17 @@ function Navigation() {
   const handleError = (err) =>
     toast.error(err, {
       position: "top-left",
+      isClosable: true,
     });
   const handleSuccess = (msg) =>
     toast.success(msg, {
       position: "top-right",
+      isClosable: true,
     });
 
   const handleSignupSubmit = (e) => {
     e.preventDefault();
-
+    setSignUpLoading(true);
     axios
       .post(`${baseUrl}/signup`, SignupInputValue)
       .then((result) => {
@@ -308,7 +318,11 @@ function Navigation() {
           isBuyer: "",
         });
         if (result.data.success) {
-          toast.success(result.data.message);
+          toast.success(result.data.message, {
+            position: "top-left",
+            duration: 3000,
+            isClosable: true,
+          });
           navigate("/");
 
           signupModal.onClose();
@@ -322,12 +336,13 @@ function Navigation() {
         } else {
           toast.error("An unexpected error occurred. Please try again.");
         }
-      });
+      })
+      .finally(() => setSignUpLoading(false));
   };
 
   const handleFacultySignupSubmit = (e) => {
     e.preventDefault();
-
+    setSignUpLoading(true);
     axios
       .post(`${baseUrl}/facultysignup`, FacultySignupInputValue)
       .then((result) => {
@@ -349,7 +364,11 @@ function Navigation() {
         });
 
         if (result.data.success) {
-          toast.success(result.data.message);
+          toast.success(result.data.message, {
+            position: "top-left",
+            duration: 5000,
+            isClosable: true,
+          });
           navigate("/");
           facultysignupModal.onClose();
           selectModal.onClose();
@@ -363,12 +382,15 @@ function Navigation() {
         } else {
           toast.error("An unexpected error occurred. Please try again.");
         }
-      });
+      })
+      .finally(() => setSignUpLoading(false));
   };
 
   const loginInput = async (e) => {
     e.preventDefault();
+
     try {
+      setLoginLoading(true);
       const { data } = await axios.post(
         `${baseUrl}/login`,
         {
@@ -376,6 +398,7 @@ function Navigation() {
         },
         { withCredentials: true }
       );
+
       console.log(data);
       const { success, message } = data;
       if (success) {
@@ -389,6 +412,9 @@ function Navigation() {
       }
     } catch (error) {
       console.log(error);
+      handleError("An unexpected error occurred. Please try again.");
+    } finally {
+      setLoginLoading(false);
     }
     setInputLogin({
       ...inputLogin,
@@ -658,13 +684,43 @@ function Navigation() {
                     {/* </Link> */}
                     {isUsers.isSeller === true ? (
                       <div>
-                        <Link to={`/Transactions/${isUsers.id}`}>
-                          <MenuItem className="gap-2 ">
-                            {" "}
-                            <GrTransaction /> Transactions
-                            <TransactionCount id={isUsers.id} />
-                          </MenuItem>
-                        </Link>
+                        <MenuItem
+                          className="gap-2 "
+                          onClick={onOpenDrawerTransaction}
+                        >
+                          {" "}
+                          <GrTransaction /> Transactions
+                          <TransactionCount id={isUsers.id} />
+                        </MenuItem>
+
+                        <Drawer
+                          isOpen={isOpenDrawerTransaction}
+                          placement="right"
+                          size={"sm"}
+                          onClose={onCloseDrawerTransaction}
+                        >
+                          <DrawerOverlay />
+                          <DrawerContent>
+                            <DrawerCloseButton
+                              as={IconButton}
+                              icon={<MdArrowForwardIos />}
+                              size={"lg"}
+                              top={3}
+                              right={10}
+                            />
+                            <DrawerHeader className="flex items-center gap-2">
+                              <Text className="font-thin">Transaction</Text>
+                              <Text className="flex items-cente gap-2 font-thin">
+                                [ Item
+                                <TransactionCount id={isUsers.id} />]
+                              </Text>
+                            </DrawerHeader>
+                            <DrawerBody>
+                              <Divider />
+                              <Transactions id={isUsers.id} />
+                            </DrawerBody>
+                          </DrawerContent>
+                        </Drawer>
                         <Link to={`/AddProducts/${isUsers.id}`}>
                           <MenuItem className="gap-2 ">
                             {" "}
@@ -802,14 +858,43 @@ function Navigation() {
                     </Drawer>
                     {isFaculty.isSeller === true ? (
                       <div>
-                        <Link to={`/Transactions/${isFaculty.id}`}>
-                          <MenuItem className="gap-2 ">
-                            {" "}
-                            <GrTransaction />
-                            Transactions
-                            <TransactionCount id={isFaculty.id} />
-                          </MenuItem>
-                        </Link>
+                        <MenuItem
+                          className="gap-2 "
+                          onClick={onOpenDrawerTransaction}
+                        >
+                          {" "}
+                          <GrTransaction />
+                          Transactions
+                          <TransactionCount id={isFaculty.id} />
+                        </MenuItem>
+                        <Drawer
+                          isOpen={isOpenDrawerTransaction}
+                          placement="right"
+                          size={"sm"}
+                          onClose={onCloseDrawerTransaction}
+                        >
+                          <DrawerOverlay />
+                          <DrawerContent>
+                            <DrawerCloseButton
+                              as={IconButton}
+                              icon={<MdArrowForwardIos />}
+                              size={"lg"}
+                              top={3}
+                              right={10}
+                            />
+                            <DrawerHeader className="flex items-center gap-2">
+                              <Text className="font-thin">Transaction</Text>
+                              <Text className="flex items-cente gap-2 font-thin">
+                                [ Item
+                                <TransactionCount id={isFaculty.id} />]
+                              </Text>
+                            </DrawerHeader>
+                            <DrawerBody>
+                              <Divider />
+                              <Transactions id={isFaculty.id} />
+                            </DrawerBody>
+                          </DrawerContent>
+                        </Drawer>
                         <Link to={`/FacultyAddProducts/${isFaculty.id}`}>
                           <MenuItem className="gap-2 ">
                             <MdAddBox /> Add Products
@@ -951,26 +1036,39 @@ function Navigation() {
                 <label className=" font-poppins font-thick uppercase tracking-widest text-sm">
                   password
                 </label>
-                <Input
-                  placeholder="Password"
-                  type="password"
-                  name="password"
-                  mt={2}
-                  mb={2}
-                  rounded={"none"}
-                  borderBottom={"1px"}
-                  borderLeft={"1px"}
-                  borderRight={"1px"}
-                  borderTop={"1px"}
-                  value={SignupInputValue.password}
-                  onChange={(e) => {
-                    setSignUpInputValue({
-                      ...SignupInputValue,
-                      [e.target.name]: e.target.value,
-                    });
-                  }}
-                  required
-                />
+                <InputGroup>
+                  <InputRightElement>
+                    <IconButton
+                      variant="ghost"
+                      bg={"transparent"}
+                      _hover={"none"}
+                      aria-label={
+                        showPassword ? "Hide password" : "Show password"
+                      }
+                      icon={showPassword ? <FiEyeOff /> : <FiEye />}
+                      onClick={() => setShowPassword(!showPassword)}
+                    />
+                  </InputRightElement>
+                  <Input
+                    placeholder="Password"
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    mb={2}
+                    rounded={"none"}
+                    borderBottom={"1px"}
+                    borderLeft={"1px"}
+                    borderRight={"1px"}
+                    borderTop={"1px"}
+                    value={SignupInputValue.password}
+                    onChange={(e) => {
+                      setSignUpInputValue({
+                        ...SignupInputValue,
+                        [e.target.name]: e.target.value,
+                      });
+                    }}
+                    required
+                  />
+                </InputGroup>
               </FormControl>
 
               <FormControl>
@@ -1160,13 +1258,27 @@ function Navigation() {
               </FormControl> */}
 
               <DrawerFooter className="grid">
-                <Button
-                  rounded={"none"}
-                  className="w-full rounded-none self-center justify-self-center"
-                  type="submit"
-                >
-                  Sign up
-                </Button>
+                {signUpLoading ? (
+                  <>
+                    <Button
+                      rounded={"none"}
+                      className="w-full rounded-none self-center justify-self-center"
+                      disabled
+                    >
+                      Sign up <AiOutlineLoading className="animate-spin ml-2" />
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      rounded={"none"}
+                      className="w-full rounded-none self-center justify-self-center"
+                      type="submit"
+                    >
+                      Sign up
+                    </Button>
+                  </>
+                )}
               </DrawerFooter>
             </form>
           </DrawerBody>
@@ -1287,26 +1399,39 @@ function Navigation() {
                 <label className=" font-poppins font-thick uppercase tracking-widest text-sm">
                   password
                 </label>
-                <Input
-                  placeholder="Password"
-                  type="password"
-                  name="password"
-                  mt={2}
-                  mb={2}
-                  rounded={"none"}
-                  borderBottom={"1px"}
-                  borderLeft={"1px"}
-                  borderRight={"1px"}
-                  borderTop={"1px"}
-                  value={FacultySignupInputValue.password}
-                  onChange={(e) => {
-                    setFacultySignupInputValue({
-                      ...FacultySignupInputValue,
-                      [e.target.name]: e.target.value,
-                    });
-                  }}
-                  required
-                />
+                <InputGroup>
+                  <InputRightElement>
+                    <IconButton
+                      variant="ghost"
+                      bg={"transparent"}
+                      _hover={"none"}
+                      aria-label={
+                        showPassword ? "Hide password" : "Show password"
+                      }
+                      icon={showPassword ? <FiEyeOff /> : <FiEye />}
+                      onClick={() => setShowPassword(!showPassword)}
+                    />
+                  </InputRightElement>
+                  <Input
+                    placeholder="Password"
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    mb={2}
+                    rounded={"none"}
+                    borderBottom={"1px"}
+                    borderLeft={"1px"}
+                    borderRight={"1px"}
+                    borderTop={"1px"}
+                    value={FacultySignupInputValue.password}
+                    onChange={(e) => {
+                      setFacultySignupInputValue({
+                        ...FacultySignupInputValue,
+                        [e.target.name]: e.target.value,
+                      });
+                    }}
+                    required
+                  />
+                </InputGroup>
               </FormControl>
 
               <FormControl>
@@ -1412,13 +1537,27 @@ function Navigation() {
               </FormControl>
 
               <DrawerFooter className="grid">
-                <Button
-                  rounded={"none"}
-                  className="w-full rounded-none self-center justify-self-center"
-                  type="submit"
-                >
-                  Sign up
-                </Button>
+                {signUpLoading ? (
+                  <>
+                    <Button
+                      rounded={"none"}
+                      className="w-full rounded-none self-center justify-self-center"
+                      disabled
+                    >
+                      Sign up <AiOutlineLoading className="animate-spin ml-2" />
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      rounded={"none"}
+                      className="w-full rounded-none self-center justify-self-center"
+                      type="submit"
+                    >
+                      Sign up
+                    </Button>
+                  </>
+                )}
               </DrawerFooter>
             </form>
           </DrawerBody>
@@ -1511,12 +1650,20 @@ function Navigation() {
               >
                 Forgot Password ?
               </Button>
-
-              <div className="bg-gray-900 mt-5 rounded-lg text-white text-center text-sm  p-3 font-quicksand grid hover:bg-gray-950">
-                <button type="submit" className="flex w-full justify-center">
-                  Sign in <FaSignInAlt className="text-lg mt-0.5 ml-2" />
-                </button>
-              </div>
+              {loginLoading ? (
+                <div className="bg-gray-900 mt-5 rounded-lg text-white text-center text-sm p-3 font-quicksand grid hover:bg-gray-950">
+                  <button className="flex w-full justify-center" disabled>
+                    Processing{" "}
+                    <AiOutlineLoading className="animate-spin ml-2" />
+                  </button>
+                </div>
+              ) : (
+                <div className="bg-gray-900 mt-5 rounded-lg text-white text-center text-sm p-3 font-quicksand grid hover:bg-gray-950">
+                  <button type="submit" className="flex w-full justify-center">
+                    Sign in <FaSignInAlt className="text-lg mt-0.5 ml-2" />
+                  </button>
+                </div>
+              )}
             </form>
           </ModalBody>
         </ModalContent>
@@ -1614,8 +1761,6 @@ function Navigation() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       type="email"
-                      bg="#efdbbb4f"
-                      color="#AD9C8E"
                       fontSize="12px"
                       rounded="md"
                       mb={4}
@@ -1655,6 +1800,8 @@ function Navigation() {
                 {done && (
                   <>
                     <Input
+                      className=""
+                      type="text"
                       placeholder="Reset Code"
                       value={token}
                       onChange={(e) => setToken(e.target.value)}

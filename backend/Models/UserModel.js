@@ -72,9 +72,9 @@ const UserSchema = new mongoose.Schema({
   idNumber: {
     type: Number,
   },
-  isBuyer: {
-    type: Boolean,
-  },
+  // isBuyer: {
+  //   type: Boolean,
+  // },
   status: {
     type: String,
     enum: ["online", "offline"],

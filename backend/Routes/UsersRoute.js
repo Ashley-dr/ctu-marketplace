@@ -175,7 +175,10 @@ router.put(
         isSeller,
       } = req.body;
       const { image, validId, shopImage } = req.files;
-
+      const existingUser = await UserModel.findById(req.params.id);
+      if (!existingUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
       // Function to upload a single image to Cloudinary
       const uploadToCloudinary = async (file) => {
         try {
@@ -188,11 +191,15 @@ router.put(
       };
 
       // Upload images to Cloudinary
-      const imageUrl = image ? await uploadToCloudinary(image[0]) : null;
-      const validIdUrl = validId ? await uploadToCloudinary(validId[0]) : null;
+      const imageUrl = image
+        ? await uploadToCloudinary(image[0])
+        : existingUser.image;
+      const validIdUrl = validId
+        ? await uploadToCloudinary(validId[0])
+        : existingUser.validId;
       const shopImageUrl = shopImage
         ? await uploadToCloudinary(shopImage[0])
-        : null;
+        : existingUser.shopImage;
 
       // Update user data with Cloudinary URLs
       const updatedUser = await UserModel.findByIdAndUpdate(

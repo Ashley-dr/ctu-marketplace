@@ -66,9 +66,7 @@ function TransactionCount({ id }) {
   }, [id]);
   return (
     <div>
-      <p className="text-teal-300 text-xs bg-red-500 px-1.5 mx-3 rounded-md">
-        {transactionCounts}
-      </p>
+      <p className="border px-2">{transactionCounts}</p>
     </div>
   );
 }

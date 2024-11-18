@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
@@ -34,7 +35,7 @@ import logomarket from "../assets/ctu-logo-marketplace.jpg";
 import { AddIcon, CloseIcon, CheckIcon } from "@chakra-ui/icons";
 import Loader from "../components/Loader";
 import ChatPage from "./ChatPage";
-function Transactions() {
+function Transactions({ id }) {
   const [orders, setOrders] = useState([]);
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [cookies, removeCookies] = useCookies([]);
@@ -149,7 +150,7 @@ function Transactions() {
   }, [cookies, navigate, removeCookies]);
 
   const [myTransactions, setTransactions] = useState([]);
-  const { id } = useParams();
+
   // useEffect(() => {
   //   axios
   //     .get(`${baseUrl}/api/transactions/${id}`)

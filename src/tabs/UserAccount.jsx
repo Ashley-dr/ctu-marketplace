@@ -54,7 +54,9 @@ import UserInventory from "./UserInventory";
 import UserMessage from "./ChatPage";
 import ChatPage from "./ChatPage";
 import { MdMessage } from "react-icons/md";
-
+import Lightbox from "yet-another-react-lightbox";
+import { Zoom } from "yet-another-react-lightbox/plugins";
+import "yet-another-react-lightbox/styles.css";
 function UserAccount() {
   const { email } = useParams();
   const baseUrl = import.meta.env.VITE_SERVER_URL;
@@ -110,7 +112,8 @@ function UserAccount() {
     };
     verifyCookie();
   }, [baseUrl, cookies, navigate, removeCookies]);
-
+  const [open, setOpen] = useState(false);
+  const [currentImage, setCurrentImage] = useState(0);
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
@@ -118,21 +121,44 @@ function UserAccount() {
     <div>
       <main className="grid justify-items-center max-w-full font-quicksand max-h-full">
         <figure className="grid justify-items-center mb-5">
-          <img
-            src="https://i.pinimg.com/originals/75/51/d8/7551d8249f7048d3159a1abf8d0e257d.jpg"
-            alt="Cover"
-            className="bg-cover bg-center object-cover lg:h-72 w-screen"
-          />
+          {user.shopImage === null ? (
+            <>
+              {" "}
+              <img
+                src="https://i.pinimg.com/originals/75/51/d8/7551d8249f7048d3159a1abf8d0e257d.jpg"
+                alt="Cover"
+                className="bg-cover bg-center object-cover lg:h-72 w-screen"
+              />
+            </>
+          ) : (
+            <>
+              {" "}
+              <img
+                src={user.shopImage}
+                alt="Cover"
+                className="bg-cover bg-center object-cover lg:h-72 w-screen"
+              />
+            </>
+          )}
 
           <Avatar
-            className="relative bottom-16"
+            className="relative bottom-16 cursor-pointer transition hover:scale-105"
             zIndex={1}
             borderRadius="full"
             boxSize="135px"
             border={"solid"}
+            onClick={() => {
+              setOpen(true);
+              setCurrentImage(user.image);
+            }}
             src={user.image}
           />
-
+          <Lightbox
+            open={open}
+            close={() => setOpen(false)}
+            slides={[{ src: currentImage }]}
+            plugins={[Zoom]}
+          />
           {/* Edit Button to Open Modal */}
 
           <p className="mt-2 relative bottom-16 flex font-quicksand font-bold ">

@@ -48,9 +48,9 @@ const FacultySchema = new mongoose.Schema({
   isFaculty: {
     type: String,
   },
-  isBuyer: {
-    type: Boolean,
-  },
+  // isBuyer: {
+  //   type: Boolean,
+  // },
   isUser: {
     type: String,
   },

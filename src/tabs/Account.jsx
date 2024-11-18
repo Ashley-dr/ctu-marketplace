@@ -41,7 +41,9 @@ import { FaFacebook } from "react-icons/fa";
 import Orders from "./Orders";
 import InventoryCounts from "../context/InventoryCount";
 import ItemSold from "../context/ItemSold";
-
+import Lightbox from "yet-another-react-lightbox";
+import { Zoom } from "yet-another-react-lightbox/plugins";
+import "yet-another-react-lightbox/styles.css";
 function Account() {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [cookies, removeCookies] = useCookies([]);
@@ -176,11 +178,11 @@ function Account() {
   const handleUpdateAccount = (user) => {
     setUsers(user);
     setFaculty(user);
-    setUsersFileImage({
-      image: null,
-      validId: null,
-      shopImage: null,
-    }); // Reset file inputs
+    // setUsersFileImage({
+    //   image: null,
+    //   validId: null,
+    //   shopImage: null,
+    // }); // Reset file inputs
     onOpen(); // Open the modal
   };
 
@@ -192,14 +194,17 @@ function Account() {
     formData.append("email", users.email);
     formData.append("username", users.username);
     formData.append("fullname", users.fullname);
-    formData.append("image", usersFileImage.image || ""); // Handle optional files
+    formData.append("image", usersFileImage.image || users.image || ""); // Handle optional files
     formData.append("gender", users.gender);
     formData.append("department", users.department);
     formData.append("facebook", users.facebook);
     formData.append("course", users.course);
     formData.append("phoneNumber", users.phoneNumber);
-    formData.append("validId", usersFileImage.validId || "");
-    formData.append("shopImage", usersFileImage.shopImage || "");
+    formData.append("validId", usersFileImage.validId || users.validId || "");
+    formData.append(
+      "shopImage",
+      usersFileImage.shopImage || users.shopImage || ""
+    );
     formData.append("shopDescription", users.shopDescription);
     formData.append("gcashNumber", users.gcashNumber);
     formData.append("isSeller", users.isSeller);
@@ -221,7 +226,7 @@ function Account() {
       setisUser(result.data); // Update the user state with new data
     } catch (err) {
       handleError("Error updating user");
-      console.log("Error:", err);
+
       console.log("Error", err);
       if (err.response && err.response.status === 400) {
         toast.error(err.response.data.message);
@@ -332,12 +337,18 @@ function Account() {
     formData.append("email", faculty.email);
     formData.append("username", faculty.username);
     formData.append("fullname", faculty.fullname);
-    formData.append("image", facultyFileImage.image || "");
+    formData.append("image", facultyFileImage.image || faculty.image || "");
     formData.append("gender", faculty.gender);
     formData.append("facebook", faculty.facebook);
     formData.append("phoneNumber", faculty.phoneNumber);
-    formData.append("validId", facultyFileImage.validId || "");
-    formData.append("shopImage", facultyFileImage.shopImage || "");
+    formData.append(
+      "validId",
+      facultyFileImage.validId || faculty.validId || ""
+    );
+    formData.append(
+      "shopImage",
+      facultyFileImage.shopImage || faculty.shopImage || ""
+    );
     formData.append("shopDescription", faculty.shopDescription);
     formData.append("gcashNumber", faculty.gcashNumber);
     formData.append("isSeller", faculty.isSeller);
@@ -353,13 +364,13 @@ function Account() {
           },
         }
       );
-      handleSuccess("User updated successfully!");
+      handleSuccess("Faculty updated successfully!");
       window.location.reload();
       onClose(); // Close the modal
       setisFaculty(result.data); // Update the user state with new data
     } catch (err) {
       handleError("Error updating user");
-      console.log("Error:", err);
+
       console.log("Error", err);
       if (err.response && err.response.status === 400) {
         toast.error(err.response.data.message);
@@ -544,6 +555,8 @@ function Account() {
       });
     }
   };
+  const [open, setOpen] = useState(false);
+  const [currentImage, setCurrentImage] = useState(0);
 
   return (
     <div>
@@ -554,21 +567,44 @@ function Account() {
       {isFaculty && (
         <main className="grid justify-items-center max-w-full font-quicksand max-h-full">
           <figure className="grid justify-items-center mb-5">
-            <img
-              src="https://i.pinimg.com/originals/75/51/d8/7551d8249f7048d3159a1abf8d0e257d.jpg"
-              alt="Cover"
-              className="bg-cover bg-center object-cover lg:h-72 w-screen"
-            />
+            {isFaculty.shopImage === null ? (
+              <>
+                {" "}
+                <img
+                  src="https://i.pinimg.com/originals/75/51/d8/7551d8249f7048d3159a1abf8d0e257d.jpg"
+                  alt="Cover"
+                  className="bg-cover bg-center object-cover lg:h-72 w-screen"
+                />
+              </>
+            ) : (
+              <>
+                {" "}
+                <img
+                  src={isFaculty.shopImage}
+                  alt="Cover"
+                  className="bg-cover bg-center object-cover lg:h-72 w-screen"
+                />
+              </>
+            )}
 
             <Avatar
-              className="relative bottom-16"
+              className="relative bottom-16 cursor-pointer transition hover:scale-105"
               zIndex={1}
               borderRadius="full"
               boxSize="135px"
               border={"solid"}
+              onClick={() => {
+                setOpen(true);
+                setCurrentImage(isFaculty.image);
+              }}
               src={isFaculty.image}
             />
-
+            <Lightbox
+              open={open}
+              close={() => setOpen(false)}
+              slides={[{ src: currentImage }]}
+              plugins={[Zoom]}
+            />
             {/* Edit Button to Open Modal */}
 
             <p className="mt-2 relative bottom-16 flex font-quicksand font-bold">
@@ -598,10 +634,6 @@ function Account() {
               </p>
               <p>ITEM SOLD</p>
             </label>
-            <label className="grid">
-              <p>218</p>
-              <p>RATE</p>
-            </label>
           </figure>
 
           <Tabs
@@ -625,7 +657,7 @@ function Account() {
                 >
                   <button
                     onClick={() => handleUpdateAccount(isFaculty)}
-                    className="text-2xl text-white justify-self-end px-4"
+                    className="text-2xl justify-self-end px-4"
                   >
                     <FiEdit3 />
                   </button>
@@ -893,8 +925,6 @@ function Account() {
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           type="email"
-                          bg="#efdbbb4f"
-                          color="#AD9C8E"
                           fontSize="12px"
                           rounded="md"
                           mb={4}
@@ -1024,19 +1054,43 @@ function Account() {
       {isUsers && (
         <main className="grid justify-items-center max-w-full font-quicksand max-h-full">
           <figure className="grid justify-items-center mb-5">
-            <img
-              src="https://i.pinimg.com/originals/75/51/d8/7551d8249f7048d3159a1abf8d0e257d.jpg"
-              alt="Cover"
-              className="bg-cover bg-center object-cover lg:h-72 w-screen"
-            />
+            {isUsers.shopImage === null ? (
+              <>
+                {" "}
+                <img
+                  src="https://i.pinimg.com/originals/75/51/d8/7551d8249f7048d3159a1abf8d0e257d.jpg"
+                  alt="Cover"
+                  className="bg-cover bg-center object-cover lg:h-72 w-screen"
+                />
+              </>
+            ) : (
+              <>
+                {" "}
+                <img
+                  src={isUsers.shopImage}
+                  alt="Cover"
+                  className="bg-cover bg-center object-cover lg:h-72 w-screen"
+                />
+              </>
+            )}
 
             <Avatar
-              className="relative bottom-16"
+              className="relative bottom-16 cursor-pointer transition hover:scale-105"
               zIndex={1}
               borderRadius="full"
               boxSize="135px"
               border={"solid"}
+              onClick={() => {
+                setOpen(true);
+                setCurrentImage(isUsers.image);
+              }}
               src={isUsers.image}
+            />
+            <Lightbox
+              open={open}
+              close={() => setOpen(false)}
+              slides={[{ src: currentImage }]}
+              plugins={[Zoom]}
             />
 
             {/* Edit Button to Open Modal */}
@@ -1094,7 +1148,7 @@ function Account() {
                 >
                   <button
                     onClick={() => handleUpdateAccount(isUsers)}
-                    className="text-2xl text-white justify-self-end px-4"
+                    className="text-2xl  justify-self-end px-4"
                   >
                     <FiEdit3 />
                   </button>
@@ -1436,8 +1490,6 @@ function Account() {
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           type="email"
-                          bg="#efdbbb4f"
-                          color="#AD9C8E"
                           fontSize="12px"
                           rounded="md"
                           mb={4}

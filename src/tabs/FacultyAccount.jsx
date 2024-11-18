@@ -53,7 +53,9 @@ import ItemSold from "../context/ItemSold";
 import UserInventory from "./UserInventory";
 import ChatPage from "./ChatPage";
 import { MdMessage } from "react-icons/md";
-
+import Lightbox from "yet-another-react-lightbox";
+import { Zoom } from "yet-another-react-lightbox/plugins";
+import "yet-another-react-lightbox/styles.css";
 function FacultyAccount() {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const { email } = useParams();
@@ -61,7 +63,8 @@ function FacultyAccount() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const [open, setOpen] = useState(false);
+  const [currentImage, setCurrentImage] = useState(0);
   const [cookies, removeCookies] = useCookies([]);
   const [isUsers, setisUser] = useState("");
   const [isFaculty, setisFaculty] = useState("");
@@ -116,21 +119,44 @@ function FacultyAccount() {
     <div>
       <main className="grid justify-items-center max-w-full font-quicksand max-h-full">
         <figure className="grid justify-items-center mb-5">
-          <img
-            src="https://i.pinimg.com/originals/75/51/d8/7551d8249f7048d3159a1abf8d0e257d.jpg"
-            alt="Cover"
-            className="bg-cover bg-center object-cover lg:h-72 w-screen"
-          />
+          {user.shopImage === null ? (
+            <>
+              {" "}
+              <img
+                src="https://i.pinimg.com/originals/75/51/d8/7551d8249f7048d3159a1abf8d0e257d.jpg"
+                alt="Cover"
+                className="bg-cover bg-center object-cover lg:h-72 w-screen"
+              />
+            </>
+          ) : (
+            <>
+              {" "}
+              <img
+                src={user.shopImage}
+                alt="Cover"
+                className="bg-cover bg-center object-cover lg:h-72 w-screen"
+              />
+            </>
+          )}
 
           <Avatar
-            className="relative bottom-16"
+            className="relative bottom-16 cursor-pointer transition hover:scale-105"
             zIndex={1}
             borderRadius="full"
             boxSize="135px"
             border={"solid"}
+            onClick={() => {
+              setOpen(true);
+              setCurrentImage(user.image);
+            }}
             src={user.image}
           />
-
+          <Lightbox
+            open={open}
+            close={() => setOpen(false)}
+            slides={[{ src: currentImage }]}
+            plugins={[Zoom]}
+          />
           {/* Edit Button to Open Modal */}
 
           <p className="mt-2 relative bottom-16 flex font-quicksand font-bold">
