@@ -1657,8 +1657,8 @@ function OrdersDrawer({ id }) {
                           2. Select your method of payment <br />
                         </li>
                       </ul>
-                      <div className="m-5 grid gap-6 text-center rounded-md  p-5 shadow-lg">
-                        <h2 className="text-lg font-bold font-bebos mb-4 ">
+                      <div className="m-5 grid gap-6 text-center rounded-md   shadow-lg">
+                        <h2 className="text-lg font-bold font-bebos  ">
                           Select Your Payment Method
                         </h2>
 

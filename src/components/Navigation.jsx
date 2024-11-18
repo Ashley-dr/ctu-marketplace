@@ -649,8 +649,14 @@ function Navigation() {
                       </MenuItem>
                     </Link>
                     {/* <Link to={`/Orders/${isUsers.id}`}> */}{" "}
-                    <MenuItem className="gap-2.5 " onClick={onOpenDrawer}>
-                      <PiShoppingCartDuotone /> Orders
+                    <MenuItem
+                      className="gap-2 grid justify-between"
+                      onClick={onOpenDrawer}
+                    >
+                      {" "}
+                      <Text className="flex ">
+                        <PiShoppingCartDuotone className="mt-1 mr-2" /> Orders
+                      </Text>
                       <OrdersCount id={isUsers.id} />
                     </MenuItem>
                     <Drawer
@@ -685,11 +691,14 @@ function Navigation() {
                     {isUsers.isSeller === true ? (
                       <div>
                         <MenuItem
-                          className="gap-2 "
+                          className="gap-2 grid justify-between"
                           onClick={onOpenDrawerTransaction}
                         >
                           {" "}
-                          <GrTransaction /> Transactions
+                          <Text className="flex ">
+                            {" "}
+                            <GrTransaction className="mt-1 mr-2" /> Transactions
+                          </Text>
                           <TransactionCount id={isUsers.id} />
                         </MenuItem>
 
@@ -824,8 +833,14 @@ function Navigation() {
                         Account Settings
                       </MenuItem>
                     </Link>
-                    <MenuItem className="gap-2.5 " onClick={onOpenDrawer}>
-                      <PiShoppingCartDuotone /> Orders
+                    <MenuItem
+                      className="gap-2 grid justify-between"
+                      onClick={onOpenDrawer}
+                    >
+                      {" "}
+                      <Text className="flex ">
+                        <PiShoppingCartDuotone className="mt-1 mr-2" /> Orders
+                      </Text>
                       <OrdersCount id={isFaculty.id} />
                     </MenuItem>
                     <Drawer
@@ -859,12 +874,14 @@ function Navigation() {
                     {isFaculty.isSeller === true ? (
                       <div>
                         <MenuItem
-                          className="gap-2 "
+                          className="gap-2 grid justify-between"
                           onClick={onOpenDrawerTransaction}
                         >
                           {" "}
-                          <GrTransaction />
-                          Transactions
+                          <Text className="flex ">
+                            {" "}
+                            <GrTransaction className="mt-1 mr-2" /> Transactions
+                          </Text>
                           <TransactionCount id={isFaculty.id} />
                         </MenuItem>
                         <Drawer
