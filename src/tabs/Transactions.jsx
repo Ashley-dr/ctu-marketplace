@@ -12,7 +12,9 @@ import {
   MdMessage,
 } from "react-icons/md";
 import { FaFacebookSquare } from "react-icons/fa";
-
+import Lightbox from "yet-another-react-lightbox";
+import { Zoom } from "yet-another-react-lightbox/plugins";
+import "yet-another-react-lightbox/styles.css";
 import { FaRegMessage } from "react-icons/fa6";
 import { useCookies } from "react-cookie";
 import {
@@ -365,7 +367,8 @@ function Transactions({ id }) {
       console.log("Error uploading file", error);
     }
   };
-
+  const [open, setOpen] = useState(false);
+  const [currentImage, setCurrentImage] = useState(0);
   const {
     isOpen: isOpenDrawer,
     onOpen: onOpenDrawer,
@@ -540,15 +543,15 @@ function Transactions({ id }) {
                       <div className="grid grid-cols-2 pt-1">
                         <p className="text-xs font-thin font-quicksand truncate w-52 underline">
                           <LinkIcon className="mr-1 mt-1" />
-                          {item.sellerName}
+                          {item.buyerName}
                         </p>
                         <Tooltip label="Buyer Account Type">
                           <p className="text-xs px-1 mt-1 justify-self-end mr-2 rounded-md bg-[#15f85667]">
-                            {item.accountType}
+                            {item.buyerType}
                           </p>
                         </Tooltip>
                       </div>
-                      {item.accountType === "Student" && (
+                      {item.buyerType === "Student" && (
                         <>
                           {" "}
                           <Link to={`/UserAccount/${item.buyerEmail}`}>
@@ -559,7 +562,7 @@ function Transactions({ id }) {
                           </Link>
                         </>
                       )}
-                      {item.accountType === "Faculty" && (
+                      {item.buyerType === "Faculty" && (
                         <>
                           {" "}
                           <Link to={`/FacultyAccount/${item.buyerEmail}`}>
@@ -708,15 +711,15 @@ function Transactions({ id }) {
                       <div className="grid grid-cols-2 pt-1">
                         <p className="text-xs font-thin font-quicksand truncate w-52 underline">
                           <LinkIcon className="mr-1 mt-1" />
-                          {item.sellerName}
+                          {item.buyerName}
                         </p>
                         <Tooltip label="Buyer Account Type">
                           <p className="text-xs px-1 mt-1 justify-self-end mr-2 rounded-md bg-[#15f85667]">
-                            {item.accountType}
+                            {item.buyerType}
                           </p>
                         </Tooltip>
                       </div>
-                      {item.accountType === "Student" && (
+                      {item.buyerType === "Student" && (
                         <>
                           {" "}
                           <Link to={`/UserAccount/${item.buyerEmail}`}>
@@ -727,7 +730,7 @@ function Transactions({ id }) {
                           </Link>
                         </>
                       )}
-                      {item.accountType === "Faculty" && (
+                      {item.buyerType === "Faculty" && (
                         <>
                           {" "}
                           <Link to={`/FacultyAccount/${item.buyerEmail}`}>
@@ -740,16 +743,29 @@ function Transactions({ id }) {
                       )}
 
                       <Divider className="m-2" />
+
                       <div className="space-y-1">
-                        <Text className="justify-self-center flex text-xs mb-4 mt-4">
-                          Buyer are ready to claim.
-                        </Text>
                         <p className="flex justify-between ">
                           <p className="text-xs font-light">Item:</p>
                           <p className="px-2 text-xs text-right w-64 font-bold ">
                             {item.prodName}
                           </p>
                         </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Trade sched:</p>
+                          <p className="px-2 text-xs  text-right w-64  font-bold ">
+                            {new Date(item.tradeSchedule).toLocaleTimeString(
+                              "en-PH",
+                              {
+                                hour: "2-digit",
+
+                                day: "2-digit",
+                                month: "long",
+                              }
+                            )}
+                          </p>
+                        </p>
+
                         <p className="flex justify-between">
                           <p className="text-xs font-light">Quantity:</p>
                           <p className="px-2 text-xs  text-right w-64  font-bold ">
@@ -765,7 +781,19 @@ function Transactions({ id }) {
                             })}{" "}
                           </p>
                         </p>
-
+                        {item.addTradeMoney === null || 0 || undefined ? (
+                          <></>
+                        ) : (
+                          <p className="flex justify-between">
+                            <p className="text-xs font-light">Additional:</p>
+                            <p className="px-2 text-xs  text-right w-64  font-semibold ">
+                              {item.addTradeMoney.toLocaleString("en-PH", {
+                                style: "currency",
+                                currency: "PHP",
+                              })}{" "}
+                            </p>
+                          </p>
+                        )}
                         <p className="flex justify-between">
                           <p className="text-xs font-light">Total:</p>
                           <p className="px-2 text-xs  text-right w-64 font-semibold ">
@@ -814,6 +842,14 @@ function Transactions({ id }) {
                               <p className="text-xs font-quicksand">
                                 Message: {item.message}
                               </p>
+                              <Image
+                                className="w-32 justify-self-center cursor-pointer  h-32"
+                                onClick={() => {
+                                  setOpen(true);
+                                  setCurrentImage(item.tradeImage);
+                                }}
+                                src={item.tradeImage}
+                              />
                             </p>
                             <Divider />
                             <figure className="flex flex-col items-center  ">
@@ -852,12 +888,14 @@ function Transactions({ id }) {
                           </AccordionPanel>{" "}
                         </AccordionItem>
                       </Accordion>
-                      {/* <button
-                      onClick={() => statusHandler(order)}
-                      className="px-6 w-full pt-2 pb-2 font-quicksand mt-1 p-1 bg-gray-900 text-white text-center text-sm rounded-md grid  hover:bg-gray-800"
-                    >
-                      Pay now
-                    </button> */}
+                      <button
+                        size="xs"
+                        onClick={() => markTransactions(item)}
+                        className="px-6 w-full pt-2 pb-2 font-quicksand mt-1 p-1 bg-gray-900 text-white text-center  text-sm rounded-md flex justify-center  hover:bg-gray-800"
+                      >
+                        Submit Transaction{" "}
+                        <MdCheck className="text-base mt-0.5 ml-3" />
+                      </button>
                     </AccordionPanel>
                   </AccordionItem>
                 </Accordion>
@@ -885,7 +923,7 @@ function Transactions({ id }) {
               <div className="flex ">
                 <figure className="mr-2">
                   <img
-                    className="  max-w-full max-h-full ssm:w-44 lg:w-40 h-20 object-cover bg-fixed"
+                    className="  max-w-full max-h-full ssm:w-44  lg:w-40 h-20 object-cover bg-fixed"
                     src={item.image}
                     alt=""
                   />
@@ -1026,15 +1064,15 @@ function Transactions({ id }) {
                       <div className="grid grid-cols-2 pt-1">
                         <p className="text-xs font-thin font-quicksand truncate w-52 underline">
                           <LinkIcon className="mr-1 mt-1" />
-                          {item.sellerName}
+                          {item.buyerName}
                         </p>
                         <Tooltip label="Buyer Account Type">
                           <p className="text-xs px-1 mt-1 justify-self-end mr-2 rounded-md bg-[#15f85667]">
-                            {item.accountType}
+                            {item.buyerType}
                           </p>
                         </Tooltip>
                       </div>
-                      {item.accountType === "Student" && (
+                      {item.buyerType === "Student" && (
                         <>
                           {" "}
                           <Link to={`/UserAccount/${item.buyerEmail}`}>
@@ -1045,7 +1083,7 @@ function Transactions({ id }) {
                           </Link>
                         </>
                       )}
-                      {item.accountType === "Faculty" && (
+                      {item.buyerType === "Faculty" && (
                         <>
                           {" "}
                           <Link to={`/FacultyAccount/${item.buyerEmail}`}>
@@ -1194,15 +1232,15 @@ function Transactions({ id }) {
                       <div className="grid grid-cols-2 pt-1">
                         <p className="text-xs font-thin font-quicksand truncate w-52 underline">
                           <LinkIcon className="mr-1 mt-1" />
-                          {item.sellerName}
+                          {item.buyerName}
                         </p>
                         <Tooltip label="Buyer Account Type">
                           <p className="text-xs px-1 mt-1 justify-self-end mr-2 rounded-md bg-[#15f85667]">
-                            {item.accountType}
+                            {item.buyerType}
                           </p>
                         </Tooltip>
                       </div>
-                      {item.accountType === "Student" && (
+                      {item.buyerType === "Student" && (
                         <>
                           {" "}
                           <Link to={`/UserAccount/${item.buyerEmail}`}>
@@ -1213,7 +1251,7 @@ function Transactions({ id }) {
                           </Link>
                         </>
                       )}
-                      {item.accountType === "Faculty" && (
+                      {item.buyerType === "Faculty" && (
                         <>
                           {" "}
                           <Link to={`/FacultyAccount/${item.buyerEmail}`}>
@@ -1226,6 +1264,7 @@ function Transactions({ id }) {
                       )}
 
                       <Divider className="m-2" />
+
                       <div className="space-y-1">
                         <p className="flex justify-between ">
                           <p className="text-xs font-light">Item:</p>
@@ -1233,6 +1272,21 @@ function Transactions({ id }) {
                             {item.prodName}
                           </p>
                         </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Trade sched:</p>
+                          <p className="px-2 text-xs  text-right w-64  font-bold ">
+                            {new Date(item.tradeSchedule).toLocaleTimeString(
+                              "en-PH",
+                              {
+                                hour: "2-digit",
+
+                                day: "2-digit",
+                                month: "long",
+                              }
+                            )}
+                          </p>
+                        </p>
+
                         <p className="flex justify-between">
                           <p className="text-xs font-light">Quantity:</p>
                           <p className="px-2 text-xs  text-right w-64  font-bold ">
@@ -1248,7 +1302,19 @@ function Transactions({ id }) {
                             })}{" "}
                           </p>
                         </p>
-
+                        {item.addTradeMoney === null || 0 || undefined ? (
+                          <></>
+                        ) : (
+                          <p className="flex justify-between">
+                            <p className="text-xs font-light">Additional:</p>
+                            <p className="px-2 text-xs  text-right w-64  font-semibold ">
+                              {item.addTradeMoney.toLocaleString("en-PH", {
+                                style: "currency",
+                                currency: "PHP",
+                              })}{" "}
+                            </p>
+                          </p>
+                        )}
                         <p className="flex justify-between">
                           <p className="text-xs font-light">Total:</p>
                           <p className="px-2 text-xs  text-right w-64 font-semibold ">
@@ -1297,6 +1363,14 @@ function Transactions({ id }) {
                               <p className="text-xs font-quicksand">
                                 Message: {item.message}
                               </p>
+                              <Image
+                                className="w-32 justify-self-center cursor-pointer  h-32"
+                                onClick={() => {
+                                  setOpen(true);
+                                  setCurrentImage(item.tradeImage);
+                                }}
+                                src={item.tradeImage}
+                              />
                             </p>
                             <Divider />
                             <figure className="flex flex-col items-center  ">
@@ -1335,12 +1409,14 @@ function Transactions({ id }) {
                           </AccordionPanel>{" "}
                         </AccordionItem>
                       </Accordion>
-                      {/* <button
-                      onClick={() => statusHandler(order)}
-                      className="px-6 w-full pt-2 pb-2 font-quicksand mt-1 p-1 bg-gray-900 text-white text-center text-sm rounded-md grid  hover:bg-gray-800"
-                    >
-                      Pay now
-                    </button> */}
+                      <button
+                        size="xs"
+                        onClick={() => markTransactions(item)}
+                        className="px-6 w-full pt-2 pb-2 font-quicksand mt-1 p-1 bg-gray-900 text-white text-center  text-sm rounded-md flex justify-center  hover:bg-gray-800"
+                      >
+                        Submit Transaction{" "}
+                        <MdCheck className="text-base mt-0.5 ml-3" />
+                      </button>
                     </AccordionPanel>
                   </AccordionItem>
                 </Accordion>
@@ -1405,7 +1481,7 @@ function Transactions({ id }) {
                           <PopoverCloseButton />
                           <PopoverHeader textAlign={"center"}>
                             <Text>
-                              Delete this in History <br /> {item.prodName}
+                              Delete in history? <br /> {item.prodName}
                             </Text>
                           </PopoverHeader>
                           <PopoverBody>
@@ -1505,15 +1581,15 @@ function Transactions({ id }) {
                       <div className="grid grid-cols-2 pt-1">
                         <p className="text-xs font-thin font-quicksand truncate w-52 underline">
                           <LinkIcon className="mr-1 mt-1" />
-                          {item.sellerName}
+                          {item.buyerName}
                         </p>
                         <Tooltip label="Buyer Account Type">
                           <p className="text-xs px-1 mt-1 justify-self-end mr-2 rounded-md bg-[#15f85667]">
-                            {item.accountType}
+                            {item.buyerType}
                           </p>
                         </Tooltip>
                       </div>
-                      {item.accountType === "Student" && (
+                      {item.buyerType === "Student" && (
                         <>
                           {" "}
                           <Link to={`/UserAccount/${item.buyerEmail}`}>
@@ -1524,7 +1600,7 @@ function Transactions({ id }) {
                           </Link>
                         </>
                       )}
-                      {item.accountType === "Faculty" && (
+                      {item.buyerType === "Faculty" && (
                         <>
                           {" "}
                           <Link to={`/FacultyAccount/${item.buyerEmail}`}>
@@ -1646,6 +1722,14 @@ function Transactions({ id }) {
                           </AccordionPanel>{" "}
                         </AccordionItem>
                       </Accordion>
+                      <button
+                        size="xs"
+                        onClick={() => markTransactions(item)}
+                        className="px-6 w-full pt-2 pb-2 font-quicksand mt-1 p-1 bg-gray-900 text-white text-center  text-sm rounded-md flex justify-center  hover:bg-gray-800"
+                      >
+                        Submit Transaction{" "}
+                        <MdCheck className="text-base mt-0.5 ml-3" />
+                      </button>
                     </AccordionPanel>
                   </AccordionItem>
                 </Accordion>
@@ -1665,15 +1749,15 @@ function Transactions({ id }) {
                       <div className="grid grid-cols-2 pt-1">
                         <p className="text-xs font-thin font-quicksand truncate w-52 underline">
                           <LinkIcon className="mr-1 mt-1" />
-                          {item.sellerName}
+                          {item.buyerName}
                         </p>
                         <Tooltip label="Buyer Account Type">
                           <p className="text-xs px-1 mt-1 justify-self-end mr-2 rounded-md bg-[#15f85667]">
-                            {item.accountType}
+                            {item.buyerType}
                           </p>
                         </Tooltip>
                       </div>
-                      {item.accountType === "Student" && (
+                      {item.buyerType === "Student" && (
                         <>
                           {" "}
                           <Link to={`/UserAccount/${item.buyerEmail}`}>
@@ -1684,7 +1768,7 @@ function Transactions({ id }) {
                           </Link>
                         </>
                       )}
-                      {item.accountType === "Faculty" && (
+                      {item.buyerType === "Faculty" && (
                         <>
                           {" "}
                           <Link to={`/FacultyAccount/${item.buyerEmail}`}>
@@ -1697,16 +1781,29 @@ function Transactions({ id }) {
                       )}
 
                       <Divider className="m-2" />
+
                       <div className="space-y-1">
-                        <Text className="justify-self-center flex text-xs mb-4 mt-4">
-                          Buyer are ready to claim.
-                        </Text>
                         <p className="flex justify-between ">
                           <p className="text-xs font-light">Item:</p>
                           <p className="px-2 text-xs text-right w-64 font-bold ">
                             {item.prodName}
                           </p>
                         </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Trade sched:</p>
+                          <p className="px-2 text-xs  text-right w-64  font-bold ">
+                            {new Date(item.tradeSchedule).toLocaleTimeString(
+                              "en-PH",
+                              {
+                                hour: "2-digit",
+
+                                day: "2-digit",
+                                month: "long",
+                              }
+                            )}
+                          </p>
+                        </p>
+
                         <p className="flex justify-between">
                           <p className="text-xs font-light">Quantity:</p>
                           <p className="px-2 text-xs  text-right w-64  font-bold ">
@@ -1722,7 +1819,19 @@ function Transactions({ id }) {
                             })}{" "}
                           </p>
                         </p>
-
+                        {item.addTradeMoney === null || 0 || undefined ? (
+                          <></>
+                        ) : (
+                          <p className="flex justify-between">
+                            <p className="text-xs font-light">Additional:</p>
+                            <p className="px-2 text-xs  text-right w-64  font-semibold ">
+                              {item.addTradeMoney.toLocaleString("en-PH", {
+                                style: "currency",
+                                currency: "PHP",
+                              })}{" "}
+                            </p>
+                          </p>
+                        )}
                         <p className="flex justify-between">
                           <p className="text-xs font-light">Total:</p>
                           <p className="px-2 text-xs  text-right w-64 font-semibold ">
@@ -1771,6 +1880,14 @@ function Transactions({ id }) {
                               <p className="text-xs font-quicksand">
                                 Message: {item.message}
                               </p>
+                              <Image
+                                className="w-32 justify-self-center cursor-pointer  h-32"
+                                onClick={() => {
+                                  setOpen(true);
+                                  setCurrentImage(item.tradeImage);
+                                }}
+                                src={item.tradeImage}
+                              />
                             </p>
                             <Divider />
                             <figure className="flex flex-col items-center  ">
@@ -1809,12 +1926,6 @@ function Transactions({ id }) {
                           </AccordionPanel>{" "}
                         </AccordionItem>
                       </Accordion>
-                      {/* <button
-                      onClick={() => statusHandler(order)}
-                      className="px-6 w-full pt-2 pb-2 font-quicksand mt-1 p-1 bg-gray-900 text-white text-center text-sm rounded-md grid  hover:bg-gray-800"
-                    >
-                      Pay now
-                    </button> */}
                     </AccordionPanel>
                   </AccordionItem>
                 </Accordion>
@@ -1879,7 +1990,7 @@ function Transactions({ id }) {
                           <PopoverCloseButton />
                           <PopoverHeader textAlign={"center"}>
                             <Text>
-                              Delete this in History <br /> {item.prodName}
+                              Delete in History? <br /> {item.prodName}
                             </Text>
                           </PopoverHeader>
                           <PopoverBody>
@@ -1979,15 +2090,15 @@ function Transactions({ id }) {
                       <div className="grid grid-cols-2 pt-1">
                         <p className="text-xs font-thin font-quicksand truncate w-52 underline">
                           <LinkIcon className="mr-1 mt-1" />
-                          {item.sellerName}
+                          {item.buyerName}
                         </p>
                         <Tooltip label="Buyer Account Type">
                           <p className="text-xs px-1 mt-1 justify-self-end mr-2 rounded-md bg-[#15f85667]">
-                            {item.accountType}
+                            {item.buyerType}
                           </p>
                         </Tooltip>
                       </div>
-                      {item.accountType === "Student" && (
+                      {item.buyerType === "Student" && (
                         <>
                           {" "}
                           <Link to={`/UserAccount/${item.buyerEmail}`}>
@@ -1998,7 +2109,7 @@ function Transactions({ id }) {
                           </Link>
                         </>
                       )}
-                      {item.accountType === "Faculty" && (
+                      {item.buyerType === "Faculty" && (
                         <>
                           {" "}
                           <Link to={`/FacultyAccount/${item.buyerEmail}`}>
@@ -2120,6 +2231,14 @@ function Transactions({ id }) {
                           </AccordionPanel>{" "}
                         </AccordionItem>
                       </Accordion>
+                      <button
+                        size="xs"
+                        onClick={() => markTransactions(item)}
+                        className="px-6 w-full pt-2 pb-2 font-quicksand mt-1 p-1 bg-gray-900 text-white text-center  text-sm rounded-md flex justify-center  hover:bg-gray-800"
+                      >
+                        Submit Transaction{" "}
+                        <MdCheck className="text-base mt-0.5 ml-3" />
+                      </button>
                     </AccordionPanel>
                   </AccordionItem>
                 </Accordion>
@@ -2139,15 +2258,15 @@ function Transactions({ id }) {
                       <div className="grid grid-cols-2 pt-1">
                         <p className="text-xs font-thin font-quicksand truncate w-52 underline">
                           <LinkIcon className="mr-1 mt-1" />
-                          {item.sellerName}
+                          {item.buyerName}
                         </p>
                         <Tooltip label="Buyer Account Type">
                           <p className="text-xs px-1 mt-1 justify-self-end mr-2 rounded-md bg-[#15f85667]">
-                            {item.accountType}
+                            {item.buyerType}
                           </p>
                         </Tooltip>
                       </div>
-                      {item.accountType === "Student" && (
+                      {item.buyerType === "Student" && (
                         <>
                           {" "}
                           <Link to={`/UserAccount/${item.buyerEmail}`}>
@@ -2158,7 +2277,7 @@ function Transactions({ id }) {
                           </Link>
                         </>
                       )}
-                      {item.accountType === "Faculty" && (
+                      {item.buyerType === "Faculty" && (
                         <>
                           {" "}
                           <Link to={`/FacultyAccount/${item.buyerEmail}`}>
@@ -2171,16 +2290,29 @@ function Transactions({ id }) {
                       )}
 
                       <Divider className="m-2" />
+
                       <div className="space-y-1">
-                        <Text className="justify-self-center flex text-xs mb-4 mt-4">
-                          Buyer are ready to claim.
-                        </Text>
                         <p className="flex justify-between ">
                           <p className="text-xs font-light">Item:</p>
                           <p className="px-2 text-xs text-right w-64 font-bold ">
                             {item.prodName}
                           </p>
                         </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Trade sched:</p>
+                          <p className="px-2 text-xs  text-right w-64  font-bold ">
+                            {new Date(item.tradeSchedule).toLocaleTimeString(
+                              "en-PH",
+                              {
+                                hour: "2-digit",
+
+                                day: "2-digit",
+                                month: "long",
+                              }
+                            )}
+                          </p>
+                        </p>
+
                         <p className="flex justify-between">
                           <p className="text-xs font-light">Quantity:</p>
                           <p className="px-2 text-xs  text-right w-64  font-bold ">
@@ -2196,7 +2328,19 @@ function Transactions({ id }) {
                             })}{" "}
                           </p>
                         </p>
-
+                        {item.addTradeMoney === null || 0 || undefined ? (
+                          <></>
+                        ) : (
+                          <p className="flex justify-between">
+                            <p className="text-xs font-light">Additional:</p>
+                            <p className="px-2 text-xs  text-right w-64  font-semibold ">
+                              {item.addTradeMoney.toLocaleString("en-PH", {
+                                style: "currency",
+                                currency: "PHP",
+                              })}{" "}
+                            </p>
+                          </p>
+                        )}
                         <p className="flex justify-between">
                           <p className="text-xs font-light">Total:</p>
                           <p className="px-2 text-xs  text-right w-64 font-semibold ">
@@ -2245,6 +2389,14 @@ function Transactions({ id }) {
                               <p className="text-xs font-quicksand">
                                 Message: {item.message}
                               </p>
+                              <Image
+                                className="w-32 justify-self-center cursor-pointer  h-32"
+                                onClick={() => {
+                                  setOpen(true);
+                                  setCurrentImage(item.tradeImage);
+                                }}
+                                src={item.tradeImage}
+                              />
                             </p>
                             <Divider />
                             <figure className="flex flex-col items-center  ">
@@ -2283,12 +2435,6 @@ function Transactions({ id }) {
                           </AccordionPanel>{" "}
                         </AccordionItem>
                       </Accordion>
-                      {/* <button
-                      onClick={() => statusHandler(order)}
-                      className="px-6 w-full pt-2 pb-2 font-quicksand mt-1 p-1 bg-gray-900 text-white text-center text-sm rounded-md grid  hover:bg-gray-800"
-                    >
-                      Pay now
-                    </button> */}
                     </AccordionPanel>
                   </AccordionItem>
                 </Accordion>
@@ -2373,6 +2519,12 @@ function Transactions({ id }) {
                       </TabPanel>
                     </TabPanels>
                   </Tabs>
+                  <Lightbox
+                    open={open}
+                    close={() => setOpen(false)}
+                    slides={[{ src: currentImage }]}
+                    plugins={[Zoom]}
+                  />
                 </>
               )}
             </>

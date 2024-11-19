@@ -131,14 +131,13 @@ router.get("/user-orders/:id", async (req, res) => {
   }
 });
 router.get("/transaction-count/:id", async (req, res) => {
-  const { id } = req.params;
   PurchasedModel.aggregate(
     [
       {
         $match: {
-          sellerId: id,
-          transactionStatus: { $eq: undefined },
-          status: { $eq: undefined },
+          sellerId: req.params.id,
+          transactionStatus: { $exists: false },
+          status: { $in: ["E-Payment", "Meet up Pay"] },
         },
       },
       { $group: { _id: "$sellerId", count: { $sum: 1 } } },

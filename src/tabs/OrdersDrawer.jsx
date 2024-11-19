@@ -673,6 +673,7 @@ function OrdersDrawer({ id }) {
                             {order.prodName}
                           </p>
                         </p>
+
                         <p className="flex justify-between">
                           <p className="text-xs font-light">Trade sched:</p>
                           <p className="px-2 text-xs  text-right w-64  font-bold ">
@@ -693,15 +694,19 @@ function OrdersDrawer({ id }) {
                             {order.quantity}{" "}
                           </p>
                         </p>
-                        <p className="flex justify-between">
-                          <p className="text-xs font-light">Additional:</p>
-                          <p className="px-2 text-xs  text-right w-64  font-semibold ">
-                            {order.addTradeMoney.toLocaleString("en-PH", {
-                              style: "currency",
-                              currency: "PHP",
-                            })}{" "}
+                        {order.addTradeMoney === null || 0 || undefined ? (
+                          <></>
+                        ) : (
+                          <p className="flex justify-between">
+                            <p className="text-xs font-light">Additional:</p>
+                            <p className="px-2 text-xs  text-right w-64  font-semibold ">
+                              {order.addTradeMoney.toLocaleString("en-PH", {
+                                style: "currency",
+                                currency: "PHP",
+                              })}{" "}
+                            </p>
                           </p>
-                        </p>
+                        )}
                         <p className="flex justify-between">
                           <p className="text-xs font-light">Price:</p>
                           <p className="px-2 text-xs  text-right w-64  font-semibold ">
@@ -711,7 +716,6 @@ function OrdersDrawer({ id }) {
                             })}{" "}
                           </p>
                         </p>
-
                         <p className="flex justify-between">
                           <p className="text-xs font-light">Total:</p>
                           <p className="px-2 text-xs  text-right w-64 font-semibold ">
@@ -721,7 +725,6 @@ function OrdersDrawer({ id }) {
                             })}
                           </p>
                         </p>
-
                         <p className="flex justify-between">
                           <p className="text-xs font-light">Market Type:</p>
                           <p className="px-2 text-xs font-bold ">

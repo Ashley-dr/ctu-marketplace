@@ -301,7 +301,7 @@ function ProductId() {
   const tradePurchase = (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("sellerId", purchasedSchema.sellerEmail);
+    formData.append("sellerId", purchasedSchema.sellerId);
     formData.append("userId", purchasedSchema.userId);
     formData.append("productId", purchasedSchema.productId);
     formData.append("prodName", purchasedSchema.prodName);
@@ -312,6 +312,7 @@ function ProductId() {
     formData.append("quantity", purchasedSchema.quantity);
     formData.append("price", purchasedSchema.price);
     formData.append("buyerName", purchasedSchema.buyerName);
+    formData.append("buyerType", purchasedSchema.buyerType);
     formData.append("buyerEmail", purchasedSchema.buyerEmail);
 
     formData.append("total", purchasedSchema.total);
@@ -1323,6 +1324,7 @@ function ProductId() {
               <ModalFooter></ModalFooter>
             </ModalContent>
           </Modal>
+
           <Modal isOpen={isOpenTradeModal} onClose={onCloseTradeModal}>
             <ModalOverlay />
             <ModalContent>
@@ -1680,6 +1682,7 @@ function ProductId() {
                       value={(purchasedSchema.buyerType = isFaculty.isFaculty)}
                       onChange={purchasedOnChange}
                     />
+
                     <input
                       type="number"
                       name="buyerPhoneNumber"
@@ -1805,6 +1808,7 @@ function ProductId() {
                       }
                       onChange={purchasedOnChange}
                     />
+
                     <input
                       type="number"
                       name="price"
@@ -1932,12 +1936,7 @@ function ProductId() {
                       }
                       onChange={purchasedOnChange}
                     />
-                    <input
-                      type="text"
-                      name="buyerType"
-                      value={(purchasedSchema.buyerType = isFaculty.isFaculty)}
-                      onChange={purchasedOnChange}
-                    />
+
                     <input
                       type="number"
                       name="buyerPhoneNumber"
@@ -2052,6 +2051,12 @@ function ProductId() {
                         (purchasedSchema.accountType =
                           FacultySelectedProduct.accountType)
                       }
+                      onChange={purchasedOnChange}
+                    />
+                    <input
+                      type="text"
+                      name="buyerType"
+                      value={(purchasedSchema.buyerType = isFaculty.isFaculty)}
                       onChange={purchasedOnChange}
                     />
                     <input
