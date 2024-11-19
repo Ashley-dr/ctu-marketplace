@@ -136,7 +136,7 @@ function UserAccount() {
               <img
                 src={user.shopImage}
                 alt="Cover"
-                className="bg-cover bg-center object-cover lg:h-72 w-screen"
+                className="bg-cover bg-center object-cover ssm:h-52 lg:h-72 w-screen"
               />
             </>
           )}

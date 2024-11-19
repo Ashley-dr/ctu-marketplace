@@ -582,13 +582,13 @@ function Account() {
                 <img
                   src={isFaculty.shopImage}
                   alt="Cover"
-                  className="bg-cover bg-center object-cover lg:h-72 w-screen"
+                  className="bg-cover bg-center object-cover  ssm:h-52 lg:h-72 w-screen"
                 />
               </>
             )}
 
             <Avatar
-              className="relative bottom-16 cursor-pointer transition hover:scale-105"
+              className="relative bottom-16 cursor-pointer  transition hover:scale-105"
               zIndex={1}
               borderRadius="full"
               boxSize="135px"

@@ -1140,7 +1140,7 @@ function OrdersDrawer({ id }) {
 
   const meetUpPayCard = () => {
     return (
-      <dic className="max-w-full">
+      <div className="max-w-full">
         {" "}
         {orders
           .filter((order) => order.status === "Meet up Pay")
@@ -1446,7 +1446,7 @@ function OrdersDrawer({ id }) {
               </Accordion>
             </div>
           ))}
-      </dic>
+      </div>
     );
   };
   return (
@@ -1470,7 +1470,7 @@ function OrdersDrawer({ id }) {
                 </div>
               ) : (
                 <>
-                  <Tabs isFitted w={"96"}>
+                  <Tabs isFitted w={["370px", "390px", "420px"]}>
                     <TabList>
                       <Tab
                         fontSize={11}

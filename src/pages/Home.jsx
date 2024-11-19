@@ -13,6 +13,7 @@ function Home() {
       <figure></figure>
       <WelcomePage />
       <Products />
+      <br />
       <Users />
       <Keyoffering />
     </div>

@@ -75,6 +75,7 @@ const DonepurchasedSchema = new mongoose.Schema({
   picture: {
     type: [String],
   },
+
   tax: {
     type: Number,
   },

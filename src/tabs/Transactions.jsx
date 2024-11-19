@@ -4,10 +4,15 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams, useNavigate, Navigate } from "react-router-dom";
 import axios from "axios";
-import { MdEmail, MdMessage } from "react-icons/md";
+import {
+  MdCheck,
+  MdCheckBox,
+  MdEmail,
+  MdError,
+  MdMessage,
+} from "react-icons/md";
 import { FaFacebookSquare } from "react-icons/fa";
-import { BsCashCoin } from "react-icons/bs";
-import { TbCircleLetterG } from "react-icons/tb";
+
 import { FaRegMessage } from "react-icons/fa6";
 import { useCookies } from "react-cookie";
 import {
@@ -20,8 +25,7 @@ import {
   ModalCloseButton,
   useDisclosure,
   Button,
-  visuallyHiddenStyle,
-  Input,
+  Card,
   Img,
   Drawer,
   DrawerBody,
@@ -30,9 +34,43 @@ import {
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
+  Avatar,
+  Flex,
+  Popover,
+  PopoverTrigger,
+  Box,
+  PopoverContent,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverHeader,
+  Text,
+  PopoverBody,
+  Divider,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
+  Tooltip,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanels,
+  TabPanel,
+  Image,
+  IconButton,
+  Input,
 } from "@chakra-ui/react";
+import { MdDelete } from "react-icons/md";
+import { TbCircleLetterG, TbViewportWide } from "react-icons/tb";
 import logomarket from "../assets/ctu-logo-marketplace.jpg";
-import { AddIcon, CloseIcon, CheckIcon } from "@chakra-ui/icons";
+import {
+  AddIcon,
+  CloseIcon,
+  CheckIcon,
+  AtSignIcon,
+  LinkIcon,
+} from "@chakra-ui/icons";
 import Loader from "../components/Loader";
 import ChatPage from "./ChatPage";
 function Transactions({ id }) {
@@ -344,117 +382,2003 @@ function Transactions({ id }) {
   const tax = total * 0.01;
   const totalWithTax = total - tax;
 
-  const pendingCard = () => {
+  const EpaymentCard = () => {
     return (
-      <div className=" md:shrink-0 grid justify-items-center grid-cols-1 ssm:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 ">
-        {loading ? (
-          <>
-            {" "}
-            <div className="fixed mt-32 ">
-              <Loader />
-            </div>
-          </>
-        ) : (
-          <>
-            {myTransactions.length === 0 ? (
-              <div className=" absolute  text-xl font-thin font-quicksand  mt-10">
-                Empty Transaction
-              </div>
-            ) : (
-              myTransactions
-                .filter((item) => item.transactionStatus === undefined)
-                .map((item) => (
-                  <div
-                    className="border-solid border-2  border-black px-2 rounded-2xl p-2  max-w-full w-96  mb-5 bg-slate-400"
-                    key={item._id}
-                  >
-                    <div className="">
-                      <img
-                        className=" block ml-auto mr-auto rounded-2xl max-w-full max-h-full w-full h-56 object-cover bg-fixed"
-                        src={item.image}
-                        alt=""
-                      />
-                      <div className="flex  justify-center ">
-                        <button
-                          className=" p-1 bg-[#b40e0e9d] rounded-md  float-right mr-2"
-                          onClick={() => {
-                            removeItemClick(item._id);
-                          }}
-                        >
-                          Cancel Transaction <CloseIcon />
-                        </button>
-                        <button
-                          onClick={() => markTransactions(item)}
-                          className=" p-1 bg-[#4dbe86] rounded-md  float-right mr-2"
-                        >
-                          Mark Done Transaction <CheckIcon />
-                        </button>
-                      </div>
-                      <figure className=" bg-slate-500 rounded-2xl  p-1 mt-2 ">
-                        <p>
-                          <label>Buyer Name: </label>
-                          {item.buyerName}
-                        </p>
-                        <p>
-                          <label>Buyer Email: </label>
-                          {item.buyerEmail}
-                        </p>
-                        <p className=" h-20 overflow-y-auto px-2 mt-1 mb-2 border-solid border-2 rounded-lg">
-                          <label className=" font-semibold">Message: </label>
-                          {item.message}
-                        </p>
-                        <figure className="flex ">
-                          <div>
-                            <p className="mx-3">Contact on</p>
-                            <button className="px-4 p-3 mx-2 rounded-lg bg-teal-400">
-                              <MdEmail className="text-2xl" />
-                            </button>
-                            <button className="px-4 p-3 mx-2 rounded-lg bg-teal-400">
-                              <FaFacebookSquare className="text-2xl" />
-                            </button>
-                            <button
-                              onClick={() => chatButton(item)}
-                              className="px-4 p-3 mx-2 rounded-lg bg-gray-900 text-white"
-                            >
-                              <MdMessage className=" cursor-pointer mx-2  text-2xl" />
-                            </button>
-                          </div>
+      <div className="">
+        {myTransactions
+          .filter(
+            (item) =>
+              item.transactionStatus === undefined &&
+              item.status === "E-Payment"
+          )
+          .map((item) => (
+            <div
+              className="mt-1 border-solid rounded-2xl mb-5 max-w-full   "
+              key={item._id}
+            >
+              <div className="flex ">
+                <figure className="mr-2">
+                  <img
+                    className="  max-w-full max-h-full ssm:w-44  lg:w-40 h-20 object-cover bg-fixed"
+                    src={item.image}
+                    alt=""
+                  />
+                </figure>
 
-                          <div className="grid text-sm">
-                            <p>
-                              <label>Status: </label>
-                              {!item.status ? <>Pending</> : <>{item.status}</>}
-                            </p>
-                            <p>
-                              <label>Item Price: </label>
-                              {item.price}
-                            </p>
-                            <p>
-                              <label>Quantity of: </label>
-                              {item.quantity}
-                            </p>
-                            <p>
-                              <label>Total: </label>
-                              {item.total}
-                            </p>
+                <figure className="grid  rounded-md  ssm:mx-1 lg:mx-3 bottom-2 font-quicksand text-sm">
+                  <p className="text-xl grid grid-cols-2">
+                    <p className="truncate ssm:w-32 lg:w-52 pr-2 text-start">
+                      {item.prodName}
+                    </p>
+                    <Flex justifyContent={"end"} mx={1} gap={1}>
+                      <Tooltip label={`View ${item.prodName}`}>
+                        <Link
+                          to={`/ProductId/${item.productId}#item`}
+                          className="grid justify-self-start justify-start "
+                        >
+                          <button size="xs">
+                            <Box as="span" flex="1" textAlign="right">
+                              <TbViewportWide className="text-base" />
+                            </Box>
+
+                            {/* <AccordionIcon /> */}
+                          </button>
+                        </Link>
+                      </Tooltip>
+                      <Popover>
+                        <PopoverTrigger>
+                          <button size="xs">
+                            <Box as="span" flex="1" textAlign="right">
+                              <MdDelete className="text-base" />
+                            </Box>
+
+                            {/* <AccordionIcon /> */}
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent mr={8}>
+                          <PopoverArrow />
+                          <PopoverCloseButton />
+                          <PopoverHeader textAlign={"center"}>
+                            <Text>
+                              Cancel Transaction? <br /> {item.prodName}
+                            </Text>
+                          </PopoverHeader>
+                          <PopoverBody>
+                            <button
+                              className="justify-self-center flex text-sm hover:shadow-inner hover:scale-110"
+                              onClick={() => {
+                                removeItemClick(item._id);
+                              }}
+                            >
+                              Confirm
+                            </button>
+                          </PopoverBody>
+                        </PopoverContent>
+                      </Popover>
+                    </Flex>
+                    <figure>
+                      {item.transactionStatus === "Success" && (
+                        <>
+                          {" "}
+                          <Tooltip label="Transaction Success: Item Received">
+                            <div className="bg-emerald-700 text-white text-center rounded-lg text-xs w-20">
+                              {item.transactionStatus}
+                            </div>
+                          </Tooltip>
+                        </>
+                      )}
+                      {item.transactionStatus === undefined && (
+                        <Tooltip label="Transaction Status Pending">
+                          <div className="bg-gray-800 text-white text-center rounded-lg text-xs w-20">
+                            In Proccess
                           </div>
-                        </figure>
-                      </figure>
-                    </div>
-                  </div>
-                ))
-            )}
-          </>
-        )}
+                        </Tooltip>
+                      )}
+                      {item.transactionStatus === "Item Returned" && (
+                        <>
+                          <Tooltip label="Transaction Status: Item Returned.">
+                            <div className="bg-orange-600 text-white text-center rounded-lg text-xs w-24">
+                              {item.transactionStatus}
+                            </div>
+                          </Tooltip>
+                        </>
+                      )}
+                      {item.marketType === "Trading" && (
+                        <>
+                          <p className="text-xs mt-2 font-quicksand text-orange-400">
+                            {item.marketType}
+                          </p>
+                        </>
+                      )}
+                      {item.marketType === "Selling" && (
+                        <>
+                          <p className="text-xs mt-2 font-quicksand text-emerald-400">
+                            {item.marketType}
+                          </p>
+                        </>
+                      )}
+                    </figure>
+                    <figure className="justify-self-end text-xs ">
+                      <article>
+                        {" "}
+                        <p className="flex">
+                          <p className="">{item.quantity}</p>
+                        </p>
+                        <p className="flex ">
+                          <p className="">
+                            {item.price.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                          </p>
+                        </p>
+                        <p className="flex">
+                          <p className="">
+                            {item.total.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                          </p>
+                        </p>
+                      </article>
+                    </figure>
+                  </p>
+                </figure>
+              </div>
+              {item.marketType === "Selling" && (
+                <Accordion mt={2} allowToggle>
+                  <AccordionItem border={"none"} borderBottom={"solid"}>
+                    <h2>
+                      <AccordionButton>
+                        <Box as="span" flex="1" textAlign="left">
+                          <Text className="text-xs">View Details</Text>
+                        </Box>
+                        <AccordionIcon />
+                      </AccordionButton>
+                    </h2>
+                    <AccordionPanel pb={4} bg={"#ffffff0a"} roundedTop={"md"}>
+                      <div className="grid grid-cols-2 pt-1">
+                        <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                          <LinkIcon className="mr-1 mt-1" />
+                          {item.sellerName}
+                        </p>
+                        <Tooltip label="Buyer Account Type">
+                          <p className="text-xs px-1 mt-1 justify-self-end mr-2 rounded-md bg-[#15f85667]">
+                            {item.accountType}
+                          </p>
+                        </Tooltip>
+                      </div>
+                      {item.accountType === "Student" && (
+                        <>
+                          {" "}
+                          <Link to={`/UserAccount/${item.buyerEmail}`}>
+                            <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                              <AtSignIcon className="mt-1 mr-1" />
+                              {item.buyerEmail}
+                            </p>
+                          </Link>
+                        </>
+                      )}
+                      {item.accountType === "Faculty" && (
+                        <>
+                          {" "}
+                          <Link to={`/FacultyAccount/${item.buyerEmail}`}>
+                            <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                              <AtSignIcon className="mt-1 mr-1" />
+                              {item.buyerEmail}
+                            </p>
+                          </Link>
+                        </>
+                      )}
+
+                      <Divider className="m-2" />
+                      <div className="space-y-1">
+                        <p className="flex justify-between ">
+                          <p className="text-xs font-light">Item:</p>
+                          <p className="px-2 text-xs text-right w-64 font-bold ">
+                            {item.prodName}
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Quantity:</p>
+                          <p className="px-2 text-xs  text-right w-64  font-bold ">
+                            {item.quantity}{" "}
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Price:</p>
+                          <p className="px-2 text-xs  text-right w-64  font-semibold ">
+                            {item.price.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}{" "}
+                          </p>
+                        </p>
+
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Total:</p>
+                          <p className="px-2 text-xs  text-right w-64 font-semibold ">
+                            {item.total.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Market Type:</p>
+                          <p className="px-2 text-xs font-bold ">
+                            <p>{item.marketType}</p>
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Status:</p>
+                          <p className="px-2 text-xs font-bold ">
+                            <p>
+                              {item.status ? <>{item.status}</> : <>Pending</>}
+                            </p>
+                          </p>
+                        </p>
+                      </div>
+                      <Divider className="m-2" />
+                      <Accordion mt={2} allowToggle>
+                        <AccordionItem border={"none"}>
+                          <h2>
+                            <AccordionButton>
+                              <Box as="span" flex="1" textAlign="left">
+                                <Text className="text-xs">More info.</Text>
+                              </Box>
+                              <AccordionIcon />
+                            </AccordionButton>
+                          </h2>
+                          <AccordionPanel
+                            pb={4}
+                            bg={"#ffffff0a"}
+                            roundedTop={"md"}
+                          >
+                            {" "}
+                            <p className="h-full space-y-1 overflow-y-auto  mt-1 mb-2 border-solid  rounded-lg  ">
+                              <p className="text-xs font-quicksand">
+                                Type: {item.types}
+                              </p>
+                              <p className="text-xs font-quicksand">
+                                Message: {item.message}
+                              </p>
+                            </p>
+                            <Divider />
+                            <figure className="flex flex-col items-center  ">
+                              <div className="flex gap-4 mt-4">
+                                {/* Email Button */}
+                                <Tooltip label={<MdError />}>
+                                  <button className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-800 text-white hover:bg-gray-700 transition-all shadow-md">
+                                    <MdEmail className="text-2xl" />
+                                  </button>
+                                </Tooltip>
+
+                                {/* Facebook Button */}
+                                <a
+                                  href={item.buyerFacebook}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  <Tooltip label="Visit buyer facebook Page.">
+                                    <button className="flex items-center justify-center  w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-500 transition-all shadow-md">
+                                      <FaFacebookSquare className="text-2xl" />
+                                    </button>
+                                  </Tooltip>
+                                </a>
+
+                                {/* Chat Button */}
+                                <Tooltip label="Message this buyer.">
+                                  <button
+                                    onClick={() => chatButton(item)}
+                                    className="flex items-center justify-center  w-10 h-10 rounded-full bg-green-600 text-white hover:bg-green-500 transition-all shadow-md"
+                                  >
+                                    <MdMessage className="text-2xl" />
+                                  </button>
+                                </Tooltip>
+                              </div>
+                            </figure>
+                          </AccordionPanel>{" "}
+                        </AccordionItem>
+                      </Accordion>
+                      <button
+                        size="xs"
+                        onClick={() => markTransactions(item)}
+                        className="px-6 w-full pt-2 pb-2 font-quicksand mt-1 p-1 bg-gray-900 text-white text-center  text-sm rounded-md flex justify-center  hover:bg-gray-800"
+                      >
+                        Submit Transaction{" "}
+                        <MdCheck className="text-base mt-0.5 ml-3" />
+                      </button>
+                    </AccordionPanel>
+                  </AccordionItem>
+                </Accordion>
+              )}
+              {item.marketType === "Trading" && (
+                <Accordion mt={2} allowToggle>
+                  <AccordionItem border={"none"} borderBottom={"solid"}>
+                    <h2>
+                      <AccordionButton>
+                        <Box as="span" flex="1" textAlign="left">
+                          <Text className="text-xs">View Details</Text>
+                        </Box>
+                        <AccordionIcon />
+                      </AccordionButton>
+                    </h2>
+                    <AccordionPanel pb={4} bg={"#ffffff0a"} roundedTop={"md"}>
+                      <div className="grid grid-cols-2 pt-1">
+                        <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                          <LinkIcon className="mr-1 mt-1" />
+                          {item.sellerName}
+                        </p>
+                        <Tooltip label="Buyer Account Type">
+                          <p className="text-xs px-1 mt-1 justify-self-end mr-2 rounded-md bg-[#15f85667]">
+                            {item.accountType}
+                          </p>
+                        </Tooltip>
+                      </div>
+                      {item.accountType === "Student" && (
+                        <>
+                          {" "}
+                          <Link to={`/UserAccount/${item.buyerEmail}`}>
+                            <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                              <AtSignIcon className="mt-1 mr-1" />
+                              {item.buyerEmail}
+                            </p>
+                          </Link>
+                        </>
+                      )}
+                      {item.accountType === "Faculty" && (
+                        <>
+                          {" "}
+                          <Link to={`/FacultyAccount/${item.buyerEmail}`}>
+                            <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                              <AtSignIcon className="mt-1 mr-1" />
+                              {item.buyerEmail}
+                            </p>
+                          </Link>
+                        </>
+                      )}
+
+                      <Divider className="m-2" />
+                      <div className="space-y-1">
+                        <Text className="justify-self-center flex text-xs mb-4 mt-4">
+                          Buyer are ready to claim.
+                        </Text>
+                        <p className="flex justify-between ">
+                          <p className="text-xs font-light">Item:</p>
+                          <p className="px-2 text-xs text-right w-64 font-bold ">
+                            {item.prodName}
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Quantity:</p>
+                          <p className="px-2 text-xs  text-right w-64  font-bold ">
+                            {item.quantity}{" "}
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Price:</p>
+                          <p className="px-2 text-xs  text-right w-64  font-semibold ">
+                            {item.price.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}{" "}
+                          </p>
+                        </p>
+
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Total:</p>
+                          <p className="px-2 text-xs  text-right w-64 font-semibold ">
+                            {item.total.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Market Type:</p>
+                          <p className="px-2 text-xs font-bold ">
+                            <p>{item.marketType}</p>
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Status:</p>
+                          <p className="px-2 text-xs font-bold ">
+                            <p>
+                              {item.status ? <>{item.status}</> : <>Pending</>}
+                            </p>
+                          </p>
+                        </p>
+                      </div>
+                      <Divider className="m-2" />
+                      <Accordion mt={2} allowToggle>
+                        <AccordionItem border={"none"}>
+                          <h2>
+                            <AccordionButton>
+                              <Box as="span" flex="1" textAlign="left">
+                                <Text className="text-xs">More info.</Text>
+                              </Box>
+                              <AccordionIcon />
+                            </AccordionButton>
+                          </h2>
+                          <AccordionPanel
+                            pb={4}
+                            bg={"#ffffff0a"}
+                            roundedTop={"md"}
+                          >
+                            {" "}
+                            <p className="h-full space-y-1 overflow-y-auto  mt-1 mb-2 border-solid  rounded-lg  ">
+                              <p className="text-xs font-quicksand">
+                                Type: {item.types}
+                              </p>
+                              <p className="text-xs font-quicksand">
+                                Message: {item.message}
+                              </p>
+                            </p>
+                            <Divider />
+                            <figure className="flex flex-col items-center  ">
+                              <div className="flex gap-4 mt-4">
+                                {/* Email Button */}
+                                <Tooltip label={<MdError />}>
+                                  <button className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-800 text-white hover:bg-gray-700 transition-all shadow-md">
+                                    <MdEmail className="text-2xl" />
+                                  </button>
+                                </Tooltip>
+
+                                {/* Facebook Button */}
+                                <a
+                                  href={item.buyerFacebook}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  <Tooltip label="Visit buyer facebook Page.">
+                                    <button className="flex items-center justify-center  w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-500 transition-all shadow-md">
+                                      <FaFacebookSquare className="text-2xl" />
+                                    </button>
+                                  </Tooltip>
+                                </a>
+
+                                {/* Chat Button */}
+                                <Tooltip label="Message this buyer.">
+                                  <button
+                                    onClick={() => chatButton(item)}
+                                    className="flex items-center justify-center  w-10 h-10 rounded-full bg-green-600 text-white hover:bg-green-500 transition-all shadow-md"
+                                  >
+                                    <MdMessage className="text-2xl" />
+                                  </button>
+                                </Tooltip>
+                              </div>
+                            </figure>
+                          </AccordionPanel>{" "}
+                        </AccordionItem>
+                      </Accordion>
+                      {/* <button
+                      onClick={() => statusHandler(order)}
+                      className="px-6 w-full pt-2 pb-2 font-quicksand mt-1 p-1 bg-gray-900 text-white text-center text-sm rounded-md grid  hover:bg-gray-800"
+                    >
+                      Pay now
+                    </button> */}
+                    </AccordionPanel>
+                  </AccordionItem>
+                </Accordion>
+              )}
+            </div>
+          ))}
+      </div>
+    );
+  };
+
+  const meetUpPayCard = () => {
+    return (
+      <div className="">
+        {myTransactions
+          .filter(
+            (item) =>
+              item.transactionStatus === undefined &&
+              item.status === "Meet up Pay"
+          )
+          .map((item) => (
+            <div
+              className="mt-1 border-solid rounded-2xl mb-5 max-w-full   "
+              key={item._id}
+            >
+              <div className="flex ">
+                <figure className="mr-2">
+                  <img
+                    className="  max-w-full max-h-full ssm:w-44 lg:w-40 h-20 object-cover bg-fixed"
+                    src={item.image}
+                    alt=""
+                  />
+                </figure>
+
+                <figure className="grid  rounded-md  ssm:mx-1 lg:mx-3 bottom-2 font-quicksand text-sm">
+                  <p className="text-xl grid grid-cols-2">
+                    <p className="truncate ssm:w-32 lg:w-52 pr-2 text-start">
+                      {item.prodName}
+                    </p>
+                    <Flex justifyContent={"end"} mx={1} gap={1}>
+                      <Tooltip label={`View ${item.prodName}`}>
+                        <Link
+                          to={`/ProductId/${item.productId}#item`}
+                          className="grid justify-self-start justify-start "
+                        >
+                          <button size="xs">
+                            <Box as="span" flex="1" textAlign="right">
+                              <TbViewportWide className="text-base" />
+                            </Box>
+
+                            {/* <AccordionIcon /> */}
+                          </button>
+                        </Link>
+                      </Tooltip>
+                      <Popover>
+                        <PopoverTrigger>
+                          <button size="xs">
+                            <Box as="span" flex="1" textAlign="right">
+                              <MdDelete className="text-base" />
+                            </Box>
+
+                            {/* <AccordionIcon /> */}
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent mr={8}>
+                          <PopoverArrow />
+                          <PopoverCloseButton />
+                          <PopoverHeader textAlign={"center"}>
+                            <Text>
+                              Cancel Transaction? <br /> {item.prodName}
+                            </Text>
+                          </PopoverHeader>
+                          <PopoverBody>
+                            <button
+                              className="justify-self-center flex text-sm hover:shadow-inner hover:scale-110"
+                              onClick={() => {
+                                removeItemClick(item._id);
+                              }}
+                            >
+                              Confirm
+                            </button>
+                          </PopoverBody>
+                        </PopoverContent>
+                      </Popover>
+                    </Flex>
+                    <figure>
+                      {item.transactionStatus === "Success" && (
+                        <>
+                          {" "}
+                          <Tooltip label="Transaction Success: Item Received">
+                            <div className="bg-emerald-700 text-white text-center rounded-lg text-xs w-20">
+                              {item.transactionStatus}
+                            </div>
+                          </Tooltip>
+                        </>
+                      )}
+                      {item.transactionStatus === undefined && (
+                        <Tooltip label="Transaction Status Pending">
+                          <div className="bg-gray-800 text-white text-center rounded-lg text-xs w-20">
+                            In Proccess
+                          </div>
+                        </Tooltip>
+                      )}
+                      {item.transactionStatus === "Item Returned" && (
+                        <>
+                          <Tooltip label="Transaction Status: Item Returned.">
+                            <div className="bg-orange-600 text-white text-center rounded-lg text-xs w-24">
+                              {item.transactionStatus}
+                            </div>
+                          </Tooltip>
+                        </>
+                      )}
+                      {item.marketType === "Trading" && (
+                        <>
+                          <p className="text-xs mt-2 font-quicksand text-orange-400">
+                            {item.marketType}
+                          </p>
+                        </>
+                      )}
+                      {item.marketType === "Selling" && (
+                        <>
+                          <p className="text-xs mt-2 font-quicksand text-emerald-400">
+                            {item.marketType}
+                          </p>
+                        </>
+                      )}
+                    </figure>
+                    <figure className="justify-self-end text-xs ">
+                      <article>
+                        {" "}
+                        <p className="flex">
+                          <p className="">{item.quantity}</p>
+                        </p>
+                        <p className="flex ">
+                          <p className="">
+                            {item.price.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                          </p>
+                        </p>
+                        <p className="flex">
+                          <p className="">
+                            {item.total.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                          </p>
+                        </p>
+                      </article>
+                    </figure>
+                  </p>
+                </figure>
+              </div>
+              {item.marketType === "Selling" && (
+                <Accordion mt={2} allowToggle>
+                  <AccordionItem border={"none"} borderBottom={"solid"}>
+                    <h2>
+                      <AccordionButton>
+                        <Box as="span" flex="1" textAlign="left">
+                          <Text className="text-xs">View Details</Text>
+                        </Box>
+                        <AccordionIcon />
+                      </AccordionButton>
+                    </h2>
+                    <AccordionPanel pb={4} bg={"#ffffff0a"} roundedTop={"md"}>
+                      <div className="grid grid-cols-2 pt-1">
+                        <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                          <LinkIcon className="mr-1 mt-1" />
+                          {item.sellerName}
+                        </p>
+                        <Tooltip label="Buyer Account Type">
+                          <p className="text-xs px-1 mt-1 justify-self-end mr-2 rounded-md bg-[#15f85667]">
+                            {item.accountType}
+                          </p>
+                        </Tooltip>
+                      </div>
+                      {item.accountType === "Student" && (
+                        <>
+                          {" "}
+                          <Link to={`/UserAccount/${item.buyerEmail}`}>
+                            <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                              <AtSignIcon className="mt-1 mr-1" />
+                              {item.buyerEmail}
+                            </p>
+                          </Link>
+                        </>
+                      )}
+                      {item.accountType === "Faculty" && (
+                        <>
+                          {" "}
+                          <Link to={`/FacultyAccount/${item.buyerEmail}`}>
+                            <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                              <AtSignIcon className="mt-1 mr-1" />
+                              {item.buyerEmail}
+                            </p>
+                          </Link>
+                        </>
+                      )}
+
+                      <Divider className="m-2" />
+                      <div className="space-y-1">
+                        <p className="flex justify-between ">
+                          <p className="text-xs font-light">Item:</p>
+                          <p className="px-2 text-xs text-right w-64 font-bold ">
+                            {item.prodName}
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Quantity:</p>
+                          <p className="px-2 text-xs  text-right w-64  font-bold ">
+                            {item.quantity}{" "}
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Price:</p>
+                          <p className="px-2 text-xs  text-right w-64  font-semibold ">
+                            {item.price.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}{" "}
+                          </p>
+                        </p>
+
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Total:</p>
+                          <p className="px-2 text-xs  text-right w-64 font-semibold ">
+                            {item.total.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Market Type:</p>
+                          <p className="px-2 text-xs font-bold ">
+                            <p>{item.marketType}</p>
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Status:</p>
+                          <p className="px-2 text-xs font-bold ">
+                            <p>
+                              {item.status ? <>{item.status}</> : <>Pending</>}
+                            </p>
+                          </p>
+                        </p>
+                      </div>
+                      <Divider className="m-2" />
+                      <Accordion mt={2} allowToggle>
+                        <AccordionItem border={"none"}>
+                          <h2>
+                            <AccordionButton>
+                              <Box as="span" flex="1" textAlign="left">
+                                <Text className="text-xs">More info.</Text>
+                              </Box>
+                              <AccordionIcon />
+                            </AccordionButton>
+                          </h2>
+                          <AccordionPanel
+                            pb={4}
+                            bg={"#ffffff0a"}
+                            roundedTop={"md"}
+                          >
+                            {" "}
+                            <p className="h-full space-y-1 overflow-y-auto  mt-1 mb-2 border-solid  rounded-lg  ">
+                              <p className="text-xs font-quicksand">
+                                Type: {item.types}
+                              </p>
+                              <p className="text-xs font-quicksand">
+                                Message: {item.message}
+                              </p>
+                            </p>
+                            <Divider />
+                            <figure className="flex flex-col items-center  ">
+                              <div className="flex gap-4 mt-4">
+                                {/* Email Button */}
+                                <Tooltip label={<MdError />}>
+                                  <button className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-800 text-white hover:bg-gray-700 transition-all shadow-md">
+                                    <MdEmail className="text-2xl" />
+                                  </button>
+                                </Tooltip>
+
+                                {/* Facebook Button */}
+                                <a
+                                  href={item.buyerFacebook}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  <Tooltip label="Visit buyer facebook Page.">
+                                    <button className="flex items-center justify-center  w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-500 transition-all shadow-md">
+                                      <FaFacebookSquare className="text-2xl" />
+                                    </button>
+                                  </Tooltip>
+                                </a>
+
+                                {/* Chat Button */}
+                                <Tooltip label="Message this buyer.">
+                                  <button
+                                    onClick={() => chatButton(item)}
+                                    className="flex items-center justify-center  w-10 h-10 rounded-full bg-green-600 text-white hover:bg-green-500 transition-all shadow-md"
+                                  >
+                                    <MdMessage className="text-2xl" />
+                                  </button>
+                                </Tooltip>
+                              </div>
+                            </figure>
+                          </AccordionPanel>{" "}
+                        </AccordionItem>
+                      </Accordion>
+                      <button
+                        size="xs"
+                        onClick={() => markTransactions(item)}
+                        className="px-6 w-full pt-2 pb-2 font-quicksand mt-1 p-1 bg-gray-900 text-white text-center  text-sm rounded-md flex justify-center  hover:bg-gray-800"
+                      >
+                        Submit Transaction{" "}
+                        <MdCheck className="text-base mt-0.5 ml-3" />
+                      </button>
+                    </AccordionPanel>
+                  </AccordionItem>
+                </Accordion>
+              )}
+              {item.marketType === "Trading" && (
+                <Accordion mt={2} allowToggle>
+                  <AccordionItem border={"none"} borderBottom={"solid"}>
+                    <h2>
+                      <AccordionButton>
+                        <Box as="span" flex="1" textAlign="left">
+                          <Text className="text-xs">View Details</Text>
+                        </Box>
+                        <AccordionIcon />
+                      </AccordionButton>
+                    </h2>
+                    <AccordionPanel pb={4} bg={"#ffffff0a"} roundedTop={"md"}>
+                      <div className="grid grid-cols-2 pt-1">
+                        <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                          <LinkIcon className="mr-1 mt-1" />
+                          {item.sellerName}
+                        </p>
+                        <Tooltip label="Buyer Account Type">
+                          <p className="text-xs px-1 mt-1 justify-self-end mr-2 rounded-md bg-[#15f85667]">
+                            {item.accountType}
+                          </p>
+                        </Tooltip>
+                      </div>
+                      {item.accountType === "Student" && (
+                        <>
+                          {" "}
+                          <Link to={`/UserAccount/${item.buyerEmail}`}>
+                            <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                              <AtSignIcon className="mt-1 mr-1" />
+                              {item.buyerEmail}
+                            </p>
+                          </Link>
+                        </>
+                      )}
+                      {item.accountType === "Faculty" && (
+                        <>
+                          {" "}
+                          <Link to={`/FacultyAccount/${item.buyerEmail}`}>
+                            <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                              <AtSignIcon className="mt-1 mr-1" />
+                              {item.buyerEmail}
+                            </p>
+                          </Link>
+                        </>
+                      )}
+
+                      <Divider className="m-2" />
+                      <div className="space-y-1">
+                        <p className="flex justify-between ">
+                          <p className="text-xs font-light">Item:</p>
+                          <p className="px-2 text-xs text-right w-64 font-bold ">
+                            {item.prodName}
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Quantity:</p>
+                          <p className="px-2 text-xs  text-right w-64  font-bold ">
+                            {item.quantity}{" "}
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Price:</p>
+                          <p className="px-2 text-xs  text-right w-64  font-semibold ">
+                            {item.price.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}{" "}
+                          </p>
+                        </p>
+
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Total:</p>
+                          <p className="px-2 text-xs  text-right w-64 font-semibold ">
+                            {item.total.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Market Type:</p>
+                          <p className="px-2 text-xs font-bold ">
+                            <p>{item.marketType}</p>
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Status:</p>
+                          <p className="px-2 text-xs font-bold ">
+                            <p>
+                              {item.status ? <>{item.status}</> : <>Pending</>}
+                            </p>
+                          </p>
+                        </p>
+                      </div>
+                      <Divider className="m-2" />
+                      <Accordion mt={2} allowToggle>
+                        <AccordionItem border={"none"}>
+                          <h2>
+                            <AccordionButton>
+                              <Box as="span" flex="1" textAlign="left">
+                                <Text className="text-xs">More info.</Text>
+                              </Box>
+                              <AccordionIcon />
+                            </AccordionButton>
+                          </h2>
+                          <AccordionPanel
+                            pb={4}
+                            bg={"#ffffff0a"}
+                            roundedTop={"md"}
+                          >
+                            {" "}
+                            <p className="h-full space-y-1 overflow-y-auto  mt-1 mb-2 border-solid  rounded-lg  ">
+                              <p className="text-xs font-quicksand">
+                                Type: {item.types}
+                              </p>
+                              <p className="text-xs font-quicksand">
+                                Message: {item.message}
+                              </p>
+                            </p>
+                            <Divider />
+                            <figure className="flex flex-col items-center  ">
+                              <div className="flex gap-4 mt-4">
+                                {/* Email Button */}
+                                <Tooltip label={<MdError />}>
+                                  <button className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-800 text-white hover:bg-gray-700 transition-all shadow-md">
+                                    <MdEmail className="text-2xl" />
+                                  </button>
+                                </Tooltip>
+
+                                {/* Facebook Button */}
+                                <a
+                                  href={item.buyerFacebook}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  <Tooltip label="Visit buyer facebook Page.">
+                                    <button className="flex items-center justify-center  w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-500 transition-all shadow-md">
+                                      <FaFacebookSquare className="text-2xl" />
+                                    </button>
+                                  </Tooltip>
+                                </a>
+
+                                {/* Chat Button */}
+                                <Tooltip label="Message this buyer.">
+                                  <button
+                                    onClick={() => chatButton(item)}
+                                    className="flex items-center justify-center  w-10 h-10 rounded-full bg-green-600 text-white hover:bg-green-500 transition-all shadow-md"
+                                  >
+                                    <MdMessage className="text-2xl" />
+                                  </button>
+                                </Tooltip>
+                              </div>
+                            </figure>
+                          </AccordionPanel>{" "}
+                        </AccordionItem>
+                      </Accordion>
+                      {/* <button
+                      onClick={() => statusHandler(order)}
+                      className="px-6 w-full pt-2 pb-2 font-quicksand mt-1 p-1 bg-gray-900 text-white text-center text-sm rounded-md grid  hover:bg-gray-800"
+                    >
+                      Pay now
+                    </button> */}
+                    </AccordionPanel>
+                  </AccordionItem>
+                </Accordion>
+              )}
+            </div>
+          ))}
+      </div>
+    );
+  };
+
+  const historySuccessCard = () => {
+    return (
+      <div className="">
+        {myTransactions
+          .filter((item) => item.transactionStatus === "Success")
+          .map((item) => (
+            <div
+              className="mt-1 border-solid rounded-2xl mb-5 max-w-full   "
+              key={item._id}
+            >
+              <div className="flex ">
+                <figure className="mr-2">
+                  <img
+                    className="  max-w-full max-h-full ssm:w-44  lg:w-40 h-20 object-cover bg-fixed"
+                    src={item.image}
+                    alt=""
+                  />
+                </figure>
+
+                <figure className="grid  rounded-md  ssm:mx-1 lg:mx-3 bottom-2 font-quicksand text-sm">
+                  <p className="text-xl grid grid-cols-2">
+                    <p className="truncate ssm:w-32 lg:w-52 pr-2 text-start">
+                      {item.prodName}
+                    </p>
+                    <Flex justifyContent={"end"} mx={1} gap={1}>
+                      <Tooltip label={`View ${item.prodName}`}>
+                        <Link
+                          to={`/ProductId/${item.productId}#item`}
+                          className="grid justify-self-start justify-start "
+                        >
+                          <button size="xs">
+                            <Box as="span" flex="1" textAlign="right">
+                              <TbViewportWide className="text-base" />
+                            </Box>
+
+                            {/* <AccordionIcon /> */}
+                          </button>
+                        </Link>
+                      </Tooltip>
+                      <Popover>
+                        <PopoverTrigger>
+                          <button size="xs">
+                            <Box as="span" flex="1" textAlign="right">
+                              <MdDelete className="text-base" />
+                            </Box>
+
+                            {/* <AccordionIcon /> */}
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent mr={8}>
+                          <PopoverArrow />
+                          <PopoverCloseButton />
+                          <PopoverHeader textAlign={"center"}>
+                            <Text>
+                              Delete this in History <br /> {item.prodName}
+                            </Text>
+                          </PopoverHeader>
+                          <PopoverBody>
+                            <button
+                              className="justify-self-center flex text-sm hover:shadow-inner hover:scale-110"
+                              onClick={() => {
+                                removeItemClick(item._id);
+                              }}
+                            >
+                              Confirm
+                            </button>
+                          </PopoverBody>
+                        </PopoverContent>
+                      </Popover>
+                    </Flex>
+                    <figure>
+                      {item.transactionStatus === "Success" && (
+                        <>
+                          {" "}
+                          <Tooltip label="Transaction Success: Item Received">
+                            <div className="bg-emerald-700 text-white text-center rounded-lg text-xs w-20">
+                              {item.transactionStatus}
+                            </div>
+                          </Tooltip>
+                        </>
+                      )}
+                      {item.transactionStatus === undefined && (
+                        <Tooltip label="Transaction Status Pending">
+                          <div className="bg-gray-800 text-white text-center rounded-lg text-xs w-20">
+                            In Proccess
+                          </div>
+                        </Tooltip>
+                      )}
+                      {item.transactionStatus === "Item Returned" && (
+                        <>
+                          <Tooltip label="Transaction Status: Item Returned.">
+                            <div className="bg-orange-600 text-white text-center rounded-lg text-xs w-24">
+                              {item.transactionStatus}
+                            </div>
+                          </Tooltip>
+                        </>
+                      )}
+                      {item.marketType === "Trading" && (
+                        <>
+                          <p className="text-xs mt-2 font-quicksand text-orange-400">
+                            {item.marketType}
+                          </p>
+                        </>
+                      )}
+                      {item.marketType === "Selling" && (
+                        <>
+                          <p className="text-xs mt-2 font-quicksand text-emerald-400">
+                            {item.marketType}
+                          </p>
+                        </>
+                      )}
+                    </figure>
+                    <figure className="justify-self-end text-xs ">
+                      <article>
+                        {" "}
+                        <p className="flex">
+                          <p className="">{item.quantity}</p>
+                        </p>
+                        <p className="flex ">
+                          <p className="">
+                            {item.price.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                          </p>
+                        </p>
+                        <p className="flex">
+                          <p className="">
+                            {item.total.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                          </p>
+                        </p>
+                      </article>
+                    </figure>
+                  </p>
+                </figure>
+              </div>
+              {item.marketType === "Selling" && (
+                <Accordion mt={2} allowToggle>
+                  <AccordionItem border={"none"} borderBottom={"solid"}>
+                    <h2>
+                      <AccordionButton>
+                        <Box as="span" flex="1" textAlign="left">
+                          <Text className="text-xs">View Details</Text>
+                        </Box>
+                        <AccordionIcon />
+                      </AccordionButton>
+                    </h2>
+                    <AccordionPanel pb={4} bg={"#ffffff0a"} roundedTop={"md"}>
+                      <div className="grid grid-cols-2 pt-1">
+                        <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                          <LinkIcon className="mr-1 mt-1" />
+                          {item.sellerName}
+                        </p>
+                        <Tooltip label="Buyer Account Type">
+                          <p className="text-xs px-1 mt-1 justify-self-end mr-2 rounded-md bg-[#15f85667]">
+                            {item.accountType}
+                          </p>
+                        </Tooltip>
+                      </div>
+                      {item.accountType === "Student" && (
+                        <>
+                          {" "}
+                          <Link to={`/UserAccount/${item.buyerEmail}`}>
+                            <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                              <AtSignIcon className="mt-1 mr-1" />
+                              {item.buyerEmail}
+                            </p>
+                          </Link>
+                        </>
+                      )}
+                      {item.accountType === "Faculty" && (
+                        <>
+                          {" "}
+                          <Link to={`/FacultyAccount/${item.buyerEmail}`}>
+                            <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                              <AtSignIcon className="mt-1 mr-1" />
+                              {item.buyerEmail}
+                            </p>
+                          </Link>
+                        </>
+                      )}
+
+                      <Divider className="m-2" />
+                      <div className="space-y-1">
+                        <p className="flex justify-between ">
+                          <p className="text-xs font-light">Item:</p>
+                          <p className="px-2 text-xs text-right w-64 font-bold ">
+                            {item.prodName}
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Quantity:</p>
+                          <p className="px-2 text-xs  text-right w-64  font-bold ">
+                            {item.quantity}{" "}
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Price:</p>
+                          <p className="px-2 text-xs  text-right w-64  font-semibold ">
+                            {item.price.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}{" "}
+                          </p>
+                        </p>
+
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Total:</p>
+                          <p className="px-2 text-xs  text-right w-64 font-semibold ">
+                            {item.total.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Market Type:</p>
+                          <p className="px-2 text-xs font-bold ">
+                            <p>{item.marketType}</p>
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Status:</p>
+                          <p className="px-2 text-xs font-bold ">
+                            <p>
+                              {item.status ? <>{item.status}</> : <>Pending</>}
+                            </p>
+                          </p>
+                        </p>
+                      </div>
+                      <Divider className="m-2" />
+                      <Accordion mt={2} allowToggle>
+                        <AccordionItem border={"none"}>
+                          <h2>
+                            <AccordionButton>
+                              <Box as="span" flex="1" textAlign="left">
+                                <Text className="text-xs">More info.</Text>
+                              </Box>
+                              <AccordionIcon />
+                            </AccordionButton>
+                          </h2>
+                          <AccordionPanel
+                            pb={4}
+                            bg={"#ffffff0a"}
+                            roundedTop={"md"}
+                          >
+                            {" "}
+                            <p className="h-full space-y-1 overflow-y-auto  mt-1 mb-2 border-solid  rounded-lg  ">
+                              <p className="text-xs font-quicksand">
+                                Type: {item.types}
+                              </p>
+                              <p className="text-xs font-quicksand">
+                                Message: {item.message}
+                              </p>
+                            </p>
+                            <Divider />
+                            <figure className="flex flex-col items-center  ">
+                              <div className="flex gap-4 mt-4">
+                                {/* Email Button */}
+                                <Tooltip label={<MdError />}>
+                                  <button className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-800 text-white hover:bg-gray-700 transition-all shadow-md">
+                                    <MdEmail className="text-2xl" />
+                                  </button>
+                                </Tooltip>
+
+                                {/* Facebook Button */}
+                                <a
+                                  href={item.buyerFacebook}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  <Tooltip label="Visit buyer facebook Page.">
+                                    <button className="flex items-center justify-center  w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-500 transition-all shadow-md">
+                                      <FaFacebookSquare className="text-2xl" />
+                                    </button>
+                                  </Tooltip>
+                                </a>
+
+                                {/* Chat Button */}
+                                <Tooltip label="Message this buyer.">
+                                  <button
+                                    onClick={() => chatButton(item)}
+                                    className="flex items-center justify-center  w-10 h-10 rounded-full bg-green-600 text-white hover:bg-green-500 transition-all shadow-md"
+                                  >
+                                    <MdMessage className="text-2xl" />
+                                  </button>
+                                </Tooltip>
+                              </div>
+                            </figure>
+                          </AccordionPanel>{" "}
+                        </AccordionItem>
+                      </Accordion>
+                    </AccordionPanel>
+                  </AccordionItem>
+                </Accordion>
+              )}
+              {item.marketType === "Trading" && (
+                <Accordion mt={2} allowToggle>
+                  <AccordionItem border={"none"} borderBottom={"solid"}>
+                    <h2>
+                      <AccordionButton>
+                        <Box as="span" flex="1" textAlign="left">
+                          <Text className="text-xs">View Details</Text>
+                        </Box>
+                        <AccordionIcon />
+                      </AccordionButton>
+                    </h2>
+                    <AccordionPanel pb={4} bg={"#ffffff0a"} roundedTop={"md"}>
+                      <div className="grid grid-cols-2 pt-1">
+                        <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                          <LinkIcon className="mr-1 mt-1" />
+                          {item.sellerName}
+                        </p>
+                        <Tooltip label="Buyer Account Type">
+                          <p className="text-xs px-1 mt-1 justify-self-end mr-2 rounded-md bg-[#15f85667]">
+                            {item.accountType}
+                          </p>
+                        </Tooltip>
+                      </div>
+                      {item.accountType === "Student" && (
+                        <>
+                          {" "}
+                          <Link to={`/UserAccount/${item.buyerEmail}`}>
+                            <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                              <AtSignIcon className="mt-1 mr-1" />
+                              {item.buyerEmail}
+                            </p>
+                          </Link>
+                        </>
+                      )}
+                      {item.accountType === "Faculty" && (
+                        <>
+                          {" "}
+                          <Link to={`/FacultyAccount/${item.buyerEmail}`}>
+                            <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                              <AtSignIcon className="mt-1 mr-1" />
+                              {item.buyerEmail}
+                            </p>
+                          </Link>
+                        </>
+                      )}
+
+                      <Divider className="m-2" />
+                      <div className="space-y-1">
+                        <Text className="justify-self-center flex text-xs mb-4 mt-4">
+                          Buyer are ready to claim.
+                        </Text>
+                        <p className="flex justify-between ">
+                          <p className="text-xs font-light">Item:</p>
+                          <p className="px-2 text-xs text-right w-64 font-bold ">
+                            {item.prodName}
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Quantity:</p>
+                          <p className="px-2 text-xs  text-right w-64  font-bold ">
+                            {item.quantity}{" "}
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Price:</p>
+                          <p className="px-2 text-xs  text-right w-64  font-semibold ">
+                            {item.price.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}{" "}
+                          </p>
+                        </p>
+
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Total:</p>
+                          <p className="px-2 text-xs  text-right w-64 font-semibold ">
+                            {item.total.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Market Type:</p>
+                          <p className="px-2 text-xs font-bold ">
+                            <p>{item.marketType}</p>
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Status:</p>
+                          <p className="px-2 text-xs font-bold ">
+                            <p>
+                              {item.status ? <>{item.status}</> : <>Pending</>}
+                            </p>
+                          </p>
+                        </p>
+                      </div>
+                      <Divider className="m-2" />
+                      <Accordion mt={2} allowToggle>
+                        <AccordionItem border={"none"}>
+                          <h2>
+                            <AccordionButton>
+                              <Box as="span" flex="1" textAlign="left">
+                                <Text className="text-xs">More info.</Text>
+                              </Box>
+                              <AccordionIcon />
+                            </AccordionButton>
+                          </h2>
+                          <AccordionPanel
+                            pb={4}
+                            bg={"#ffffff0a"}
+                            roundedTop={"md"}
+                          >
+                            {" "}
+                            <p className="h-full space-y-1 overflow-y-auto  mt-1 mb-2 border-solid  rounded-lg  ">
+                              <p className="text-xs font-quicksand">
+                                Type: {item.types}
+                              </p>
+                              <p className="text-xs font-quicksand">
+                                Message: {item.message}
+                              </p>
+                            </p>
+                            <Divider />
+                            <figure className="flex flex-col items-center  ">
+                              <div className="flex gap-4 mt-4">
+                                {/* Email Button */}
+                                <Tooltip label={<MdError />}>
+                                  <button className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-800 text-white hover:bg-gray-700 transition-all shadow-md">
+                                    <MdEmail className="text-2xl" />
+                                  </button>
+                                </Tooltip>
+
+                                {/* Facebook Button */}
+                                <a
+                                  href={item.buyerFacebook}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  <Tooltip label="Visit buyer facebook Page.">
+                                    <button className="flex items-center justify-center  w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-500 transition-all shadow-md">
+                                      <FaFacebookSquare className="text-2xl" />
+                                    </button>
+                                  </Tooltip>
+                                </a>
+
+                                {/* Chat Button */}
+                                <Tooltip label="Message this buyer.">
+                                  <button
+                                    onClick={() => chatButton(item)}
+                                    className="flex items-center justify-center  w-10 h-10 rounded-full bg-green-600 text-white hover:bg-green-500 transition-all shadow-md"
+                                  >
+                                    <MdMessage className="text-2xl" />
+                                  </button>
+                                </Tooltip>
+                              </div>
+                            </figure>
+                          </AccordionPanel>{" "}
+                        </AccordionItem>
+                      </Accordion>
+                      {/* <button
+                      onClick={() => statusHandler(order)}
+                      className="px-6 w-full pt-2 pb-2 font-quicksand mt-1 p-1 bg-gray-900 text-white text-center text-sm rounded-md grid  hover:bg-gray-800"
+                    >
+                      Pay now
+                    </button> */}
+                    </AccordionPanel>
+                  </AccordionItem>
+                </Accordion>
+              )}
+            </div>
+          ))}
+      </div>
+    );
+  };
+
+  const historyItemReturnedCard = () => {
+    return (
+      <div className="">
+        {myTransactions
+          .filter((item) => item.transactionStatus === "Item Returned")
+          .map((item) => (
+            <div
+              className="mt-1 border-solid rounded-2xl mb-5 max-w-full   "
+              key={item._id}
+            >
+              <div className="flex ">
+                <figure className="mr-2">
+                  <img
+                    className="  max-w-full max-h-full ssm:w-44  lg:w-40 h-20 object-cover bg-fixed"
+                    src={item.image}
+                    alt=""
+                  />
+                </figure>
+
+                <figure className="grid  rounded-md  ssm:mx-1 lg:mx-3 bottom-2 font-quicksand text-sm">
+                  <p className="text-xl grid grid-cols-2">
+                    <p className="truncate ssm:w-32 lg:w-52 pr-2 text-start">
+                      {item.prodName}
+                    </p>
+                    <Flex justifyContent={"end"} mx={1} gap={1}>
+                      <Tooltip label={`View ${item.prodName}`}>
+                        <Link
+                          to={`/ProductId/${item.productId}#item`}
+                          className="grid justify-self-start justify-start "
+                        >
+                          <button size="xs">
+                            <Box as="span" flex="1" textAlign="right">
+                              <TbViewportWide className="text-base" />
+                            </Box>
+
+                            {/* <AccordionIcon /> */}
+                          </button>
+                        </Link>
+                      </Tooltip>
+                      <Popover>
+                        <PopoverTrigger>
+                          <button size="xs">
+                            <Box as="span" flex="1" textAlign="right">
+                              <MdDelete className="text-base" />
+                            </Box>
+
+                            {/* <AccordionIcon /> */}
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent mr={8}>
+                          <PopoverArrow />
+                          <PopoverCloseButton />
+                          <PopoverHeader textAlign={"center"}>
+                            <Text>
+                              Delete this in History <br /> {item.prodName}
+                            </Text>
+                          </PopoverHeader>
+                          <PopoverBody>
+                            <button
+                              className="justify-self-center flex text-sm hover:shadow-inner hover:scale-110"
+                              onClick={() => {
+                                removeItemClick(item._id);
+                              }}
+                            >
+                              Confirm
+                            </button>
+                          </PopoverBody>
+                        </PopoverContent>
+                      </Popover>
+                    </Flex>
+                    <figure>
+                      {item.transactionStatus === "Success" && (
+                        <>
+                          {" "}
+                          <Tooltip label="Transaction Success: Item Received">
+                            <div className="bg-emerald-700 text-white text-center rounded-lg text-xs w-20">
+                              {item.transactionStatus}
+                            </div>
+                          </Tooltip>
+                        </>
+                      )}
+                      {item.transactionStatus === undefined && (
+                        <Tooltip label="Transaction Status Pending">
+                          <div className="bg-gray-800 text-white text-center rounded-lg text-xs w-20">
+                            In Proccess
+                          </div>
+                        </Tooltip>
+                      )}
+                      {item.transactionStatus === "Item Returned" && (
+                        <>
+                          <Tooltip label="Transaction Status: Item Returned.">
+                            <div className="bg-orange-600 text-white text-center rounded-lg text-xs w-24">
+                              {item.transactionStatus}
+                            </div>
+                          </Tooltip>
+                        </>
+                      )}
+                      {item.marketType === "Trading" && (
+                        <>
+                          <p className="text-xs mt-2 font-quicksand text-orange-400">
+                            {item.marketType}
+                          </p>
+                        </>
+                      )}
+                      {item.marketType === "Selling" && (
+                        <>
+                          <p className="text-xs mt-2 font-quicksand text-emerald-400">
+                            {item.marketType}
+                          </p>
+                        </>
+                      )}
+                    </figure>
+                    <figure className="justify-self-end text-xs ">
+                      <article>
+                        {" "}
+                        <p className="flex">
+                          <p className="">{item.quantity}</p>
+                        </p>
+                        <p className="flex ">
+                          <p className="">
+                            {item.price.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                          </p>
+                        </p>
+                        <p className="flex">
+                          <p className="">
+                            {item.total.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                          </p>
+                        </p>
+                      </article>
+                    </figure>
+                  </p>
+                </figure>
+              </div>
+              {item.marketType === "Selling" && (
+                <Accordion mt={2} allowToggle>
+                  <AccordionItem border={"none"} borderBottom={"solid"}>
+                    <h2>
+                      <AccordionButton>
+                        <Box as="span" flex="1" textAlign="left">
+                          <Text className="text-xs">View Details</Text>
+                        </Box>
+                        <AccordionIcon />
+                      </AccordionButton>
+                    </h2>
+                    <AccordionPanel pb={4} bg={"#ffffff0a"} roundedTop={"md"}>
+                      <div className="grid grid-cols-2 pt-1">
+                        <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                          <LinkIcon className="mr-1 mt-1" />
+                          {item.sellerName}
+                        </p>
+                        <Tooltip label="Buyer Account Type">
+                          <p className="text-xs px-1 mt-1 justify-self-end mr-2 rounded-md bg-[#15f85667]">
+                            {item.accountType}
+                          </p>
+                        </Tooltip>
+                      </div>
+                      {item.accountType === "Student" && (
+                        <>
+                          {" "}
+                          <Link to={`/UserAccount/${item.buyerEmail}`}>
+                            <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                              <AtSignIcon className="mt-1 mr-1" />
+                              {item.buyerEmail}
+                            </p>
+                          </Link>
+                        </>
+                      )}
+                      {item.accountType === "Faculty" && (
+                        <>
+                          {" "}
+                          <Link to={`/FacultyAccount/${item.buyerEmail}`}>
+                            <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                              <AtSignIcon className="mt-1 mr-1" />
+                              {item.buyerEmail}
+                            </p>
+                          </Link>
+                        </>
+                      )}
+
+                      <Divider className="m-2" />
+                      <div className="space-y-1">
+                        <p className="flex justify-between ">
+                          <p className="text-xs font-light">Item:</p>
+                          <p className="px-2 text-xs text-right w-64 font-bold ">
+                            {item.prodName}
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Quantity:</p>
+                          <p className="px-2 text-xs  text-right w-64  font-bold ">
+                            {item.quantity}{" "}
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Price:</p>
+                          <p className="px-2 text-xs  text-right w-64  font-semibold ">
+                            {item.price.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}{" "}
+                          </p>
+                        </p>
+
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Total:</p>
+                          <p className="px-2 text-xs  text-right w-64 font-semibold ">
+                            {item.total.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Market Type:</p>
+                          <p className="px-2 text-xs font-bold ">
+                            <p>{item.marketType}</p>
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Status:</p>
+                          <p className="px-2 text-xs font-bold ">
+                            <p>
+                              {item.status ? <>{item.status}</> : <>Pending</>}
+                            </p>
+                          </p>
+                        </p>
+                      </div>
+                      <Divider className="m-2" />
+                      <Accordion mt={2} allowToggle>
+                        <AccordionItem border={"none"}>
+                          <h2>
+                            <AccordionButton>
+                              <Box as="span" flex="1" textAlign="left">
+                                <Text className="text-xs">More info.</Text>
+                              </Box>
+                              <AccordionIcon />
+                            </AccordionButton>
+                          </h2>
+                          <AccordionPanel
+                            pb={4}
+                            bg={"#ffffff0a"}
+                            roundedTop={"md"}
+                          >
+                            {" "}
+                            <p className="h-full space-y-1 overflow-y-auto  mt-1 mb-2 border-solid  rounded-lg  ">
+                              <p className="text-xs font-quicksand">
+                                Type: {item.types}
+                              </p>
+                              <p className="text-xs font-quicksand">
+                                Message: {item.message}
+                              </p>
+                            </p>
+                            <Divider />
+                            <figure className="flex flex-col items-center  ">
+                              <div className="flex gap-4 mt-4">
+                                {/* Email Button */}
+                                <Tooltip label={<MdError />}>
+                                  <button className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-800 text-white hover:bg-gray-700 transition-all shadow-md">
+                                    <MdEmail className="text-2xl" />
+                                  </button>
+                                </Tooltip>
+
+                                {/* Facebook Button */}
+                                <a
+                                  href={item.buyerFacebook}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  <Tooltip label="Visit buyer facebook Page.">
+                                    <button className="flex items-center justify-center  w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-500 transition-all shadow-md">
+                                      <FaFacebookSquare className="text-2xl" />
+                                    </button>
+                                  </Tooltip>
+                                </a>
+
+                                {/* Chat Button */}
+                                <Tooltip label="Message this buyer.">
+                                  <button
+                                    onClick={() => chatButton(item)}
+                                    className="flex items-center justify-center  w-10 h-10 rounded-full bg-green-600 text-white hover:bg-green-500 transition-all shadow-md"
+                                  >
+                                    <MdMessage className="text-2xl" />
+                                  </button>
+                                </Tooltip>
+                              </div>
+                            </figure>
+                          </AccordionPanel>{" "}
+                        </AccordionItem>
+                      </Accordion>
+                    </AccordionPanel>
+                  </AccordionItem>
+                </Accordion>
+              )}
+              {item.marketType === "Trading" && (
+                <Accordion mt={2} allowToggle>
+                  <AccordionItem border={"none"} borderBottom={"solid"}>
+                    <h2>
+                      <AccordionButton>
+                        <Box as="span" flex="1" textAlign="left">
+                          <Text className="text-xs">View Details</Text>
+                        </Box>
+                        <AccordionIcon />
+                      </AccordionButton>
+                    </h2>
+                    <AccordionPanel pb={4} bg={"#ffffff0a"} roundedTop={"md"}>
+                      <div className="grid grid-cols-2 pt-1">
+                        <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                          <LinkIcon className="mr-1 mt-1" />
+                          {item.sellerName}
+                        </p>
+                        <Tooltip label="Buyer Account Type">
+                          <p className="text-xs px-1 mt-1 justify-self-end mr-2 rounded-md bg-[#15f85667]">
+                            {item.accountType}
+                          </p>
+                        </Tooltip>
+                      </div>
+                      {item.accountType === "Student" && (
+                        <>
+                          {" "}
+                          <Link to={`/UserAccount/${item.buyerEmail}`}>
+                            <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                              <AtSignIcon className="mt-1 mr-1" />
+                              {item.buyerEmail}
+                            </p>
+                          </Link>
+                        </>
+                      )}
+                      {item.accountType === "Faculty" && (
+                        <>
+                          {" "}
+                          <Link to={`/FacultyAccount/${item.buyerEmail}`}>
+                            <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                              <AtSignIcon className="mt-1 mr-1" />
+                              {item.buyerEmail}
+                            </p>
+                          </Link>
+                        </>
+                      )}
+
+                      <Divider className="m-2" />
+                      <div className="space-y-1">
+                        <Text className="justify-self-center flex text-xs mb-4 mt-4">
+                          Buyer are ready to claim.
+                        </Text>
+                        <p className="flex justify-between ">
+                          <p className="text-xs font-light">Item:</p>
+                          <p className="px-2 text-xs text-right w-64 font-bold ">
+                            {item.prodName}
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Quantity:</p>
+                          <p className="px-2 text-xs  text-right w-64  font-bold ">
+                            {item.quantity}{" "}
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Price:</p>
+                          <p className="px-2 text-xs  text-right w-64  font-semibold ">
+                            {item.price.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}{" "}
+                          </p>
+                        </p>
+
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Total:</p>
+                          <p className="px-2 text-xs  text-right w-64 font-semibold ">
+                            {item.total.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Market Type:</p>
+                          <p className="px-2 text-xs font-bold ">
+                            <p>{item.marketType}</p>
+                          </p>
+                        </p>
+                        <p className="flex justify-between">
+                          <p className="text-xs font-light">Status:</p>
+                          <p className="px-2 text-xs font-bold ">
+                            <p>
+                              {item.status ? <>{item.status}</> : <>Pending</>}
+                            </p>
+                          </p>
+                        </p>
+                      </div>
+                      <Divider className="m-2" />
+                      <Accordion mt={2} allowToggle>
+                        <AccordionItem border={"none"}>
+                          <h2>
+                            <AccordionButton>
+                              <Box as="span" flex="1" textAlign="left">
+                                <Text className="text-xs">More info.</Text>
+                              </Box>
+                              <AccordionIcon />
+                            </AccordionButton>
+                          </h2>
+                          <AccordionPanel
+                            pb={4}
+                            bg={"#ffffff0a"}
+                            roundedTop={"md"}
+                          >
+                            {" "}
+                            <p className="h-full space-y-1 overflow-y-auto  mt-1 mb-2 border-solid  rounded-lg  ">
+                              <p className="text-xs font-quicksand">
+                                Type: {item.types}
+                              </p>
+                              <p className="text-xs font-quicksand">
+                                Message: {item.message}
+                              </p>
+                            </p>
+                            <Divider />
+                            <figure className="flex flex-col items-center  ">
+                              <div className="flex gap-4 mt-4">
+                                {/* Email Button */}
+                                <Tooltip label={<MdError />}>
+                                  <button className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-800 text-white hover:bg-gray-700 transition-all shadow-md">
+                                    <MdEmail className="text-2xl" />
+                                  </button>
+                                </Tooltip>
+
+                                {/* Facebook Button */}
+                                <a
+                                  href={item.buyerFacebook}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  <Tooltip label="Visit buyer facebook Page.">
+                                    <button className="flex items-center justify-center  w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-500 transition-all shadow-md">
+                                      <FaFacebookSquare className="text-2xl" />
+                                    </button>
+                                  </Tooltip>
+                                </a>
+
+                                {/* Chat Button */}
+                                <Tooltip label="Message this buyer.">
+                                  <button
+                                    onClick={() => chatButton(item)}
+                                    className="flex items-center justify-center  w-10 h-10 rounded-full bg-green-600 text-white hover:bg-green-500 transition-all shadow-md"
+                                  >
+                                    <MdMessage className="text-2xl" />
+                                  </button>
+                                </Tooltip>
+                              </div>
+                            </figure>
+                          </AccordionPanel>{" "}
+                        </AccordionItem>
+                      </Accordion>
+                      {/* <button
+                      onClick={() => statusHandler(order)}
+                      className="px-6 w-full pt-2 pb-2 font-quicksand mt-1 p-1 bg-gray-900 text-white text-center text-sm rounded-md grid  hover:bg-gray-800"
+                    >
+                      Pay now
+                    </button> */}
+                    </AccordionPanel>
+                  </AccordionItem>
+                </Accordion>
+              )}
+            </div>
+          ))}
       </div>
     );
   };
 
   return (
-    <main className="rounded-md pb-4 max-w-full max-h-full   bg-gradient-to-tr ">
+    <main className="rounded-md pb-4 max-w-full max-h-full justify-items-center grid  bg-gradient-to-tr">
       {" "}
-      <div className="mx-2 mt-2 mb-14  px-4 rounded-md pt-3 pb-4 max-w-full max-h-full ">
-        {pendingCard()}
+      <div className=" mb-14  rounded-md pt-3 pb-4 max-w-full max-h-full ">
+        <div className=" md:shrink-0 grid  justify-items-center grid-cols-1 ssm:grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-1 ">
+          {loading ? (
+            <>
+              {" "}
+              <div className="fixed mt-32 ">
+                <Loader />
+              </div>
+            </>
+          ) : (
+            <>
+              {myTransactions.length === 0 ? (
+                <div className=" absolute  text-xl font-thin font-quicksand  mt-10">
+                  Empty Transaction
+                </div>
+              ) : (
+                <>
+                  <Tabs isFitted w={["370px", "390px", "420px"]}>
+                    <TabList>
+                      <Tab
+                        fontSize={9}
+                        color={"black.600"}
+                        className="font-quicksand"
+                      >
+                        E-Payment
+                      </Tab>
+                      <Tab
+                        fontSize={11}
+                        color={"black.600"}
+                        className="font-quicksand"
+                      >
+                        Meet up Pay
+                      </Tab>
+                      <Tab
+                        fontSize={11}
+                        color={"black.600"}
+                        className="font-quicksand"
+                      >
+                        History
+                      </Tab>
+                    </TabList>
+                    <TabPanels>
+                      <TabPanel> {EpaymentCard()}</TabPanel>
+                      <TabPanel> {meetUpPayCard()}</TabPanel>
+                      <TabPanel>
+                        <Tabs isFitted w={["340px", "350px", "390px"]}>
+                          <TabList>
+                            {" "}
+                            <Tab
+                              fontSize={11}
+                              color={"black.600"}
+                              className="font-quicksand"
+                            >
+                              Complete Transaction
+                            </Tab>
+                            <Tab
+                              fontSize={11}
+                              color={"black.600"}
+                              className="font-quicksand"
+                            >
+                              Item Returned
+                            </Tab>
+                          </TabList>
+                          <TabPanels>
+                            <TabPanel> {historySuccessCard()}</TabPanel>
+                            <TabPanel> {historyItemReturnedCard()}</TabPanel>
+                          </TabPanels>
+                        </Tabs>
+                      </TabPanel>
+                    </TabPanels>
+                  </Tabs>
+                </>
+              )}
+            </>
+          )}
+        </div>
+
         {statusData && (
           <Drawer
             isOpen={isOpenDrawer}
@@ -521,7 +2445,6 @@ function Transactions({ id }) {
             </DrawerContent>
           </Drawer>
         )}
-
         {statusData && (
           <Modal onClose={onClosedSecond} size={size} isOpen={isOpenSecond}>
             <ModalOverlay />
@@ -601,7 +2524,6 @@ function Transactions({ id }) {
             </ModalContent>
           </Modal>
         )}
-
         {/* modal for transaction mark as done button */}
         {statusData && (
           <Modal onClose={onClosedMark} size={size} isOpen={isOpenMark}>

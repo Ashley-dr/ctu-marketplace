@@ -130,6 +130,32 @@ router.get("/user-orders/:id", async (req, res) => {
     res.status(500).json({ message: "Error in fetching order count", error });
   }
 });
+router.get("/transaction-count/:id", async (req, res) => {
+  const { id } = req.params;
+  PurchasedModel.aggregate(
+    [
+      {
+        $match: {
+          sellerId: id,
+          transactionStatus: { $eq: undefined },
+          status: { $eq: undefined },
+        },
+      },
+      { $group: { _id: "$sellerId", count: { $sum: 1 } } },
+    ],
+    { maxTimeMS: 60000, allowDiskUse: true }
+  )
+    .then((result) => {
+      if (result.length === 0) {
+        return res.status(200).json({ count: 0 });
+      }
+      res.status(200).json({ count: result[0].count });
+    })
+    .catch((err) => {
+      res.status(500).json({ message: "Error in fetching order count", err });
+    });
+});
+
 router.get("/user-orders", async (req, res) => {
   try {
     const result = await PurchasedModel.aggregate(
@@ -151,6 +177,7 @@ router.get("/user-orders", async (req, res) => {
     res.status(500).json({ message: "Error in fetching order count", error });
   }
 });
+
 router.put("/purchasedItem/:id", upload.single("image"), (req, res) => {
   PurchasedModel.findByIdAndUpdate(req.params.id, req.body, { new: true })
     .then((result) => {
@@ -169,29 +196,7 @@ router.get("/transactions/:sellerId", (req, res) => {
       res.status(404).json(err);
     });
 });
-router.get("/transaction-count/:id", async (req, res) => {
-  PurchasedModel.aggregate(
-    [
-      {
-        $match: {
-          sellerId: req.params.id,
-          transactionStatus: { $exists: false },
-        },
-      },
-      { $group: { _id: "$sellerId", count: { $sum: 1 } } },
-    ],
-    { maxTimeMS: 60000, allowDiskUse: true }
-  )
-    .then((result) => {
-      if (result.length === 0) {
-        return res.status(200).json({ count: 0 });
-      }
-      res.status(200).json({ count: result[0].count });
-    })
-    .catch((err) => {
-      res.status(500).json({ message: "Error in fetching order count", err });
-    });
-});
+
 router.get("/orders/:userId", (req, res) => {
   PurchasedModel.find({ userId: req.params.userId })
     .then((result) => {
