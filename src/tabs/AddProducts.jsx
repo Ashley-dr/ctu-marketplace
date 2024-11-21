@@ -60,7 +60,7 @@ function AddProducts() {
       return status;
     };
     verifyCookie();
-  }, [cookies, navigate, removeCookies]);
+  }, [baseUrl, cookies, navigate, removeCookies]);
 
   const productHandler = (e) => {
     setProducts({ ...products, [e.target.name]: e.target.value });

@@ -66,8 +66,8 @@ const FacultySchema = new mongoose.Schema({
     enum: ["online", "offline"],
     default: "offline",
   },
-  resetToken: { type: String },
-  resetTokenExpiration: { type: String },
+  resetToken: { type: String, select: false },
+  resetTokenExpiration: { type: String, select: false },
 });
 
 FacultySchema.pre("save", async function () {

@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import helmet from "helmet";
 
 import authRoute from "./Routes/AuthRoute.js";
 import addCartRoute from "./Routes/AddCart.js";
@@ -16,6 +17,7 @@ import FacultyRoute from "./Routes/FacultyRoute.js";
 import UserRoute from "./Routes/UsersRoute.js";
 import ProductRoute from "./Routes/Products.js";
 import MessageRoute from "./Routes/MessageRoute.js";
+import RefundRoute from "./Routes/RefundRoute.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -52,6 +54,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "../dist")));
 
 // API routes
+app.use(helmet());
 app.use("/", authRoute);
 app.use("/api", addCartRoute);
 app.use("/api", DonePurchasedRoute);
@@ -59,7 +62,7 @@ app.use("/api", FacultyRoute);
 app.use("/api", UserRoute);
 app.use("/api", ProductRoute);
 app.use("/api", MessageRoute);
-
+app.use("/api", RefundRoute);
 // Fallback route to serve index.html for non-API requests
 app.get("/*", function (req, res) {
   // Only return index.html for non-API routes

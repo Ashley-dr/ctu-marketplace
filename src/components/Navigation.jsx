@@ -416,11 +416,6 @@ function Navigation() {
     } finally {
       setLoginLoading(false);
     }
-    setInputLogin({
-      ...inputLogin,
-      email: "",
-      password: "",
-    });
   };
 
   useEffect(() => {

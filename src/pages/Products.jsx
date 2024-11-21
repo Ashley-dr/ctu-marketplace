@@ -503,8 +503,8 @@ function Products() {
           <div className=" md:shrink-0 grid xs:grid-cols-1  ssm:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 ">
             {/* here  */}
             {filteredProducts.length === 0 ? (
-              <p className="text-center text-xs mx-6 w-80 font-quicksand mb-5">
-                No Items are selling for this category yet.
+              <p className="text-center text-xs mx-6 w-64 font-quicksand mb-5">
+                No Items for this category yet.
               </p>
             ) : (
               filteredProducts.map(renderProductCard)

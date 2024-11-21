@@ -64,6 +64,10 @@ import {
   TabPanel,
   Image,
   IconButton,
+  Input,
+  Select,
+  Textarea,
+  useToast,
 } from "@chakra-ui/react";
 import { MdDelete } from "react-icons/md";
 import qrmaya from "../assets/PYMY CTU Marketplace.png";
@@ -77,6 +81,9 @@ import Lightbox from "yet-another-react-lightbox";
 import { Zoom } from "yet-another-react-lightbox/plugins";
 import "yet-another-react-lightbox/styles.css";
 import { formatDateToNow } from "../pages/Products";
+import { RiImage2Fill } from "react-icons/ri";
+import { GrTransaction } from "react-icons/gr";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 function OrdersDrawer({ id }) {
   const [orders, setOrders] = useState([]);
   const baseUrl = import.meta.env.VITE_SERVER_URL;
@@ -316,6 +323,97 @@ function OrdersDrawer({ id }) {
   const handleOpenLightbox = (index) => {
     setCurrentImage(index); // Set the clicked image index
     setOpen(true); // Open the lightbox
+  };
+  const toast = useToast();
+  const [loadingRefund, setRefundLoading] = useState(false);
+  const [refund, setRefund] = useState({
+    orderId: "",
+    buyerName: "",
+    buyerEmail: "",
+    contactNumber: "",
+    sellerName: "",
+    sellerEmail: "",
+    itemTotalPaid: "",
+    itemQuantity: "",
+    productName: "",
+    returnReason: "",
+    returnPaymentMethod: "",
+  });
+  const [refundImage, setRefundImage] = useState([]);
+  const refundHandler = (e) => {
+    setRefund({ ...refund, [e.target.name]: e.target.value });
+  };
+  const refundImageHandler = (e) => {
+    setRefundImage(Array.from(e.target.files));
+  };
+
+  const refundSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("orderId", refund.orderId);
+    formData.append("buyerName", refund.buyerName);
+    formData.append("buyerEmail", refund.buyerEmail);
+    formData.append("contactNumber", refund.contactNumber);
+    formData.append("sellerName", refund.sellerName);
+    formData.append("sellerEmail", refund.sellerEmail);
+    formData.append("productName", refund.productName);
+    formData.append("returnReason", refund.returnReason);
+    formData.append("itemTotalPaid", refund.itemTotalPaid);
+    formData.append("itemQuantity", refund.itemQuantity);
+    formData.append("returnPaymentMethod", refund.returnPaymentMethod);
+    refundImage.forEach((itemFile) => {
+      formData.append("itemFile", itemFile);
+    });
+    try {
+      setRefundLoading(true);
+      const response = await axios.post(
+        `${baseUrl}/api/refund-item`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      console.log("Image Uploaded", response.data.itemFile);
+      setRefund({
+        orderId: "",
+        buyerName: "",
+        buyerEmail: "",
+        contactNumber: "",
+        sellerName: "",
+        sellerEmail: "",
+        itemTotalPaid: "",
+        itemQuantity: "",
+        productName: "",
+        returnReason: "",
+        returnPaymentMethod: "",
+      });
+      setRefundImage([]);
+      console.log("Refund Submitted");
+
+      toast({
+        position: "top",
+        title: "Refund submitted.",
+        description: "Your refund request has been successfully submitted.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+      onCloseDrawer();
+    } catch (error) {
+      console.log("Error uploading images", error);
+      toast({
+        title: "Error submitting refund.",
+        description:
+          "There was an error submitting your refund. Please try again.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+      setRefundLoading(false);
+    }
   };
 
   const pendingCard = () => {
@@ -835,7 +933,11 @@ function OrdersDrawer({ id }) {
       <>
         {" "}
         {orders
-          .filter((order) => order.status === "E-Payment")
+          .filter(
+            (order) =>
+              order.transactionStatus === undefined &&
+              order.status === "E-Payment"
+          )
           .map((order) => (
             <div
               key={order._id}
@@ -1146,7 +1248,11 @@ function OrdersDrawer({ id }) {
       <div className="max-w-full">
         {" "}
         {orders
-          .filter((order) => order.status === "Meet up Pay")
+          .filter(
+            (order) =>
+              order.transactionStatus === undefined &&
+              order.status === "Meet up Pay"
+          )
           .map((order) => (
             <div
               key={order._id}
@@ -1452,6 +1558,817 @@ function OrdersDrawer({ id }) {
       </div>
     );
   };
+
+  const historySuccessCard = () => {
+    return (
+      <>
+        {" "}
+        {orders
+          .filter((order) => order.transactionStatus === "Success")
+          .map((order) => (
+            <div
+              key={order._id}
+              className="mt-1 border-solid rounded-2xl mb-5 max-w-full   "
+            >
+              <div className=" flex ">
+                <figure>
+                  <img
+                    className="  max-w-full max-h-full ssm:w-72 lg:w-40 h-20 object-cover bg-fixed"
+                    src={order.image}
+                    alt={order.prodName}
+                  />
+                </figure>
+                <div className="grid  rounded-md  ssm:mx-1 lg:mx-3 bottom-2 font-quicksand text-sm">
+                  <p className="text-xl grid grid-cols-2">
+                    <button className="truncate ssm:w-32 lg:w-52 pr-2 text-start">
+                      {order.prodName}
+                    </button>
+
+                    <Flex justifyContent={"end"} mx={1} gap={1}>
+                      <Tooltip label={`View ${order.prodName}`}>
+                        <Link
+                          to={`/ProductId/${order.productId}#item`}
+                          className="grid justify-self-start justify-start "
+                        >
+                          <button size="xs">
+                            <Box as="span" flex="1" textAlign="right">
+                              <TbViewportWide className="text-base" />
+                            </Box>
+
+                            {/* <AccordionIcon /> */}
+                          </button>
+                        </Link>
+                      </Tooltip>
+                      <Popover>
+                        <PopoverTrigger>
+                          <button size="xs">
+                            <Box as="span" flex="1" textAlign="right">
+                              <MdDelete className="text-base" />
+                            </Box>
+
+                            {/* <AccordionIcon /> */}
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent mr={8}>
+                          <PopoverArrow />
+                          <PopoverCloseButton />
+                          <PopoverHeader textAlign={"center"}>
+                            <Text>
+                              Delete in History? <br /> {order.prodName}
+                            </Text>
+                          </PopoverHeader>
+                          <PopoverBody>
+                            <button
+                              className="justify-self-center flex text-sm hover:shadow-inner hover:scale-110"
+                              onClick={() => removeItemClick(order._id)}
+                            >
+                              Confirm
+                            </button>
+                          </PopoverBody>
+                        </PopoverContent>
+                      </Popover>
+                    </Flex>
+                    <figure>
+                      {/* <Link
+                              to={`/ProductId/${order.productId}`}
+                              className="grid justify-self-start justify-start "
+                            >
+                              <button className="text-xs underline">
+                                View Item
+                              </button>
+                            </Link> */}
+                      {order.transactionStatus === "Success" && (
+                        <>
+                          {" "}
+                          <Tooltip label="Transaction Success: Item Received">
+                            <div className="bg-emerald-700 text-white text-center rounded-lg text-xs w-20">
+                              {order.transactionStatus}
+                            </div>
+                          </Tooltip>
+                        </>
+                      )}
+                      {order.transactionStatus === undefined && (
+                        <Tooltip label="Transaction Status Pending">
+                          <div className="bg-gray-800 text-white text-center rounded-lg text-xs w-20">
+                            In Proccess
+                          </div>
+                        </Tooltip>
+                      )}
+                      {order.transactionStatus === "Item Returned" && (
+                        <>
+                          <Tooltip label="Transaction Status: Item Returned.">
+                            <div className="bg-orange-600 text-white text-center rounded-lg text-xs w-24">
+                              {order.transactionStatus}
+                            </div>
+                          </Tooltip>
+                        </>
+                      )}
+                      <div className="grid grid-cols-2 pt-1">
+                        <p className="w-32 text-sm flex">
+                          <p className="truncate">{order.sellerName}</p>
+                        </p>
+                      </div>
+                    </figure>
+                    <figure className="justify-self-end text-xs ">
+                      <article>
+                        {" "}
+                        <p className="flex">
+                          <p className="">{order.quantity}</p>
+                        </p>
+                        <p className="flex ">
+                          <p className="">
+                            {order.price.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                          </p>
+                        </p>
+                        <p className="flex">
+                          <p className="">
+                            {order.total.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                          </p>
+                        </p>
+                      </article>
+                    </figure>
+                  </p>
+                </div>
+              </div>
+
+              {/* <Divider mt={5} /> */}
+              <Accordion mt={2} allowToggle>
+                <AccordionItem border={"none"} borderBottom={"solid"}>
+                  <h2>
+                    <AccordionButton>
+                      <Box as="span" flex="1" textAlign="left">
+                        <Text className="text-xs">View</Text>
+                      </Box>
+                      <AccordionIcon />
+                    </AccordionButton>
+                  </h2>
+                  <AccordionPanel pb={4} bg={"#ffffff0a"} roundedTop={"md"}>
+                    <div className="grid grid-cols-2 pt-1">
+                      <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                        <LinkIcon className="mr-1 mt-1" />
+                        {order.sellerName}
+                      </p>
+                      <p className="text-xs px-1 mt-1 justify-self-end mr-2 rounded-md bg-[#15f85667]">
+                        {order.accountType}
+                      </p>
+                    </div>
+                    {order.accountType === "Student" && (
+                      <>
+                        {" "}
+                        <Link to={`/UserAccount/${order.sellerEmail}`}>
+                          <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                            <AtSignIcon className="mt-1 mr-1" />
+                            {order.sellerEmail}
+                          </p>
+                        </Link>
+                      </>
+                    )}
+                    {order.accountType === "Faculty" && (
+                      <>
+                        {" "}
+                        <Link to={`/FacultyAccount/${order.sellerEmail}`}>
+                          <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                            <AtSignIcon className="mt-1 mr-1" />
+                            {order.sellerEmail}
+                          </p>
+                        </Link>
+                      </>
+                    )}
+                    {/* <p className="truncate flex">
+                          <FaFacebookF className="mt-1 mr-1" />{" "}
+                          {order.sellerFacebook}
+                        </p> */}
+                    <Divider className="m-2" />
+                    <div className="space-y-1">
+                      <p className="flex justify-between ">
+                        <p className="text-xs font-light">Item:</p>
+                        <p className="px-2 text-xs text-right w-64 font-bold ">
+                          {order.prodName}
+                        </p>
+                      </p>
+                      <p className="flex justify-between">
+                        <p className="text-xs font-light">Quantity:</p>
+                        <p className="px-2 text-xs  text-right w-64  font-bold ">
+                          {order.quantity}{" "}
+                        </p>
+                      </p>
+                      <p className="flex justify-between">
+                        <p className="text-xs font-light">Price:</p>
+                        <p className="px-2 text-xs  text-right w-64  font-semibold ">
+                          {order.price.toLocaleString("en-PH", {
+                            style: "currency",
+                            currency: "PHP",
+                          })}{" "}
+                        </p>
+                      </p>
+
+                      <p className="flex justify-between">
+                        <p className="text-xs font-light">Total:</p>
+                        <p className="px-2 text-xs  text-right w-64 font-semibold ">
+                          {order.total.toLocaleString("en-PH", {
+                            style: "currency",
+                            currency: "PHP",
+                          })}
+                        </p>
+                      </p>
+                      <p className="flex justify-between">
+                        <p className="text-xs font-light">Market Type:</p>
+                        <p className="px-2 text-xs font-bold ">
+                          <p>{order.marketType}</p>
+                        </p>
+                      </p>
+                      <p className="flex justify-between">
+                        <p className="text-xs font-light">Status:</p>
+                        <p className="px-2 text-xs font-bold ">
+                          <p>
+                            {order.status ? <>{order.status}</> : <>Pending</>}
+                          </p>
+                        </p>
+                      </p>
+                    </div>
+                    <Divider className="m-2" />
+                    <Accordion mt={2} allowToggle>
+                      <AccordionItem border={"none"}>
+                        <h2>
+                          <AccordionButton>
+                            <Box as="span" flex="1" textAlign="left">
+                              <Text className="text-xs">More info.</Text>
+                            </Box>
+                            <AccordionIcon />
+                          </AccordionButton>
+                        </h2>
+                        <AccordionPanel
+                          pb={4}
+                          bg={"#ffffff0a"}
+                          roundedTop={"md"}
+                        >
+                          {" "}
+                          <p className="h-full space-y-1 overflow-y-auto  mt-1 mb-2 border-solid  rounded-lg  ">
+                            <p className="text-xs font-quicksand">
+                              Type: {order.types}
+                            </p>
+                            <p className="text-xs font-quicksand">
+                              Message: {order.message}
+                            </p>
+                          </p>
+                          <Divider />
+                          <figure className="flex flex-col items-center  ">
+                            <div className="flex gap-4 mt-4">
+                              {/* Email Button */}
+                              <Tooltip label={<MdError />}>
+                                <button className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-800 text-white hover:bg-gray-700 transition-all shadow-md">
+                                  <MdEmail className="text-2xl" />
+                                </button>
+                              </Tooltip>
+
+                              {/* Facebook Button */}
+                              <a
+                                href={order.sellerFacebook}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <Tooltip label="Visit seller facebook Page.">
+                                  <button className="flex items-center justify-center  w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-500 transition-all shadow-md">
+                                    <FaFacebookSquare className="text-2xl" />
+                                  </button>
+                                </Tooltip>
+                              </a>
+
+                              {/* Chat Button */}
+                              <Tooltip label="Message this seller.">
+                                <button
+                                  onClick={() => chatButton(order)}
+                                  className="flex items-center justify-center  w-10 h-10 rounded-full bg-green-600 text-white hover:bg-green-500 transition-all shadow-md"
+                                >
+                                  <MdMessage className="text-2xl" />
+                                </button>
+                              </Tooltip>
+                            </div>
+                          </figure>
+                        </AccordionPanel>{" "}
+                      </AccordionItem>
+                    </Accordion>
+                    <Divider className="m-2" />
+                    <Accordion
+                      mt={2}
+                      allowToggle
+                      bg={"#f6fcff"}
+                      className="text-black"
+                      rounded={"base"}
+                    >
+                      <AccordionItem border={"none"}>
+                        <h2>
+                          <AccordionButton>
+                            <Box as="span" flex="1" textAlign="left">
+                              <Text className="text-xs text-center font-poppins ">
+                                Request a Refund.
+                              </Text>
+                            </Box>
+                            <AccordionIcon />
+                          </AccordionButton>
+                        </h2>
+                        <AccordionPanel
+                          pb={4}
+                          bg={"#f4ddff38"}
+                          roundedTop={"md"}
+                        >
+                          <form onSubmit={refundSubmit}>
+                            <article hidden>
+                              <Input
+                                type="text"
+                                name="orderId"
+                                value={(refund.orderId = order._id)}
+                                onChange={refundHandler}
+                                disabled
+                              />
+                              <Input
+                                type="text"
+                                name="buyerName"
+                                value={(refund.buyerName = order.buyerName)}
+                                onChange={refundHandler}
+                                disabled
+                              />
+                              <Input
+                                type="text"
+                                name="buyerEmail"
+                                value={(refund.buyerEmail = order.buyerEmail)}
+                                onChange={refundHandler}
+                                disabled
+                              />
+                              <Input
+                                type="number"
+                                name="contactNumber"
+                                value={
+                                  (refund.contactNumber =
+                                    order.buyerPhoneNumber)
+                                }
+                                onChange={refundHandler}
+                                disabled
+                              />
+                              <Input
+                                type="text"
+                                name="sellerName"
+                                value={(refund.sellerName = order.sellerName)}
+                                onChange={refundHandler}
+                                disabled
+                              />
+                              <Input
+                                type="text"
+                                name="sellerEmail"
+                                value={(refund.sellerEmail = order.sellerEmail)}
+                                onChange={refundHandler}
+                                disabled
+                              />
+                              <Input
+                                type="text"
+                                name="productName"
+                                value={(refund.productName = order.prodName)}
+                                onChange={refundHandler}
+                                disabled
+                              />
+                              <Input
+                                type="text"
+                                name="itemTotalPaid"
+                                value={(refund.itemTotalPaid = order.total)}
+                                onChange={refundHandler}
+                                disabled
+                              />
+                              <Input
+                                type="text"
+                                name="itemQuantity"
+                                value={(refund.itemQuantity = order.quantity)}
+                                onChange={refundHandler}
+                                disabled
+                              />
+                            </article>
+                            <article className="space-y-1 grid justify-items-center">
+                              <label
+                                htmlFor="text-area"
+                                className="text-xs font-poppins font-extralight"
+                              >
+                                Reason for a refund.
+                              </label>
+                              <Textarea
+                                type="text"
+                                id="text-area"
+                                name="returnReason"
+                                value={refund.returnReason}
+                                onChange={refundHandler}
+                                className=" border s"
+                                border={"solid.1px"}
+                                borderColor={"purple"}
+                                required
+                              />
+
+                              {/* <Select
+                                id="select-method"
+                                type="text"
+                                name="returnPaymentMethod"
+                                value={refund.returnPaymentMethod}
+                                onChange={refundHandler}
+                                className="border"
+                                border={"solid.1px"}
+                                borderColor={"purple"}
+                              >
+                                <option value="E-Payment">E-Payment</option>
+                                <option value="Meet up Pay">Meet up Pay</option>
+                              </Select> */}
+                              <figure className="space-y-2 grid justify-items-center">
+                                <Box className="mx-5 mt-5 grid justify-items-center ">
+                                  <label
+                                    htmlFor="file-upload"
+                                    className="cursor-pointer flex"
+                                  >
+                                    <Tooltip label="Input your Item image here (Required)">
+                                      <IconButton
+                                        bg={"#8b18ff6e"}
+                                        _hover={{ bg: "#601da4d3" }}
+                                        className="bg-[#512f73d3]"
+                                        size="lg"
+                                        icon={<RiImage2Fill />}
+                                        aria-label="Upload file"
+                                        as="span"
+                                      />
+                                    </Tooltip>
+                                  </label>
+
+                                  <Input
+                                    id="file-upload"
+                                    type="file"
+                                    name="refundImage"
+                                    accept=".jpeg,.jpg,.png,.gif,.pdf,.doc,.docx"
+                                    onChange={refundImageHandler}
+                                    multiple
+                                    required
+                                    display="none"
+                                  />
+                                  <Text className="text-xs">
+                                    Attach file image of an item. ({" "}
+                                    {refundImage.length} ) 5 max.
+                                  </Text>
+                                </Box>
+                                {loadingRefund ? (
+                                  <>
+                                    {" "}
+                                    <Button
+                                      rounded={"0"}
+                                      w={"100%"}
+                                      bg={"#601da4d3"}
+                                      _hover={{ bg: "#512f73d3" }}
+                                      className="bg-[#601da4d3]  justify-self-center  font-poppins"
+                                    >
+                                      Processing{" "}
+                                      <AiOutlineLoading3Quarters className="animate-spin ml-2" />
+                                    </Button>
+                                  </>
+                                ) : (
+                                  <Button
+                                    rounded={"0"}
+                                    w={"100%"}
+                                    bg={"#601da4d3"}
+                                    _hover={{ bg: "#512f73d3" }}
+                                    className="bg-[#601da4d3]  justify-self-center  font-poppins"
+                                    type="submit"
+                                  >
+                                    Submit
+                                  </Button>
+                                )}
+                              </figure>
+                            </article>
+                          </form>
+                        </AccordionPanel>{" "}
+                      </AccordionItem>
+                    </Accordion>
+                    {/* <button
+                      onClick={() => statusHandler(order)}
+                      className="px-6 w-full pt-2 pb-2 font-quicksand mt-1 p-1 bg-gray-900 text-white text-center text-sm rounded-md grid  hover:bg-gray-800"
+                    >
+                      Pay now
+                    </button> */}
+                  </AccordionPanel>
+                </AccordionItem>
+              </Accordion>
+            </div>
+          ))}
+      </>
+    );
+  };
+  const historyItemReturnedCard = () => {
+    return (
+      <>
+        {" "}
+        {orders
+          .filter((order) => order.transactionStatus === "Item Returned")
+          .map((order) => (
+            <div
+              key={order._id}
+              className="mt-1 border-solid rounded-2xl mb-5 max-w-full   "
+            >
+              <div className=" flex ">
+                <figure>
+                  <img
+                    className="  max-w-full max-h-full ssm:w-72 lg:w-40 h-20 object-cover bg-fixed"
+                    src={order.image}
+                    alt={order.prodName}
+                  />
+                </figure>
+                <div className="grid  rounded-md  ssm:mx-1 lg:mx-3 bottom-2 font-quicksand text-sm">
+                  <p className="text-xl grid grid-cols-2">
+                    <button className="truncate ssm:w-32 lg:w-52 pr-2 text-start">
+                      {order.prodName}
+                    </button>
+
+                    <Flex justifyContent={"end"} mx={1} gap={1}>
+                      <Tooltip label={`View ${order.prodName}`}>
+                        <Link
+                          to={`/ProductId/${order.productId}#item`}
+                          className="grid justify-self-start justify-start "
+                        >
+                          <button size="xs">
+                            <Box as="span" flex="1" textAlign="right">
+                              <TbViewportWide className="text-base" />
+                            </Box>
+
+                            {/* <AccordionIcon /> */}
+                          </button>
+                        </Link>
+                      </Tooltip>
+                      <Popover>
+                        <PopoverTrigger>
+                          <button size="xs">
+                            <Box as="span" flex="1" textAlign="right">
+                              <MdDelete className="text-base" />
+                            </Box>
+
+                            {/* <AccordionIcon /> */}
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent mr={8}>
+                          <PopoverArrow />
+                          <PopoverCloseButton />
+                          <PopoverHeader textAlign={"center"}>
+                            <Text>
+                              Delete in History? <br /> {order.prodName}
+                            </Text>
+                          </PopoverHeader>
+                          <PopoverBody>
+                            <button
+                              className="justify-self-center flex text-sm hover:shadow-inner hover:scale-110"
+                              onClick={() => removeItemClick(order._id)}
+                            >
+                              Confirm
+                            </button>
+                          </PopoverBody>
+                        </PopoverContent>
+                      </Popover>
+                    </Flex>
+                    <figure>
+                      {/* <Link
+                              to={`/ProductId/${order.productId}`}
+                              className="grid justify-self-start justify-start "
+                            >
+                              <button className="text-xs underline">
+                                View Item
+                              </button>
+                            </Link> */}
+                      {order.transactionStatus === "Success" && (
+                        <>
+                          {" "}
+                          <Tooltip label="Transaction Success: Item Received">
+                            <div className="bg-emerald-700 text-white text-center rounded-lg text-xs w-20">
+                              {order.transactionStatus}
+                            </div>
+                          </Tooltip>
+                        </>
+                      )}
+                      {order.transactionStatus === undefined && (
+                        <Tooltip label="Transaction Status Pending">
+                          <div className="bg-gray-800 text-white text-center rounded-lg text-xs w-20">
+                            In Proccess
+                          </div>
+                        </Tooltip>
+                      )}
+                      {order.transactionStatus === "Item Returned" && (
+                        <>
+                          <Tooltip label="Transaction Status: Item Returned.">
+                            <div className="bg-orange-600 text-white text-center rounded-lg text-xs w-24">
+                              {order.transactionStatus}
+                            </div>
+                          </Tooltip>
+                        </>
+                      )}
+                      <div className="grid grid-cols-2 pt-1">
+                        <p className="w-32 text-sm flex">
+                          <p className="truncate">{order.sellerName}</p>
+                        </p>
+                      </div>
+                    </figure>
+                    <figure className="justify-self-end text-xs ">
+                      <article>
+                        {" "}
+                        <p className="flex">
+                          <p className="">{order.quantity}</p>
+                        </p>
+                        <p className="flex ">
+                          <p className="">
+                            {order.price.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                          </p>
+                        </p>
+                        <p className="flex">
+                          <p className="">
+                            {order.total.toLocaleString("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            })}
+                          </p>
+                        </p>
+                      </article>
+                    </figure>
+                  </p>
+                </div>
+              </div>
+
+              {/* <Divider mt={5} /> */}
+              <Accordion mt={2} allowToggle>
+                <AccordionItem border={"none"} borderBottom={"solid"}>
+                  <h2>
+                    <AccordionButton>
+                      <Box as="span" flex="1" textAlign="left">
+                        <Text className="text-xs">View</Text>
+                      </Box>
+                      <AccordionIcon />
+                    </AccordionButton>
+                  </h2>
+                  <AccordionPanel pb={4} bg={"#ffffff0a"} roundedTop={"md"}>
+                    <div className="grid grid-cols-2 pt-1">
+                      <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                        <LinkIcon className="mr-1 mt-1" />
+                        {order.sellerName}
+                      </p>
+                      <p className="text-xs px-1 mt-1 justify-self-end mr-2 rounded-md bg-[#15f85667]">
+                        {order.accountType}
+                      </p>
+                    </div>
+                    {order.accountType === "Student" && (
+                      <>
+                        {" "}
+                        <Link to={`/UserAccount/${order.sellerEmail}`}>
+                          <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                            <AtSignIcon className="mt-1 mr-1" />
+                            {order.sellerEmail}
+                          </p>
+                        </Link>
+                      </>
+                    )}
+                    {order.accountType === "Faculty" && (
+                      <>
+                        {" "}
+                        <Link to={`/FacultyAccount/${order.sellerEmail}`}>
+                          <p className="text-xs font-thin font-quicksand truncate w-52 underline">
+                            <AtSignIcon className="mt-1 mr-1" />
+                            {order.sellerEmail}
+                          </p>
+                        </Link>
+                      </>
+                    )}
+                    {/* <p className="truncate flex">
+                          <FaFacebookF className="mt-1 mr-1" />{" "}
+                          {order.sellerFacebook}
+                        </p> */}
+                    <Divider className="m-2" />
+                    <div className="space-y-1">
+                      <p className="flex justify-between ">
+                        <p className="text-xs font-light">Item:</p>
+                        <p className="px-2 text-xs text-right w-64 font-bold ">
+                          {order.prodName}
+                        </p>
+                      </p>
+                      <p className="flex justify-between">
+                        <p className="text-xs font-light">Quantity:</p>
+                        <p className="px-2 text-xs  text-right w-64  font-bold ">
+                          {order.quantity}{" "}
+                        </p>
+                      </p>
+                      <p className="flex justify-between">
+                        <p className="text-xs font-light">Price:</p>
+                        <p className="px-2 text-xs  text-right w-64  font-semibold ">
+                          {order.price.toLocaleString("en-PH", {
+                            style: "currency",
+                            currency: "PHP",
+                          })}{" "}
+                        </p>
+                      </p>
+
+                      <p className="flex justify-between">
+                        <p className="text-xs font-light">Total:</p>
+                        <p className="px-2 text-xs  text-right w-64 font-semibold ">
+                          {order.total.toLocaleString("en-PH", {
+                            style: "currency",
+                            currency: "PHP",
+                          })}
+                        </p>
+                      </p>
+                      <p className="flex justify-between">
+                        <p className="text-xs font-light">Market Type:</p>
+                        <p className="px-2 text-xs font-bold ">
+                          <p>{order.marketType}</p>
+                        </p>
+                      </p>
+                      <p className="flex justify-between">
+                        <p className="text-xs font-light">Status:</p>
+                        <p className="px-2 text-xs font-bold ">
+                          <p>
+                            {order.status ? <>{order.status}</> : <>Pending</>}
+                          </p>
+                        </p>
+                      </p>
+                    </div>
+                    <Divider className="m-2" />
+                    <Accordion mt={2} allowToggle>
+                      <AccordionItem border={"none"}>
+                        <h2>
+                          <AccordionButton>
+                            <Box as="span" flex="1" textAlign="left">
+                              <Text className="text-xs">More info.</Text>
+                            </Box>
+                            <AccordionIcon />
+                          </AccordionButton>
+                        </h2>
+                        <AccordionPanel
+                          pb={4}
+                          bg={"#ffffff0a"}
+                          roundedTop={"md"}
+                        >
+                          {" "}
+                          <p className="h-full space-y-1 overflow-y-auto  mt-1 mb-2 border-solid  rounded-lg  ">
+                            <p className="text-xs font-quicksand">
+                              Type: {order.types}
+                            </p>
+                            <p className="text-xs font-quicksand">
+                              Message: {order.message}
+                            </p>
+                          </p>
+                          <Divider />
+                          <figure className="flex flex-col items-center  ">
+                            <div className="flex gap-4 mt-4">
+                              {/* Email Button */}
+                              <Tooltip label={<MdError />}>
+                                <button className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-800 text-white hover:bg-gray-700 transition-all shadow-md">
+                                  <MdEmail className="text-2xl" />
+                                </button>
+                              </Tooltip>
+
+                              {/* Facebook Button */}
+                              <a
+                                href={order.sellerFacebook}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <Tooltip label="Visit seller facebook Page.">
+                                  <button className="flex items-center justify-center  w-10 h-10 rounded-full bg-blue-600 text-white hover:bg-blue-500 transition-all shadow-md">
+                                    <FaFacebookSquare className="text-2xl" />
+                                  </button>
+                                </Tooltip>
+                              </a>
+
+                              {/* Chat Button */}
+                              <Tooltip label="Message this seller.">
+                                <button
+                                  onClick={() => chatButton(order)}
+                                  className="flex items-center justify-center  w-10 h-10 rounded-full bg-green-600 text-white hover:bg-green-500 transition-all shadow-md"
+                                >
+                                  <MdMessage className="text-2xl" />
+                                </button>
+                              </Tooltip>
+                            </div>
+                          </figure>
+                        </AccordionPanel>{" "}
+                      </AccordionItem>
+                    </Accordion>
+
+                    {/* <button
+                      onClick={() => statusHandler(order)}
+                      className="px-6 w-full pt-2 pb-2 font-quicksand mt-1 p-1 bg-gray-900 text-white text-center text-sm rounded-md grid  hover:bg-gray-800"
+                    >
+                      Pay now
+                    </button> */}
+                  </AccordionPanel>
+                </AccordionItem>
+              </Accordion>
+            </div>
+          ))}
+      </>
+    );
+  };
   return (
     <main className="rounded-md pb-4 max-w-full max-h-full justify-items-center grid  bg-gradient-to-tr">
       {" "}
@@ -1496,11 +2413,44 @@ function OrdersDrawer({ id }) {
                       >
                         Meet up Pay
                       </Tab>
+                      <Tab
+                        fontSize={11}
+                        color={"black.600"}
+                        className="font-quicksand"
+                      >
+                        History
+                      </Tab>
                     </TabList>
                     <TabPanels>
                       <TabPanel> {pendingCard()}</TabPanel>
                       <TabPanel> {EpaymentCard()}</TabPanel>
                       <TabPanel> {meetUpPayCard()}</TabPanel>
+                      <TabPanel>
+                        {" "}
+                        <Tabs isFitted w={["340px", "350px", "390px"]}>
+                          <TabList>
+                            {" "}
+                            <Tab
+                              fontSize={11}
+                              color={"black.600"}
+                              className="font-quicksand"
+                            >
+                              Complete Transaction
+                            </Tab>
+                            <Tab
+                              fontSize={11}
+                              color={"black.600"}
+                              className="font-quicksand"
+                            >
+                              Item Returned
+                            </Tab>
+                          </TabList>
+                          <TabPanels>
+                            <TabPanel> {historySuccessCard()}</TabPanel>
+                            <TabPanel> {historyItemReturnedCard()}</TabPanel>
+                          </TabPanels>
+                        </Tabs>
+                      </TabPanel>
                     </TabPanels>
                   </Tabs>
                 </>

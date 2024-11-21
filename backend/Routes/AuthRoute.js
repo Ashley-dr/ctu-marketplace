@@ -11,17 +11,26 @@ import dotenv from "dotenv";
 import { userVerification } from "../Middlewares/AuthMiddleware.js";
 import { FacultyuserVerification } from "../Middlewares/AuthMiddleware.js";
 import { FacultySignup } from "../Controllers/AuthControllers.js";
-
+import { rateLimit } from "express-rate-limit";
 dotenv.config();
+
+// rate limit //
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+});
+// rate limit //
 const router = express.Router();
 
-router.post("/signup", Signup);
-router.post("/facultysignup", FacultySignup);
-router.post("/login", Login);
+router.post("/signup", limiter, Signup);
+router.post("/facultysignup", limiter, FacultySignup);
+router.post("/login", limiter, Login);
 router.post("/userspost", userVerification);
 router.post("/facultypost", FacultyuserVerification);
-router.post("/userResetPassword", ResetPassword);
-router.post("/userForgotPassword", ForgotPassword);
+router.post("/userResetPassword", limiter, ResetPassword);
+router.post("/userForgotPassword", limiter, ForgotPassword);
 router.post("/logout", (req, res) => {
   // Clear the token cookie by setting an expired date
   res.clearCookie("token", {

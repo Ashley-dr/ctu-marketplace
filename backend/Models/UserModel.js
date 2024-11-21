@@ -80,8 +80,8 @@ const UserSchema = new mongoose.Schema({
     enum: ["online", "offline"],
     default: "offline",
   },
-  resetToken: { type: String },
-  resetTokenExpiration: { type: String },
+  resetToken: { type: String, select: false },
+  resetTokenExpiration: { type: String, select: false },
 });
 
 UserSchema.pre("save", async function () {
