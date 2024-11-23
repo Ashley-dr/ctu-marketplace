@@ -8,7 +8,7 @@ import { FacultyModel } from "../Models/FacultyUsers.js";
 // Faculty users model //
 const router = express.Router();
 router.get("/faculty", (req, res) => {
-  FacultyModel.find()
+  FacultyModel.find({}, { password: 0, resetToken: 0, resetTokenExpiration: 0 })
     .then((result) => {
       res.json(result);
     })

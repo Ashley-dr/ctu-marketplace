@@ -5,10 +5,13 @@ import upload from "../config/Cloudinary.js";
 import { UserModel } from "../Models/UserModel.js";
 import { v2 as cloudinary } from "cloudinary";
 import { FacultyModel } from "../Models/FacultyUsers.js";
+
+import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
 const router = express.Router();
 // Users model //
 router.get("/users", (req, res) => {
-  UserModel.find()
+  UserModel.find({}, { password: 0, resetToken: 0, resetTokenExpiration: 0 })
     .then((result) => {
       res.json(result);
     })
