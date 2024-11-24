@@ -8,15 +8,66 @@ import { FacultyModel } from "../Models/FacultyUsers.js";
 
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
+dotenv.config();
 const router = express.Router();
+
 // Users model //
-router.get("/users", (req, res) => {
-  UserModel.find({}, { password: 0, resetToken: 0, resetTokenExpiration: 0 })
+router.get("/users", async (req, res) => {
+  const token = req.cookies.token;
+  if (!token) {
+    return res
+      .status(403)
+      .json({ message: "Error 403: Access denied. No token provided." });
+  }
+  try {
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await UserModel.findById(decodedToken.id).select("isAdmin");
+    if (!user || !user.isAdmin) {
+      return res.status(403).json({ message: "Error 403." });
+    }
+    const users = await UserModel.find(
+      {},
+      {
+        password: 0,
+        resetToken: 0,
+        resetTokenExpiration: 0,
+        isAdmin: 0,
+      }
+    );
+    res.json(users);
+  } catch (error) {
+    if (
+      error.name === "JsonWebTokenError" ||
+      error.name === "TokenExpiredError"
+    ) {
+      return res
+        .status(403)
+        .json({ message: "Error 403: Invalid or expired token." });
+    }
+    res.status(500).json({ message: "Error 500: Server error.", error });
+  }
+});
+// router.get("/asokarap", (req, res) => {
+//   UserModel.find({ isAdmin: { $exists: true } }, { isAdmin: 1 })
+//     .then((result) => {
+//       res.status(200).json(result);
+//     })
+//     .catch((err) => {
+//       console.log("Error to fetch this account", err);
+//     });
+// });
+router.get("/mamaligyaay", (req, res) => {
+  UserModel.find(
+    { isSeller: true },
+    { email: 1, image: 1, username: 1, isSeller: 1, _id: 0 }
+  )
     .then((result) => {
-      res.json(result);
+      res.status(200).json(result);
     })
     .catch((err) => {
-      res.status(404).json(err);
+      console.log("Error to fetch this account", err);
+      res.status(500).json({ message: "Internal server error", error: err });
     });
 });
 router.put("/usersSellerUpdate/:id", (req, res) => {
@@ -48,7 +99,7 @@ router.get("/users/:id", (req, res) => {
     });
 });
 router.get("/user-account/:email", async (req, res) => {
-  UserModel.findOne({ email: req.params.email })
+  UserModel.findOne({ email: req.params.email }, { isAdmin: 0, password: 0 })
     .then((result) => {
       res.status(200).json(result);
     })

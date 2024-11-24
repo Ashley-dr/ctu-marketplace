@@ -31,8 +31,8 @@ function Users() {
     try {
       setLoading(true);
       const [studentsResponse, facultyResponse] = await Promise.all([
-        axios.get(`${baseUrl}/api/users`),
-        axios.get(`${baseUrl}/api/faculty`),
+        axios.get(`${baseUrl}/api/mamaligyaay`),
+        axios.get(`${baseUrl}/api/faculty-mamaligyaay`),
       ]);
 
       setStudentData(studentsResponse.data);

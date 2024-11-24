@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
+import { Hide } from "@chakra-ui/react";
 import { FacultyModel } from "../Models/FacultyUsers.js";
 
 import { UserModel } from "../Models/UserModel.js";

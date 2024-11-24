@@ -33,7 +33,7 @@ function AdminDashboard() {
 
   useEffect(() => {
     axios
-      .get(`${baseUrl}/api/users`)
+      .get(`${baseUrl}/api/users`, { withCredentials: true })
       .then((result) => {
         setUsersData(result.data);
       })
@@ -44,7 +44,7 @@ function AdminDashboard() {
 
   useEffect(() => {
     axios
-      .get(`${baseUrl}/api/faculty`)
+      .get(`${baseUrl}/api/faculty`, { withCredentials: true })
       .then((result) => {
         setFacultyData(result.data);
       })
