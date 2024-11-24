@@ -239,7 +239,10 @@ router.put("/facultyNumbers/:id", async (req, res) => {
   }
 });
 router.get("/faculty-account/:email", async (req, res) => {
-  FacultyModel.findOne({ email: req.params.email })
+  FacultyModel.findOne(
+    { email: req.params.email },
+    { password: 0, resetToken: 0, resetTokenExpiration: 0 }
+  )
     .then((result) => {
       res.status(200).json(result);
     })

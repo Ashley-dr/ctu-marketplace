@@ -2045,12 +2045,6 @@ function OrdersDrawer({ id }) {
                         </AccordionPanel>{" "}
                       </AccordionItem>
                     </Accordion>
-                    {/* <button
-                      onClick={() => statusHandler(order)}
-                      className="px-6 w-full pt-2 pb-2 font-quicksand mt-1 p-1 bg-gray-900 text-white text-center text-sm rounded-md grid  hover:bg-gray-800"
-                    >
-                      Pay now
-                    </button> */}
                   </AccordionPanel>
                 </AccordionItem>
               </Accordion>

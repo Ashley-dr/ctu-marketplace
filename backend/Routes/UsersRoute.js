@@ -99,7 +99,10 @@ router.get("/users/:id", (req, res) => {
     });
 });
 router.get("/user-account/:email", async (req, res) => {
-  UserModel.findOne({ email: req.params.email }, { isAdmin: 0, password: 0 })
+  UserModel.findOne(
+    { email: req.params.email },
+    { password: 0, resetToken: 0, resetTokenExpiration: 0, isAdmin: 0 }
+  )
     .then((result) => {
       res.status(200).json(result);
     })

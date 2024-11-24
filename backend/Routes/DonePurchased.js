@@ -6,6 +6,12 @@ import upload from "../config/Cloudinary.js";
 import { v2 as cloudinary } from "cloudinary";
 import { PurchasedModel } from "../Models/Purchased.js";
 
+import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
+import crypto from "crypto";
+import { UserModel } from "../Models/UserModel.js";
+dotenv.config();
+
 const PAYMONGO_SECRET_KEY = process.env.PAYMONGO_SECRET_KEY;
 const PAYMONGO_BASE_URL = "https://api.paymongo.com/v1";
 const router = express.Router();
@@ -82,13 +88,36 @@ router.post("/DonePurchased", upload.array("picture", 5), async (req, res) => {
   }
 });
 router.get("/DonePurchased", async (req, res) => {
-  DonePurchasedModel.find()
-    .then((result) => {
-      res.json(result);
-    })
-    .catch((err) => {
-      res.status(404).json(err);
-    });
+  const token = req.cookies.token;
+  if (!token) {
+    return res
+      .status(403)
+      .json({ message: "Error 403: Access denied. No token provided." });
+  }
+  try {
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await UserModel.findById(decodedToken.id).select("isAdmin");
+    if (!user || !user.isAdmin) {
+      return res.status(403).json({ message: "Error 403." });
+    }
+    DonePurchasedModel.find()
+      .then((result) => {
+        res.json(result);
+      })
+      .catch((err) => {
+        res.status(404).json(err);
+      });
+  } catch (error) {
+    if (
+      error.name === "JsonWebTokenError" ||
+      error.name === "TokenExpiredError"
+    ) {
+      return res
+        .status(403)
+        .json({ message: "Error 403: Invalid or expired token." });
+    }
+    res.status(500).json({ message: "Error 500: Server error.", error });
+  }
 });
 router.put("/DonePurchased/:id", async (req, res) => {
   const { transactionStatus } = req.body;

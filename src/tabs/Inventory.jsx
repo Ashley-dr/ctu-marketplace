@@ -218,7 +218,9 @@ function Inventory({ userId, userImage }) {
 
   const deleteProduct = async (id) => {
     try {
-      await axios.delete(`${baseUrl}/api/inventory/${viewModal._id}`);
+      await axios.delete(`${baseUrl}/api/inventory/${viewModal._id}`, {
+        withCredentials: true,
+      });
 
       onClose();
     } catch (error) {
@@ -233,7 +235,10 @@ function Inventory({ userId, userImage }) {
       const response = await axios.put(
         `${baseUrl}/api/inventory/${viewModal._id}`,
         { stocks, price },
-        { headers: { "Content-Type": "application/json" } }
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
       );
 
       setIsEditing(false);

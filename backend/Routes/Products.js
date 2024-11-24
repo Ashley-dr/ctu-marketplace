@@ -6,6 +6,10 @@ import { ProductModel } from "../Models/Products.js";
 import { v2 as cloudinary } from "cloudinary";
 import upload from "../config/Cloudinary.js";
 
+import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
+import crypto from "crypto";
+dotenv.config();
 const router = express.Router();
 // Add Products //
 router.post("/products", upload.array("image", 5), async (req, res) => {
@@ -73,20 +77,67 @@ router.get("/inventory/:sellerId", (req, res) => {
 });
 router.put("/inventory/:id", async (req, res) => {
   try {
+    const token = req.cookies.token;
+    if (!token) {
+      return res.status(403).json({ message: "Error 403: Access denied." });
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const sellerId = decoded.id;
+
+    const product = await ProductModel.findById(req.params.id).select(
+      "sellerId"
+    );
+    if (!product) {
+      return res.status(404).json({ message: "Error 404: Product not found." });
+    }
+
+    if (product.sellerId !== sellerId) {
+      return res.status(403).json({
+        message: "Error 403: You are not authorized to update this product.",
+      });
+    }
+
     const { stocks, price } = req.body;
-    await ProductModel.findByIdAndUpdate(
+    const updatedProduct = await ProductModel.findByIdAndUpdate(
       req.params.id,
       { stocks, price },
       { new: true }
     );
-    res.json({ msg: "Price Updated" });
+
+    res.json({
+      message: "Product updated successfully.",
+      product: updatedProduct,
+    });
   } catch (error) {
-    res.status(400).json({ message: "Cannot change price" });
+    console.error("Error updating product:", error);
+    res
+      .status(500)
+      .json({ message: "Error 500: Cannot update product.", error });
   }
 });
 
 router.delete("/inventory/:id", async (req, res) => {
   try {
+    const token = req.cookies.token;
+    if (!token) {
+      return res.status(403).json({ message: "Error 403: Access denied." });
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const sellerId = decoded.id;
+
+    const product = await ProductModel.findById(req.params.id).select(
+      "sellerId"
+    );
+    if (!product) {
+      return res.status(404).json({ message: "Error 404: Product not found." });
+    }
+
+    if (product.sellerId.toString() !== sellerId) {
+      return res.status(403).json({
+        message: "Error 403: You are not authorized to delete this product.",
+      });
+    }
+
     const deleteProduct = await ProductModel.findByIdAndDelete(req.params.id);
     if (!deleteProduct) {
       return res.status(404).json({ error: "Unable to delete this product." });
@@ -96,6 +147,7 @@ router.delete("/inventory/:id", async (req, res) => {
     res.status(505).json({ error: error.message });
   }
 });
+
 router.get("/products/:id", (req, res) => {
   ProductModel.findById(req.params.id, req.body, req.file)
     .then((result) => {

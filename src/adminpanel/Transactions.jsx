@@ -52,7 +52,9 @@ function Transactions() {
   // Fetch data function
   const fetchData = async () => {
     try {
-      const result = await axios.get(`${baseUrl}/api/DonePurchased`);
+      const result = await axios.get(`${baseUrl}/api/DonePurchased`, {
+        withCredentials: true,
+      });
       setData(result.data);
     } catch (err) {
       console.log(err);
