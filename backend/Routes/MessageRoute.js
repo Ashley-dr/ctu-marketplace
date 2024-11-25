@@ -9,6 +9,9 @@ import { FacultyModel } from "../Models/FacultyUsers.js";
 import dotenv from "dotenv";
 import Pusher from "pusher";
 import upload from "../config/Cloudinary.js";
+
+import jwt from "jsonwebtoken";
+import crypto from "crypto";
 dotenv.config();
 const pusher = new Pusher({
   appId: process.env.PUSHER_APP_ID,
@@ -80,18 +83,50 @@ router.post("/send-message", upload.single("image"), async (req, res) => {
 });
 router.get("/get-message/:senderEmail/:receiverEmail", async (req, res) => {
   try {
+    const token = req.cookies.token;
+    if (!token) {
+      return res
+        .status(403)
+        .json({ message: "Error 403: Access denied. No token provided." });
+    }
+
+    // Verify and decode the token
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    const { id } = decodedToken;
+    const user =
+      (await UserModel.findById(id).select("email")) ||
+      (await FacultyModel.findById(id).select("email"));
+    if (!user) {
+      return res
+        .status(403)
+        .json({ message: "Error 403: Unauthorized access." });
+    }
+    const { email } = user;
     const { senderEmail, receiverEmail } = req.params;
+
+    if (email !== senderEmail) {
+      return res
+        .status(403)
+        .json({ message: "Error 403: Unauthorized to access its messages." });
+    }
+
+    // Query messages
     const message = await MessageModel.find({
       $or: [
         { senderEmail: senderEmail, receiverEmail: receiverEmail },
         { senderEmail: receiverEmail, receiverEmail: senderEmail },
       ],
     }).sort({ timestamp: 1 });
+
     res.status(200).json(message);
   } catch (error) {
-    console.log("Error to receive a message: ", error);
+    console.error("Error to receive a message:", error);
+    res
+      .status(500)
+      .json({ message: "Error 500: Internal server error.", error });
   }
 });
+
 router.delete("/delete-message/:id", async (req, res) => {
   MessageModel.findByIdAndDelete(req.params.id)
     .then((result) => {

@@ -80,7 +80,8 @@ function ChatPage({ userEmail }) {
     const fetchMessages = async () => {
       try {
         const response = await axios.get(
-          `${baseUrl}/api/get-message/${currentSenderEmail}/${userEmail}`
+          `${baseUrl}/api/get-message/${currentSenderEmail}/${userEmail}`,
+          { withCredentials: true }
         );
         setMessages(response.data);
       } catch (error) {
