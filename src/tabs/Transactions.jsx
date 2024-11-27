@@ -62,6 +62,7 @@ import {
   Image,
   IconButton,
   Input,
+  useToast
 } from "@chakra-ui/react";
 import { MdDelete } from "react-icons/md";
 import { TbCircleLetterG, TbViewportWide } from "react-icons/tb";
@@ -75,11 +76,12 @@ import {
 } from "@chakra-ui/icons";
 import Loader from "../components/Loader";
 import ChatPage from "./ChatPage";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 function Transactions({ id }) {
   const [orders, setOrders] = useState([]);
   const baseUrl = import.meta.env.VITE_SERVER_URL;
   const [cookies, removeCookies] = useCookies([]);
-
+  const toast = useToast();
   const [isUsers, setisUser] = useState("");
   const [isFaculty, setisFaculty] = useState("");
   const navigate = useNavigate();
@@ -299,6 +301,8 @@ function Transactions({ id }) {
   const imageHandlerFile = (e) => {
     setImageSubmit(Array.from(e.target.files));
   };
+
+  const [transactLoading, setTransactLoading ] = useState(false);
   const submitTransaction = async (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -331,6 +335,7 @@ function Transactions({ id }) {
       formData.append("picture", pictures);
     });
     try {
+      setTransactLoading(true);
       const res = await axios.post(`${baseUrl}/api/DonePurchased`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -363,8 +368,28 @@ function Transactions({ id }) {
         accountType: "",
       });
       setImageSubmit([]);
+      console.log("Submitted");
+      toast({
+        position: "top",
+        title: "Transaction submitted.",
+        description: "Your refund request has been successfully submitted.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+      onClosedMark();
     } catch (error) {
       console.log("Error uploading file", error);
+      toast({
+        title: "Error submitting Transaction.",
+        description:
+          "There was an error submitting your Transaction. Please try again.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+      setTransactLoading(false);
     }
   };
   const [open, setOpen] = useState(false);
@@ -2689,52 +2714,46 @@ function Transactions({ id }) {
               <ModalCloseButton />
               <ModalBody>
                 <p className=" text-sm font-bold font-bebos">
-                  When doing Transaction with a Buyer select a payment method
-                  below if there are changes of the transaction.
+                As a seller in the CTU Marketplace, please follow the rules and procedures outlined below to ensure a smooth and secure transaction process. Your cooperation is essential to maintain a safe marketplace for everyone. Thank you.
                 </p>
                 <br />
-                <p className=" text-lg font-bebos">Strict Rules:</p>
+                <p className=" text-lg font-bebos">Strict Guidelines:</p>
                 <ul className="text-sm font-quicksand">
                   <li>
-                    1. Transaction will only be inside of campus so we can
-                    ensure your safety.
+                  1.  All transactions must occur within the campus to ensure safety for both parties.
                   </li>
                   <li>
-                    2. We are always monitoring users not to do something not
-                    right and scams for a buyer and so on we can restrict your
-                    account and report to school student affairs office.
+                  2.	We monitor all activities to prevent fraudulent actions. If any suspicious activity is detected, your account may be restricted, and the matter will be reported to the school’s student affairs office.
                   </li>
                   <li>
-                    3. We are accepting the right personal account to selling
-                    and so we guarantee that you are verified.
+                  3.	Only legitimate, verified accounts are allowed to conduct transactions. Fake or spam accounts will be removed from the platform.
+                  </li>
+                  <br></br>
+                   <p className=" text-lg font-bebos">Transaction Rules:</p>
+       
+                  <li>
+                  1.	You must deliver the product to the CTU Marketplace Team (admin), not directly to the buyer. The drop-off point is in the COT study area.
                   </li>
                   <li>
-                    4. We are eager to ask 1% share of your earnings so it can
-                    help us support our system furthermore.
+                  2.	Ensure that the product is in its agreed-upon condition and ready for handover.
                   </li>
                   <li>
-                    5. By not sharing up to 3 products sales of your earnings we
-                    can restrict your account.
+                  3.	Once the buyer has completed the payment via the chosen payment method (Meet-up Pay or E-Payment), the CTU Marketplace Team will handle the transaction.
                   </li>
                   <li>
-                    6. Avoid Scamming buyers or this account will be restricted
-                    and we have your information so that we can report it to our
-                    Student affairs Office.
+                  4.	We will process the buyer’s payment and transfer the corresponding funds to your registered GCash account or any other mobile banking app you have within 3-5 business days.
+                  </li>
+                  <li>
+                  5.	Do not engage in any activities that may be considered fraudulent or misleading, as violations will result in your account being restricted.
+                  </li>
+                  <li>
+                  6.  Lastly, please cooperate by taking a picture with the product and your ID (if you are a student) or without an ID (if you are a faculty member) at the drop-off area as proof.
                   </li>
                 </ul>
-                <br />
-                <p className=" text-lg font-bebos">
-                  Our Rules of transactions:
-                </p>
+    
+              
                 <ul className="text-sm font-quicksand">
-                  <li>
-                    1. Cooperate taking a picture of buyer with a product and ID
-                    of a Student/Without id when Faculty Member.
-                  </li>
-                  <li>
-                    2. Select your method of payment ( Meet up Pay or E-Payment
-                    ).
-                  </li>
+              
                   <li>
                     {" "}
                     <label className="flex mt-5 text-lg font-montserrat">
@@ -2766,10 +2785,11 @@ function Transactions({ id }) {
                         border="1px"
                         borderColor="slate"
                         type="file"
+                        name="imageSubmit"
                         className=" border-slate-400  border-t border-e border-x border-y  rounded-md text-black bg-[#e1e4e4] "
-                        value={imageSubmit.picture}
-                        accept="image/"
-                        name="picture"
+                        // value={imageSubmit.picture}
+                        accept=".jpeg,.jpg,.png,.gif,.pdf,.doc,.docx"
+                        // name="picture"
                         placeholder="image"
                         multiple
                         onChange={imageHandlerFile}
@@ -2777,6 +2797,7 @@ function Transactions({ id }) {
 
                       {/* do next is to fix this to upload image here  */}
                     </label>
+               
                     <div className=" lg:m-5 grid border text-center rounded-md">
                       <p className="m-1">Select Payment Method</p>
                       <button
@@ -3026,16 +3047,32 @@ function Transactions({ id }) {
                   </div>
 
                   {/* continue here in transaction creating a model data schema and all the input types  */}
-
-                  <center>
-                    {" "}
-                    <button
-                      className="mt-4 bg-teal-800 rounded-md p-2 border  mb-2 px-10"
-                      type="submit"
-                    >
-                      Submit
-                    </button>
-                  </center>
+                  {transactLoading ? (
+                                  <>
+                                    {" "}
+                                    <Button
+                                      rounded={"0"}
+                                      w={"100%"}
+                                      bg={"#601da4d3"}
+                                      _hover={{ bg: "#512f73d3" }}
+                                      className="bg-[#601da4d3]  justify-self-center  font-poppins"
+                                    >
+                                      Processing{" "}
+                                      <AiOutlineLoading3Quarters className="animate-spin ml-2" />
+                                    </Button>
+                                  </>
+                                ) : (
+                                  <Button
+                                    rounded={"0"}
+                                    w={"100%"}
+                                    bg={"#601da4d3"}
+                                    _hover={{ bg: "#512f73d3" }}
+                                    className="bg-[#601da4d3]  justify-self-center  font-poppins"
+                                    type="submit"
+                                  >
+                                    Submit
+                                  </Button>
+                                )}
                 </form>
               </ModalBody>
               <ModalFooter></ModalFooter>

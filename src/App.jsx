@@ -28,6 +28,7 @@ import ChatPage from "./tabs/ChatPage";
 import Users from "./pages/Users";
 import ContactList from "./tabs/ContactList";
 import UsersMessage from "./pages/UsersMessage";
+import HelpFooter from "./components/HelpFooter";
 
 function App() {
   const bgColor = useColorModeValue("brand.light", "brand.dark");
@@ -38,6 +39,7 @@ function App() {
       </header>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/HelpFooter" element={<HelpFooter/>}/>
         <Route path="/Account" element={<Account />} />
         <Route path="/UserAccount/:email" element={<UserAccount />} />
         <Route path="/FacultyAccount/:email" element={<FacultyAccount />} />

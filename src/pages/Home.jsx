@@ -9,7 +9,7 @@ import Keyoffering from "../components/Keyoffering";
 function Home() {
   const { isUser } = useContext(UserContext);
   return (
-    <div className="">
+    <div className="grid justify-items-center">
       <figure></figure>
       <WelcomePage />
       <Products />
