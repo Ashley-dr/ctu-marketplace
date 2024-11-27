@@ -125,6 +125,8 @@ function Navigation() {
   const [newConfirmPassword, setNewConfirmPassword] = useState("");
   const [token, setToken] = useState("");
 
+
+  const [isAgreed, setIsAgreed] = useState(false);
   const handleForgotPassword = async () => {
     setLoading(true);
     try {

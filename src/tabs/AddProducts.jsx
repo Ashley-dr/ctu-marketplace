@@ -16,6 +16,7 @@ import {
   CheckboxGroup,
   useToast,
 } from "@chakra-ui/react";
+
 import { AddIcon, CheckIcon } from "@chakra-ui/icons";
 import { AiOutlineUpload } from "react-icons/ai";
 function AddProducts() {

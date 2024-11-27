@@ -6,6 +6,7 @@ import { SaasProvider } from "@saas-ui/react";
 import "./index.css";
 import CookieConsent from "react-cookie-consent";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+
 import { ColorModeScript } from "@chakra-ui/react";
 import "react-toastify/dist/ReactToastify.css";
 import { BrowserRouter } from "react-router-dom";
