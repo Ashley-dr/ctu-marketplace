@@ -35,7 +35,7 @@ const footerData = [
     label: "Cebu Tech Marketplace:",
     href: "#",
     links: [
-      { label: "About Us", href: "/About" },
+      { label: "About Us", href: "/About#about" },
       { label: "Terms & Conditions", href: `/HelpFooter#termscondition` },
       { label: "Privacy Policy", href: "#" },
       { label: "Intellectual Property Protection", href: "#" },

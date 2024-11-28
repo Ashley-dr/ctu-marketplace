@@ -1,10 +1,20 @@
 /* eslint-disable no-unused-vars */
 import { Img } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 function About() {
+  const location = useLocation();
+  useEffect(() => {
+    if (location.hash === "#about") {
+      const element = document.getElementById("about");
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  }, [location]);
   return (
-    <div className="font-quicksand">
+    <div id="about" className="font-quicksand">
       <figure>
         <article className="grid space-y-2 justify-self-center m-5">
           <p className="text-center text-2xl font-extrabold">The Team</p>
