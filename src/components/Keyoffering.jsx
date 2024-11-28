@@ -40,14 +40,14 @@ function Keyoffering() {
                   Ensuring the safety of our users is our top priority. We
                   implement robust security measures to protect your personal
                   information and transactions, giving you peace of mind while
-                  trading on our platform.
+                  buying, selling, and trading on our platform.
                 </p>
               </article>
             </article>
             <Divider />
             <article className="mb-5  mt-5">
               <article>
-                <p className="text-xs mb-5 font-thin">Convencience</p>
+                <p className="text-xs mb-5 font-thin">Convenience</p>
                 <p className="text-sm mb-5 font-semibold">Easy Navigation</p>
                 <p className="">
                   We prioritize user experience by providing intuitive

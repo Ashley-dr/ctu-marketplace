@@ -60,7 +60,7 @@ router.get("/users", async (req, res) => {
 router.get("/mamaligyaay", (req, res) => {
   UserModel.find(
     { isSeller: true },
-    { email: 1, image: 1, username: 1, isSeller: 1, _id: 0 }
+    { email: 1, image: 1, username: 1, isSeller: 1, _id: 1 }
   )
     .then((result) => {
       res.status(200).json(result);
