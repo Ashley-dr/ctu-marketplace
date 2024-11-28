@@ -10,6 +10,7 @@ import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import { ColorModeScript } from "@chakra-ui/react";
 import "react-toastify/dist/ReactToastify.css";
 import { BrowserRouter } from "react-router-dom";
+
 const theme = extendTheme({
   config: {
     initialColorMode: "light",

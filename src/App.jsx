@@ -29,6 +29,7 @@ import Users from "./pages/Users";
 import ContactList from "./tabs/ContactList";
 import UsersMessage from "./pages/UsersMessage";
 import HelpFooter from "./components/HelpFooter";
+import About from "./components/About";
 
 function App() {
   const bgColor = useColorModeValue("brand.light", "brand.dark");
@@ -39,7 +40,8 @@ function App() {
       </header>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/HelpFooter" element={<HelpFooter/>}/>
+        <Route path="/HelpFooter" element={<HelpFooter />} />
+        <Route path="/About" element={<About />} />
         <Route path="/Account" element={<Account />} />
         <Route path="/UserAccount/:email" element={<UserAccount />} />
         <Route path="/FacultyAccount/:email" element={<FacultyAccount />} />
