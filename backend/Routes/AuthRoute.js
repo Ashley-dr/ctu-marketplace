@@ -24,13 +24,13 @@ const limiter = rateLimit({
 // rate limit //
 const router = express.Router();
 
-router.post("/signup", limiter, Signup);
-router.post("/facultysignup", limiter, FacultySignup);
-router.post("/login", limiter, Login);
+router.post("/signup", Signup);
+router.post("/facultysignup", FacultySignup);
+router.post("/login", Login);
 router.post("/userspost", userVerification);
 router.post("/facultypost", FacultyuserVerification);
-router.post("/userResetPassword", limiter, ResetPassword);
-router.post("/userForgotPassword", limiter, ForgotPassword);
+router.post("/userResetPassword", ResetPassword);
+router.post("/userForgotPassword", ForgotPassword);
 router.post("/logout", (req, res) => {
   // Clear the token cookie by setting an expired date
   res.clearCookie("token", {

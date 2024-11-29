@@ -126,7 +126,8 @@ function Navigation() {
   const [token, setToken] = useState("");
 
   const [isAgreed, setIsAgreed] = useState(false);
-  const handleForgotPassword = async () => {
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
     setLoading(true);
     try {
       const res = await axios.post(
@@ -228,17 +229,20 @@ function Navigation() {
       if (response.data.success) {
         toast.success(response.data.message);
         navigate("/");
+        forgotPasswordModal.onClose();
       }
     } catch (error) {
       console.error("Password reset error:", error);
-      toast({
-        title: "Error",
-        description: "Failed to reset password. Please try again.",
-        status: "error",
-        duration: 5000,
+      if (error.response?.status === 400) {
+        toast({
+          title: "Error",
+          description: "Failed to reset password. Please try again.",
+          status: "error",
+          duration: 5000,
 
-        isClosable: true,
-      });
+          isClosable: true,
+        });
+      }
     }
   };
 
@@ -1766,7 +1770,12 @@ function Navigation() {
                   Forgot password? Input your email and check the reset code
                   from your email.
                 </Text>
-
+                <ToastContainer
+                  style={{ zIndex: 2000 }}
+                  closeOnClick
+                  pauseOnHover
+                  draggable
+                />
                 {!done ? (
                   <>
                     <Input
