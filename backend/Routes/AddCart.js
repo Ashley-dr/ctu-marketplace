@@ -4,12 +4,21 @@ import express from "express";
 import upload from "../config/Cloudinary.js";
 import { v2 as cloudinary } from "cloudinary";
 import { PurchasedModel } from "../Models/Purchased.js";
+import nodemailer from "nodemailer";
 import axios from "axios";
 const router = express.Router();
 // item purchased add to cart //
 
 const PAYMONGO_SECRET_KEY = process.env.PAYMONGO_SECRET_KEY;
 const PAYMONGO_BASE_URL = "https://api.paymongo.com/v1";
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL, // Your Gmail address
+    pass: process.env.PASSWORD_APP_EMAIL, // App password from Gmail
+  },
+});
 
 router.post("/create-payment", async (req, res) => {
   try {
@@ -177,15 +186,72 @@ router.get("/user-orders", async (req, res) => {
   }
 });
 
-router.put("/purchasedItem/:id", upload.single("image"), (req, res) => {
-  PurchasedModel.findByIdAndUpdate(req.params.id, req.body, { new: true })
-    .then((result) => {
-      res.json(result);
-    })
-    .catch((err) => {
-      res.status(400).json({ error: "Unable to update" });
+router.put("/purchasedItem/:id", upload.single("image"), async (req, res) => {
+  try {
+    const cartUpdate = await PurchasedModel.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    if (!cartUpdate) {
+      return res.status(404).json({ error: "transaction ID not found" });
+    }
+
+    const mailView = `
+  <html>
+  <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+    <h2 style="color: #4CAF50;">Subject: New Order Received </h2>
+    <p>Dear ${cartUpdate.sellerEmail},</p>
+    <p>Congratulations! You have received a new order on CebuTech Marketplace.</p>
+    </br>
+        <p>New Orders Details:</p>
+    <ul>
+      <li><strong>Product name:</strong> ${cartUpdate.prodName}</li>
+      <li><strong>Buyer Name:</strong>   ${cartUpdate.buyerName}</li>
+      <li><strong>Buyer Email:</strong>  ${cartUpdate.buyerEmail}</li>
+      <li><strong>Buyer type:</strong>   ${cartUpdate.buyerType}</li>
+      <li><strong>Buyer #:</strong>      ${cartUpdate.buyerPhoneNumber}</li>
+      <li><strong>Status:</strong>       ${cartUpdate.status}</li>
+      <li><strong>Quantity:</strong>     ${cartUpdate.quantity}</li>
+      <li><strong>Price:</strong>        P${cartUpdate.price}</li>
+      <li><strong>Total:</strong>        P${cartUpdate.total}</li>
+      <li><strong>Market Type:</strong>  ${cartUpdate.marketType}</li>
+      <li><strong>Message:</strong>      ${cartUpdate.message}</li>
+    </ul>
+    </br>
+    <p>Please follow the steps below to fulfill the order:</p>
+    <ul>
+      <li><strong>Prepare the Item:</strong> Ensure that the item is packaged securely.</li>
+       <li><strong>Drop-Off Location:</strong> You can drop off the item at the COT area or the TGO office within 1-3 business days, or as per the schedule agreed upon with the buyer using our chat feature.</li>
+    </ul>
+    <p>Best regards,</p>
+    <p><strong>cebutechmarketplace.com</strong></p>
+    <p style="font-size: 0.9em; color: #666;">For assistance, please contact us at cebutechmarketplace@gmail.com.</p>
+  </body>
+</html>
+    `;
+    transporter.sendMail({
+      from: cartUpdate.buyerEmail, // Sender name and email
+      to: cartUpdate.sellerEmail, // Recipient email
+      subject: "New Orders [Item Purchased].", // Subject line
+      html: mailView, // HTML content
     });
+
+    res.status(200).json("Item Dropped off.");
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Error updating user to seller." });
+  }
 });
+// router.put("/purchasedItem/:id", upload.single("image"), (req, res) => {
+//   PurchasedModel.findByIdAndUpdate(req.params.id, req.body, { new: true })
+//     .then((result) => {
+//       res.json(result);
+//     })
+//     .catch((err) => {
+//       res.status(400).json({ error: "Unable to update" });
+//     });
+// });
 router.get("/transactions/:sellerId", (req, res) => {
   PurchasedModel.find({ sellerId: req.params.sellerId })
     .then((result) => {
@@ -205,7 +271,60 @@ router.get("/orders/:userId", (req, res) => {
       console.log("Error to get orders", err);
     });
 });
-router.delete("/orders/:id", (req, res) => {
+
+router.delete("/orders/:id", async (req, res) => {
+  try {
+    const deleteOrder = await PurchasedModel.findByIdAndDelete(req.params.id);
+    if (!deleteOrder) {
+      return res.status(404).json({ error: "Order ID Not found" });
+    }
+
+    const mailView = `
+  <html>
+  <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+    <h2 style="color: #4CAF50;">Subject: Order Canceled</h2>
+    <p>Dear ${deleteOrder.sellerEmail},</p>
+    <p>Unfortunately this order ${deleteOrder.prodName} by ${deleteOrder.buyerName} has been Canceled this order</p>
+    </br>
+        <p>Orders Details:</p>
+    <ul>
+      <li><strong>Product name:</strong> ${deleteOrder.prodName}</li>
+      <li><strong>Buyer Name:</strong>   ${deleteOrder.buyerName}</li>
+      <li><strong>Buyer Email:</strong>  ${deleteOrder.buyerEmail}</li>
+      <li><strong>Buyer type:</strong>   ${deleteOrder.buyerType}</li>
+      <li><strong>Buyer #:</strong>      ${deleteOrder.buyerPhoneNumber}</li>
+      <li><strong>Status:</strong>       ${deleteOrder.status}</li>
+      <li><strong>Quantity:</strong>     ${deleteOrder.quantity}</li>
+      <li><strong>Price:</strong>        P${deleteOrder.price}</li>
+      <li><strong>Total:</strong>        P${deleteOrder.total}</li>
+      <li><strong>Market Type:</strong>  ${deleteOrder.marketType}</li>
+      <li><strong>Message:</strong>      ${deleteOrder.message}</li>
+    </ul>
+    </br>
+    <p>To be informed why canceled:</p>
+    <ul>
+      <li>Contact this Buyer: ${deleteOrder.buyerEmail}</li>
+    </ul>
+    <p>Best regards,</p>
+    <p><strong>cebutechmarketplace.com</strong></p>
+    <p style="font-size: 0.9em; color: #666;">For assistance, please contact us at cebutechmarketplace@gmail.com.</p>
+  </body>
+</html>
+    `;
+    transporter.sendMail({
+      from: deleteOrder.buyerEmail, // Sender name and email
+      to: deleteOrder.sellerEmail, // Recipient email
+      subject: "Buyer Canceled Order.", // Subject line
+      html: mailView, // HTML content
+    });
+    res.status(200).json(".");
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Error deleting order" });
+  }
+});
+
+router.delete("/ordersTransaction/:id", (req, res) => {
   PurchasedModel.findByIdAndDelete(req.params.id)
     .then((result) => {
       res.json(result);

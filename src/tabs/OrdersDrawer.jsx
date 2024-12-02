@@ -266,57 +266,6 @@ function OrdersDrawer({ id }) {
       });
   };
 
-  const handleOrder = async () => {
-    try {
-      const data = {
-        userId: purchasedSchema.userId,
-        productId: purchasedSchema.productId,
-        sellerId: purchasedSchema.sellerId,
-        buyerName: purchasedSchema.buyerName,
-        buyerEmail: purchasedSchema.buyerEmail,
-        total: purchasedSchema.total,
-      };
-      const response = await axios.post("/api/payments/create-payment", data);
-
-      if (response.data.gcashRedirectUrl) {
-        // Redirect to GCash payment page
-        window.location.href = response.data.gcashRedirectUrl;
-      }
-    } catch (error) {
-      console.error("Error creating payment:", error.message);
-      alert("Failed to initiate payment");
-    }
-  };
-  // const productPurchased = (e) => {
-  //   e.preventDefault();
-  //   axios
-  //     .put(`${baseUrl}/api/purchasedItem/${id}`, {
-  //       status: purchasedSchema.status,
-  //     }) // Update only the status
-  //     .then((result) => {
-  //       console.log("Status updated successfully:", result.data);
-  //       setPurchasedSchema({
-  //         sellerId: "",
-  //         userId: "",
-  //         productId: "",
-  //         prodName: "",
-  //         message: "",
-  //         sellerName: "",
-  //         quantity: "",
-  //         price: "",
-  //         buyerName: "",
-  //         buyerEmail: "",
-  //         total: "",
-  //         status: "",
-  //         types: "",
-  //         image: "",
-  //       });
-  //       // navigate("/");
-  //     })
-  //     .catch((err) => {
-  //       console.log("Error updating status:", err);
-  //     });
-  // };
   const [open, setOpen] = useState(false); // Lightbox open state
   const [currentImage, setCurrentImage] = useState(0); // Track current image index
 
@@ -1599,34 +1548,6 @@ function OrdersDrawer({ id }) {
                           </button>
                         </Link>
                       </Tooltip>
-                      <Popover>
-                        <PopoverTrigger>
-                          <button size="xs">
-                            <Box as="span" flex="1" textAlign="right">
-                              <MdDelete className="text-base" />
-                            </Box>
-
-                            {/* <AccordionIcon /> */}
-                          </button>
-                        </PopoverTrigger>
-                        <PopoverContent mr={8}>
-                          <PopoverArrow />
-                          <PopoverCloseButton />
-                          <PopoverHeader textAlign={"center"}>
-                            <Text>
-                              Delete in History? <br /> {order.prodName}
-                            </Text>
-                          </PopoverHeader>
-                          <PopoverBody>
-                            <button
-                              className="justify-self-center flex text-sm hover:shadow-inner hover:scale-110"
-                              onClick={() => removeItemClick(order._id)}
-                            >
-                              Confirm
-                            </button>
-                          </PopoverBody>
-                        </PopoverContent>
-                      </Popover>
                     </Flex>
                     <figure>
                       {/* <Link
@@ -2093,34 +2014,6 @@ function OrdersDrawer({ id }) {
                           </button>
                         </Link>
                       </Tooltip>
-                      <Popover>
-                        <PopoverTrigger>
-                          <button size="xs">
-                            <Box as="span" flex="1" textAlign="right">
-                              <MdDelete className="text-base" />
-                            </Box>
-
-                            {/* <AccordionIcon /> */}
-                          </button>
-                        </PopoverTrigger>
-                        <PopoverContent mr={8}>
-                          <PopoverArrow />
-                          <PopoverCloseButton />
-                          <PopoverHeader textAlign={"center"}>
-                            <Text>
-                              Delete in History? <br /> {order.prodName}
-                            </Text>
-                          </PopoverHeader>
-                          <PopoverBody>
-                            <button
-                              className="justify-self-center flex text-sm hover:shadow-inner hover:scale-110"
-                              onClick={() => removeItemClick(order._id)}
-                            >
-                              Confirm
-                            </button>
-                          </PopoverBody>
-                        </PopoverContent>
-                      </Popover>
                     </Flex>
                     <figure>
                       {/* <Link

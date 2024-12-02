@@ -188,7 +188,6 @@ function Navigation() {
         title: "Error",
         description: "Passwords do not match.",
         status: "error",
-
         duration: 5000,
         isClosable: true,
       });
@@ -201,7 +200,6 @@ function Navigation() {
         description: "Please enter both the reset token and new password.",
         status: "error",
         duration: 5000,
-
         isClosable: true,
       });
       return;
@@ -217,32 +215,30 @@ function Navigation() {
           },
         }
       );
-      console.log("Password reset:", response.data);
-      // toast({
-      //   title: "Success",
-      //   description: "Your password has been reset successfully.",
-      //   status: "success",
-      //   duration: 5000,
-      //   isClosable: true,
-      // });
-      // // Optionally, redirect the user to the login page or another page
+
       if (response.data.success) {
-        toast.success(response.data.message);
+        toast({
+          title: "Success",
+          description: response.data.message,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
         navigate("/");
         forgotPasswordModal.onClose();
       }
     } catch (error) {
-      console.error("Password reset error:", error);
-      if (error.response?.status === 400) {
-        toast({
-          title: "Error",
-          description: "Failed to reset password. Please try again.",
-          status: "error",
-          duration: 5000,
+      console.error("Invalid Reset Token:", error);
 
-          isClosable: true,
-        });
-      }
+      toast({
+        title: "Error",
+        description:
+          error.response?.data?.message ||
+          "Failed to reset password. Please try again.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
 
@@ -485,6 +481,7 @@ function Navigation() {
       console.error("Logout failed:", error);
     }
   };
+
   return (
     <div className="max-w-full font-quicksand text-sm fixed w-screen z-20">
       <ToastContainer

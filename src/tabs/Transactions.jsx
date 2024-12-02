@@ -62,7 +62,7 @@ import {
   Image,
   IconButton,
   Input,
-  useToast
+  useToast,
 } from "@chakra-ui/react";
 import { MdDelete } from "react-icons/md";
 import { TbCircleLetterG, TbViewportWide } from "react-icons/tb";
@@ -253,9 +253,9 @@ function Transactions({ id }) {
   };
   const removeItemClick = (id) => {
     axios
-      .delete(`${baseUrl}/api/orders/${id}`)
+      .delete(`${baseUrl}/api/ordersTransaction/${id}`)
       .then((result) => {
-        navigate("/");
+        // navigate("/");
       })
       .catch((err) => {
         console.log("Error to remove this product", err);
@@ -302,7 +302,7 @@ function Transactions({ id }) {
     setImageSubmit(Array.from(e.target.files));
   };
 
-  const [transactLoading, setTransactLoading ] = useState(false);
+  const [transactLoading, setTransactLoading] = useState(false);
   const submitTransaction = async (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -2714,46 +2714,64 @@ function Transactions({ id }) {
               <ModalCloseButton />
               <ModalBody>
                 <p className=" text-sm font-bold font-bebos">
-                As a seller in the CTU Marketplace, please follow the rules and procedures outlined below to ensure a smooth and secure transaction process. Your cooperation is essential to maintain a safe marketplace for everyone. Thank you.
+                  As a seller in the CTU Marketplace, please follow the rules
+                  and procedures outlined below to ensure a smooth and secure
+                  transaction process. Your cooperation is essential to maintain
+                  a safe marketplace for everyone. Thank you.
                 </p>
                 <br />
                 <p className=" text-lg font-bebos">Strict Guidelines:</p>
                 <ul className="text-sm font-quicksand">
                   <li>
-                  1.  All transactions must occur within the campus to ensure safety for both parties.
+                    1. All transactions must occur within the campus to ensure
+                    safety for both parties.
                   </li>
                   <li>
-                  2.	We monitor all activities to prevent fraudulent actions. If any suspicious activity is detected, your account may be restricted, and the matter will be reported to the school’s student affairs office.
+                    2. We monitor all activities to prevent fraudulent actions.
+                    If any suspicious activity is detected, your account may be
+                    restricted, and the matter will be reported to the school’s
+                    student affairs office.
                   </li>
                   <li>
-                  3.	Only legitimate, verified accounts are allowed to conduct transactions. Fake or spam accounts will be removed from the platform.
+                    3. Only legitimate, verified accounts are allowed to conduct
+                    transactions. Fake or spam accounts will be removed from the
+                    platform.
                   </li>
                   <br></br>
-                   <p className=" text-lg font-bebos">Transaction Rules:</p>
-       
+                  <p className=" text-lg font-bebos">Transaction Rules:</p>
+
                   <li>
-                  1.	You must deliver the product to the CTU Marketplace Team (admin), not directly to the buyer. The drop-off point is in the COT study area.
+                    1. You must deliver the product to the CTU Marketplace Team
+                    (admin), not directly to the buyer. The drop-off point is in
+                    the COT study area.
                   </li>
                   <li>
-                  2.	Ensure that the product is in its agreed-upon condition and ready for handover.
+                    2. Ensure that the product is in its agreed-upon condition
+                    and ready for handover.
                   </li>
                   <li>
-                  3.	Once the buyer has completed the payment via the chosen payment method (Meet-up Pay or E-Payment), the CTU Marketplace Team will handle the transaction.
+                    3. Once the buyer has completed the payment via the chosen
+                    payment method (Meet-up Pay or E-Payment), the CTU
+                    Marketplace Team will handle the transaction.
                   </li>
                   <li>
-                  4.	We will process the buyer’s payment and transfer the corresponding funds to your registered GCash account or any other mobile banking app you have within 3-5 business days.
+                    4. We will process the buyer’s payment and transfer the
+                    corresponding funds to your registered GCash account or any
+                    other mobile banking app you have within 3-5 business days.
                   </li>
                   <li>
-                  5.	Do not engage in any activities that may be considered fraudulent or misleading, as violations will result in your account being restricted.
+                    5. Do not engage in any activities that may be considered
+                    fraudulent or misleading, as violations will result in your
+                    account being restricted.
                   </li>
                   <li>
-                  6.  Lastly, please cooperate by taking a picture with the product and your ID (if you are a student) or without an ID (if you are a faculty member) at the drop-off area as proof.
+                    6. Lastly, please cooperate by taking a picture with the
+                    product and your ID (if you are a student) or without an ID
+                    (if you are a faculty member) at the drop-off area as proof.
                   </li>
                 </ul>
-    
-              
+
                 <ul className="text-sm font-quicksand">
-              
                   <li>
                     {" "}
                     <label className="flex mt-5 text-lg font-montserrat">
@@ -2797,7 +2815,7 @@ function Transactions({ id }) {
 
                       {/* do next is to fix this to upload image here  */}
                     </label>
-               
+
                     <div className=" lg:m-5 grid border text-center rounded-md">
                       <p className="m-1">Select Payment Method</p>
                       <button
@@ -3048,31 +3066,31 @@ function Transactions({ id }) {
 
                   {/* continue here in transaction creating a model data schema and all the input types  */}
                   {transactLoading ? (
-                                  <>
-                                    {" "}
-                                    <Button
-                                      rounded={"0"}
-                                      w={"100%"}
-                                      bg={"#601da4d3"}
-                                      _hover={{ bg: "#512f73d3" }}
-                                      className="bg-[#601da4d3]  justify-self-center  font-poppins"
-                                    >
-                                      Processing{" "}
-                                      <AiOutlineLoading3Quarters className="animate-spin ml-2" />
-                                    </Button>
-                                  </>
-                                ) : (
-                                  <Button
-                                    rounded={"0"}
-                                    w={"100%"}
-                                    bg={"#601da4d3"}
-                                    _hover={{ bg: "#512f73d3" }}
-                                    className="bg-[#601da4d3]  justify-self-center  font-poppins"
-                                    type="submit"
-                                  >
-                                    Submit
-                                  </Button>
-                                )}
+                    <>
+                      {" "}
+                      <Button
+                        rounded={"0"}
+                        w={"100%"}
+                        bg={"#601da4d3"}
+                        _hover={{ bg: "#512f73d3" }}
+                        className="bg-[#601da4d3]  justify-self-center  font-poppins"
+                      >
+                        Processing{" "}
+                        <AiOutlineLoading3Quarters className="animate-spin ml-2" />
+                      </Button>
+                    </>
+                  ) : (
+                    <Button
+                      rounded={"0"}
+                      w={"100%"}
+                      bg={"#601da4d3"}
+                      _hover={{ bg: "#512f73d3" }}
+                      className="bg-[#601da4d3]  justify-self-center  font-poppins"
+                      type="submit"
+                    >
+                      Submit
+                    </Button>
+                  )}
                 </form>
               </ModalBody>
               <ModalFooter></ModalFooter>

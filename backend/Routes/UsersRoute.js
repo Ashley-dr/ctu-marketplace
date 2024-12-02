@@ -5,7 +5,8 @@ import upload from "../config/Cloudinary.js";
 import { UserModel } from "../Models/UserModel.js";
 import { v2 as cloudinary } from "cloudinary";
 import { FacultyModel } from "../Models/FacultyUsers.js";
-
+import nodemailer from "nodemailer";
+import { createSecretToken } from "../util/SecretToken.js";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
@@ -70,14 +71,113 @@ router.get("/mamaligyaay", (req, res) => {
       res.status(500).json({ message: "Internal server error", error: err });
     });
 });
-router.put("/usersSellerUpdate/:id", (req, res) => {
-  UserModel.findByIdAndUpdate(req.params.id, req.body)
-    .then((result) => {
-      res.json("Student user has been a seller successfully,");
-    })
-    .catch((err) => {
-      console.log("Cannot be a seller.");
-    });
+
+// router.put("/usersSellerUpdate/:id", (req, res) => {
+//   UserModel.findByIdAndUpdate(req.params.id, req.body)
+//     .then((result) => {
+//       res.json("Student user has been a seller successfully,");
+//     })
+//     .catch((err) => {
+//       console.log("Cannot be a seller.");
+//     });
+// });
+// Set up nodemailer
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL, // Your Gmail address
+    pass: process.env.PASSWORD_APP_EMAIL, // App password from Gmail
+  },
+});
+
+router.put("/usersSellerUpdate/:id", async (req, res) => {
+  try {
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true } // Return the updated document
+    );
+    if (!updatedUser) {
+      return res.status(404).json({ error: "User not found." });
+    }
+    if (updatedUser.isSeller === true) {
+      // Create the email content
+      const mailView = `
+      <html>
+        <body>
+          <h2>Congratulations! Your Seller Account Has Been Approved</h2>
+          <p>Dear ${updatedUser.fullname},</p>
+          <p>We are pleased to inform you that your request to become a seller on our platform has been approved.</p>
+          <p>Your account has been updated, and you now have access to seller-specific features and tools.</p>
+          <p>As a seller, you can:</p>
+          <ul>
+            <li>List and manage your products or services.</li>
+            <li>Interact with customers directly.</li>
+         
+          </ul>
+          <br/>
+          <strong>Important Notes:</strong>
+          <ul>
+            <li>Please review our Seller Guidelines to ensure compliance with our policies.</li>
+            <li>If you encounter any issues, feel free to reach out to our support team at cebutechmarketplace@gmail.com.</li>
+          </ul>
+          <p>We are excited to have you onboard and look forward to your success as part of our seller community!</p>
+          <p>Best Regards,</p>
+          <p>The CebuTech Marketplace Team</p>
+          <p><a href="https://cebutechmarketplace.com">cebutechmarketplace.com</a></p>
+        </body>
+      </html>
+    `;
+
+      // Send the email
+      await transporter.sendMail({
+        from: `"CebuTech Marketplace" <${process.env.EMAIL}>`, // Sender name and email
+        to: updatedUser.email, // Recipient email
+        subject: "Seller Account Approved", // Subject line
+        html: mailView, // HTML content
+      });
+
+      res
+        .status(200)
+        .json("User has been updated to seller successfully, and email sent.");
+    }
+    if (updatedUser.isSeller === false) {
+      const mailView = `
+      <html>
+        <body>
+          <h2>Your Requested Account to be a Seller declined.</h2>
+          <p>Dear ${updatedUser.fullname},</p>
+          <p>We are pleased to inform you that your request to become a seller on our platform are declined.</p>
+          <p>Due to not sending exact requirements you well have to attach file again to complete.</p>
+         
+          <br/>
+          <strong>Important Notes:</strong>
+          <ul>
+            <li>Please review our Seller Guidelines to ensure compliance with our policies.</li>
+            <li>If you encounter any issues, feel free to reach out to our support team at cebutechmarketplace@gmail.com.</li>
+          </ul>
+          <p>We are excited to have you onboard and look forward to your success as part of our seller community!</p>
+          <p>Best Regards,</p>
+          <p>The CebuTech Marketplace Team</p>
+          <p><a href="https://cebutechmarketplace.com">cebutechmarketplace.com</a></p>
+        </body>
+      </html>
+     `;
+
+      // Send the email
+      await transporter.sendMail({
+        from: `"CebuTech Marketplace" <${process.env.EMAIL}>`, // Sender name and email
+        to: updatedUser.email, // Recipient email
+        subject: "Seller Account Declined", // Subject line
+        html: mailView, // HTML content
+      });
+
+      res.status(200).json("User Declined, and email sent.");
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Error updating user to seller." });
+  }
 });
 
 router.delete("/users/:id", (req, res) => {

@@ -34,6 +34,8 @@ import { Zoom } from "yet-another-react-lightbox/plugins";
 import "yet-another-react-lightbox/styles.css";
 import { MdCheck, MdKeyboardReturn } from "react-icons/md";
 import { TbTruckReturn } from "react-icons/tb";
+import { FaHandHolding } from "react-icons/fa";
+import { FaHandsHolding } from "react-icons/fa6";
 
 function Transactions() {
   const baseUrl = import.meta.env.VITE_SERVER_URL;
@@ -153,7 +155,11 @@ function Transactions() {
                 <Tbody>
                   {data && data.length > 0 ? (
                     data
-                      .filter((order) => order.transactionStatus === undefined)
+                      .filter(
+                        (order) =>
+                          order.transactionStatus === undefined ||
+                          "Item Received"
+                      )
                       .map((transaction) => (
                         <Tr key={transaction._id} className="text-xs">
                           <Td>
@@ -644,6 +650,15 @@ function Transactions() {
             )}
           </ModalBody>
           <ModalFooter>
+            <Tooltip label="Item Received">
+              <Button
+                colorScheme="blue"
+                mr={32}
+                onClick={() => buttonStatus("Item Received")}
+              >
+                <FaHandsHolding />
+              </Button>
+            </Tooltip>
             <Tooltip label="Return this item?">
               <Button
                 colorScheme="orange"
