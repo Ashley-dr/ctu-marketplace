@@ -34,9 +34,7 @@ mongoose
 // Middleware
 app.use(
   cors({
-    origin: ["https://cebutechmarketplace.com", "http://localhost:5173"],
-    methods: ["POST", "GET", "PUT", "DELETE", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    origin: ["http://localhost:5173", "https://marketplace-ctu.onrender.com"],
     credentials: true,
   })
 );
