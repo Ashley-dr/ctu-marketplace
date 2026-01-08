@@ -1934,33 +1934,33 @@ function OrdersDrawer({ id }) {
                                     {refundImage.length} ) 5 max.
                                   </Text>
                                 </Box>
-                                {loadingRefund ? (
-                                  <>
-                                    {" "}
-                                    <Button
-                                      rounded={"0"}
-                                      w={"100%"}
-                                      bg={"#601da4d3"}
-                                      _hover={{ bg: "#512f73d3" }}
-                                      className="bg-[#601da4d3]  justify-self-center  font-poppins"
-                                    >
-                                      Processing{" "}
-                                      <AiOutlineLoading3Quarters className="animate-spin ml-2" />
-                                    </Button>
-                                  </>
-                                ) : (
+                              </figure>
+                              {loadingRefund ? (
+                                <>
+                                  {" "}
                                   <Button
                                     rounded={"0"}
                                     w={"100%"}
                                     bg={"#601da4d3"}
                                     _hover={{ bg: "#512f73d3" }}
                                     className="bg-[#601da4d3]  justify-self-center  font-poppins"
-                                    type="submit"
                                   >
-                                    Submit
+                                    Processing{" "}
+                                    <AiOutlineLoading3Quarters className="animate-spin ml-2" />
                                   </Button>
-                                )}
-                              </figure>
+                                </>
+                              ) : (
+                                <Button
+                                  rounded={"0"}
+                                  w={"100%"}
+                                  bg={"#601da4d3"}
+                                  _hover={{ bg: "#512f73d3" }}
+                                  className="bg-[#601da4d3]  justify-self-center  font-poppins"
+                                  type="submit"
+                                >
+                                  Submit
+                                </Button>
+                              )}
                             </article>
                           </form>
                         </AccordionPanel>{" "}
